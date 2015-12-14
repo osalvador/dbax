@@ -1,0 +1,48 @@
+--
+-- WDX_CONTROLLERS  (Table) 
+--
+--  Dependencies: 
+--   WDX_APPLICATIONS (Table)
+--
+CREATE TABLE WDX_CONTROLLERS
+(
+  APPID          VARCHAR2(50 BYTE)              NOT NULL,
+  CONTROLLER_ID  VARCHAR2(50 BYTE)              NOT NULL,
+  PACKAGE_NAME   VARCHAR2(50 BYTE)              NOT NULL,
+  DESCRIPTION    VARCHAR2(300 BYTE)             NOT NULL,
+  ACTIVE         VARCHAR2(1 BYTE)               DEFAULT 'Y'                   NOT NULL,
+  CREATED_BY     VARCHAR2(100 BYTE)             DEFAULT -1                    NOT NULL,
+  CREATED_DATE   DATE                           DEFAULT SYSDATE               NOT NULL,
+  MODIFIED_BY    VARCHAR2(100 BYTE)             DEFAULT -1                    NOT NULL,
+  MODIFIED_DATE  DATE                           DEFAULT SYSDATE               NOT NULL
+);
+
+
+--
+-- WDX_CONTROLLERS_PK  (Index) 
+--
+--  Dependencies: 
+--   WDX_CONTROLLERS (Table)
+--
+CREATE UNIQUE INDEX WDX_CONTROLLERS_PK ON WDX_CONTROLLERS
+(APPID, CONTROLLER_ID);
+
+
+-- 
+-- Non Foreign Key Constraints for Table WDX_CONTROLLERS 
+-- 
+ALTER TABLE WDX_CONTROLLERS ADD (
+  CONSTRAINT WDX_CONTROLLERS_PK
+ PRIMARY KEY
+ (APPID, CONTROLLER_ID));
+
+
+-- 
+-- Foreign Key Constraints for Table WDX_CONTROLLERS 
+-- 
+ALTER TABLE WDX_CONTROLLERS ADD (
+  CONSTRAINT WDX_CONTROLLERS_APPID_FK 
+ FOREIGN KEY (APPID) 
+ REFERENCES WDX_APPLICATIONS (APPID));
+
+

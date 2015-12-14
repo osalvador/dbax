@@ -1,0 +1,47 @@
+--
+-- WDX_PROPERTIES  (Table) 
+--
+--  Dependencies: 
+--   WDX_APPLICATIONS (Table)
+--
+CREATE TABLE WDX_PROPERTIES
+(
+  APPID          VARCHAR2(50 BYTE)              NOT NULL,
+  KEY            VARCHAR2(30 BYTE)              NOT NULL,
+  VALUE          VARCHAR2(4000 BYTE)            NOT NULL,
+  DESCRIPTION    VARCHAR2(2000 BYTE)            NOT NULL,
+  CREATED_BY     VARCHAR2(100 BYTE)             DEFAULT -1                    NOT NULL,
+  CREATED_DATE   DATE                           DEFAULT SYSDATE               NOT NULL,
+  MODIFIED_BY    VARCHAR2(100 BYTE)             DEFAULT -1                    NOT NULL,
+  MODIFIED_DATE  DATE                           DEFAULT SYSDATE               NOT NULL
+);
+
+
+--
+-- WDX_PROPERTIES_PK  (Index) 
+--
+--  Dependencies: 
+--   WDX_PROPERTIES (Table)
+--
+CREATE UNIQUE INDEX WDX_PROPERTIES_PK ON WDX_PROPERTIES
+(APPID, KEY);
+
+
+-- 
+-- Non Foreign Key Constraints for Table WDX_PROPERTIES 
+-- 
+ALTER TABLE WDX_PROPERTIES ADD (
+  CONSTRAINT WDX_PROPERTIES_PK
+ PRIMARY KEY
+ (APPID, KEY));
+
+
+-- 
+-- Foreign Key Constraints for Table WDX_PROPERTIES 
+-- 
+ALTER TABLE WDX_PROPERTIES ADD (
+  CONSTRAINT WDX_PROPERTIES_APPID_FK 
+ FOREIGN KEY (APPID) 
+ REFERENCES WDX_APPLICATIONS (APPID));
+
+
