@@ -1,7 +1,7 @@
 # DBAX
 DataBase Application Express
 
-DBAX is a PL/SQL MVC Web Framwork. 
+DBAX is a PL/SQL MVC Web Framework. 
 
 This is my first commit, this code is not valid for production environments.
 
