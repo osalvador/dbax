@@ -103,6 +103,7 @@ PROMPT ------------------------------------------;
 @@../packages/tapi_wdx_reqvalidation.pks;
 @@../packages/pk_m_dbax_console.pks;
 @@../packages/xlsx_builder_pkg.pks;
+@@../packages/json_util_pkg.pks
 
 PROMPT ------------------------------------------;
 PROMPT -- Installing Packages Bodies --;
@@ -140,6 +141,7 @@ PROMPT ------------------------------------------;
 @@../packages/tapi_wdx_users_roles.pkb;
 @@../packages/pk_m_dbax_console.pkb;
 @@../packages/console.prc;
+@@../packages/json_util_pkg.pkb
 
 quit;
 /
