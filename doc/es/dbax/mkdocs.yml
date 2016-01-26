@@ -1,0 +1,12 @@
+site_name: DBAX DataBase Application eXpress
+site_url: http://dbax.io
+site_description: Database Application eXpress
+dev_addr: '0.0.0.0:8000'
+#include_search: true
+markdown_extensions: ['admonition', 'abbr', 'nl2br']
+pages:
+- [index.md, Manual de usuario]
+#- [readme.md, Readme]
+#- [about.md, About]
+theme: readthedocs
+
