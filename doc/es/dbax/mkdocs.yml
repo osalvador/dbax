@@ -1,4 +1,4 @@
-site_name: DBAX DataBase Application eXpress
+site_name: DBAX
 site_url: http://dbax.io
 site_description: Database Application eXpress
 markdown_extensions: 
@@ -10,9 +10,15 @@ markdown_extensions:
     permalink: True
 - sane_lists
 pages:
-- Tutorial:
-    - 'Tutorial' : 'tutorial/index.md'
-    - 'Empezando': 'tutorial/empezando.md'
-- Manual de usuario: 'index.md'
+- Home: 'index.md'
+- Bienvenido a DBAX: 'welcome.md'
+- Introdcción:
+  - 'Empezando': 'intro/empezando.md'
+  - 'DBAX a simple vista': 'intro/a-simple-vista.md'
+  - 'Funciones soportadas': 'intro/funciones-soportadas.md'
+  - 'Diagrama de flujo': 'intro/diagrama-flujo.md'
+- Tutoriales:
+  - Tutorial:
+      - 'Tutorial' : 'tutorial/index.md'
 dev_addr: '0.0.0.0:8000'
 theme: readthedocs
