@@ -1,10 +1,12 @@
-##DBAX Manual de usuario
+<p class="page-header1"><b>DBAX Manual de usuario</b></p>
+
+**Contenidos:**
 
 [TOC]
 
-### Bienvenido a DBAX
+## Bienvenido a DBAX
 
-### Introducción a DABX
+## Introducción a DABX
 - Empezando
 - DBAX a simple vista
 - Funciones soportadas
@@ -12,17 +14,17 @@
 - Model-Vista-Controlador
 - Objetivos de arquitectura
 
-### Instrucciones de instalación
+## Instrucciones de instalación
 - Descargar DBAX
 - Instrucciones de instalación
 - Atualizar desde una versión anterior
 - Solucionar problemas
 
-### Tutorial
+## Tutorial
 - Páginas estáticas
 - ...
 
-### Temas Generales
+## Temas Generales
 - DBAX URLs
 - Controllers
 - Reserved Names
@@ -50,7 +52,7 @@
 - Security
 - PHP Style Guide
 
-### DBAX API Referencia
+## DBAX API Referencia
 + DBAX_COOKIE
 + DBAX_CORE
 + DBAX_DATATABLE

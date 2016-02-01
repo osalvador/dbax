@@ -10,7 +10,7 @@ markdown_extensions:
     permalink: True
 - sane_lists
 pages:
-- Home: 'index.md'
+- Índice: 'index.md'
 - Bienvenido a DBAX: 'welcome.md'
 - Introdcción:
   - 'Empezando': 'intro/empezando.md'
@@ -22,3 +22,4 @@ pages:
       - 'Tutorial' : 'tutorial/index.md'
 dev_addr: '0.0.0.0:8000'
 theme: readthedocs
+extra_css: [extra.css]

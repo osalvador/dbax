@@ -1,67 +1,20 @@
-##DBAX Manual de usuario
+<p class="page-header1"><b>Bienvenido a DBAX</b></p>
 
-[TOC]
+##Welcome
+Oracle Application Express is Oracle's primary tool for developing Web applications with SQL and PL/SQL. Using only a web browser, you can develop and deploy professional Web-based applications for desktops and mobile devices.
 
-### Bienvenido a DBAX
+CodeIgniter is an Application Development Framework - a toolkit - for people who build web sites using PHP. Its goal is to enable you to develop projects much faster than you could if you were writing code from scratch, by providing a rich set of libraries for commonly needed tasks, as well as a simple interface and logical structure to access these libraries. CodeIgniter lets you creatively focus on your project by minimizing the amount of code needed for a given task.
 
-### Introducción a DABX
-- Empezando
-- DBAX a simple vista
-- Funciones soportadas
-- Diagrama de flujo de las aplicaciones DBAX
-- Model-Vista-Controlador
-- Objetivos de arquitectura
+##Who is CodeIgniter For?
+CodeIgniter is right for you if:
 
-### Instrucciones de instalación
-- Descargar DBAX
-- Instrucciones de instalación
-- Atualizar desde una versión anterior
-- Solucionar problemas
-
-### Tutorial
-- Páginas estáticas
-- ...
-
-### Temas Generales
-- DBAX URLs
-- Controllers
-- Reserved Names
-- Views
-- Models
-- Helpers
-- Using DBAX Libraries
-- Creating Libraries
-- Using DBAX Drivers
-- Creating Drivers
-- Creating Core System Classes
-- Creating Ancillary Classes
-- Hooks - Extending the Framework Core
-- Auto-loading Resources
-- Common Functions
-- Compatibility Functions
-- URI Routing
-- Error Handling
-- Caching
-- Profiling Your Application
-- Running via the CLI
-- Managing your Applications
-- Handling Multiple Environments
-- Alternate PHP Syntax for View Files
-- Security
-- PHP Style Guide
-
-### DBAX API Referencia
-+ DBAX_COOKIE
-+ DBAX_CORE
-+ DBAX_DATATABLE
-+ DBAX_DOCUMENT
-+ DBAX_EXCEPTION
-+ DBAX\_FILE_PARSER
-+ DBAX_LDAP
-+ DBAX_LOG
-+ DBAX_SECURITY
-+ DBAX_SSESSION
-+ DBAX_UTILS
-+ JSON_UTIL
-+ XLSX_BUILDER
-
+- You want a framework with a small footprint.
+- You need exceptional performance.
+- You need broad compatibility with standard hosting accounts that run a variety - of PHP versions and configurations.
+- You want a framework that requires nearly zero configuration.
+- You want a framework that does not require you to use the command line.
+- You want a framework that does not require you to adhere to restrictive coding - rules.
+- You are not interested in large-scale monolithic libraries like PEAR.
+- You do not want to be forced to learn a templating language (although a - template parser is optionally available if you desire one).
+- You eschew complexity, favoring simple solutions.
+- You need clear, thorough documentation.
