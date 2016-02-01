@@ -1,11 +1,4 @@
---
--- PK_M_DBAX_CONSOLE  (Package) 
---
---  Dependencies: 
---   STANDARD (Package)
---   TAPI_WDX_APPLICATIONS (Package)
---
-CREATE OR REPLACE PACKAGE      pk_m_dbax_console
+CREATE OR REPLACE PACKAGE pk_m_dbax_console
 AS
    /**
    -- # PK_M_DBAX_CONSOLE
@@ -19,5 +12,4 @@ AS
    PROCEDURE del_application (p_appid IN tapi_wdx_applications.appid);
 END pk_m_dbax_console;
 /
-
 

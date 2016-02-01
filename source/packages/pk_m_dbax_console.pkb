@@ -1,7 +1,4 @@
---
--- PK_M_DBAX_CONSOLE  (Package Body) 
---
-CREATE OR REPLACE PACKAGE BODY      pk_m_dbax_console
+CREATE OR REPLACE PACKAGE BODY pk_m_dbax_console
 AS
    PROCEDURE properties_ins (p_wdx_properties_rec IN OUT tapi_wdx_properties.wdx_properties_rt)
    AS
@@ -59,32 +56,32 @@ AS
       --Create mondatory properties
       l_properties_rt.key := 'base_path';
       l_properties_rt.VALUE := '/dbax/!' || LOWER (l_application_rt.appid) || '?p=';
-      l_properties_rt.description := 'Contains the base URL path of the Application installation.';
+      l_properties_rt.description := 'The base URL path of the Application.';
       properties_ins (l_properties_rt);
       --
       l_properties_rt.key := 'content-encoding';
       l_properties_rt.VALUE := 'gzip';
-      l_properties_rt.description := 'Default HTTP content-encoding, text/html, gzip...';
+      l_properties_rt.description := 'Default HTTP content-encoding: text/html, gzip...';
       properties_ins (l_properties_rt);
       --
       l_properties_rt.key := 'encoding';
       l_properties_rt.VALUE := 'UTF8';
-      l_properties_rt.description := 'Database Encoding to indicate the mime header';
+      l_properties_rt.description := 'Database Encoding. Indicates the charset encoding HTTP header.';
       properties_ins (l_properties_rt);
       --
       l_properties_rt.key := 'log_level';
-      l_properties_rt.VALUE := 'error';
+      l_properties_rt.VALUE := 'debug';
       l_properties_rt.description := 'Aplication log level.none, error, warn, info, debug, trace';
       properties_ins (l_properties_rt);
       --
       l_properties_rt.key := 'resources_url';
-      l_properties_rt.VALUE := '//resources.dbax.io';
-      l_properties_rt.description := 'URL of the application public web content (images, js, css, etc...)';
+      l_properties_rt.VALUE := '/resources';
+      l_properties_rt.description := 'Resources location (images, js, css etc...)';
       properties_ins (l_properties_rt);
       --
       l_properties_rt.key := 'session_cookie_name';
       l_properties_rt.VALUE := 'dbax_' || LOWER (l_application_rt.appid);
-      l_properties_rt.description := 'Application cookie session';
+      l_properties_rt.description := 'Session cookie name.';
       properties_ins (l_properties_rt);
 
       /*
@@ -224,7 +221,7 @@ END;]';
 CREATE OR REPLACE PACKAGE pk_c_dbax_${appid}
 AS
    /**
-   * PK_C_DBAX_${appid}   
+   * PK_C_DBAX_${appid}
    * DBAX Controller for ${appid} application
    */
 
@@ -238,10 +235,10 @@ AS
    * Controller for login user
    */
    PROCEDURE login;
-   
+
    /**
    * Controller for logout user
-   */   
+   */
    PROCEDURE logout;
    <%end if;%>
 END pk_c_dbax_${appid};]';
@@ -250,13 +247,13 @@ END pk_c_dbax_${appid};]';
       l_vars ('appid') := l_application_rt.appid;
       l_vars ('access_control') := l_application_rt.access_control;
       l_source    := teplsql.render (l_vars, l_source);
-      
+
       --Compile package spec
       EXECUTE IMMEDIATE l_source;
-      
+
       l_source := q'[CREATE OR REPLACE PACKAGE BODY pk_c_dbax_${appid}
 AS
-   
+
    PROCEDURE index_
    AS
    BEGIN
@@ -319,13 +316,13 @@ AS
    END logout;
    <%end if;%>
 END pk_c_dbax_${appid};]';
-      
+
       --Render source code
       l_source    := teplsql.render (l_vars, l_source);
-      
+
       --Compile package body
       EXECUTE IMMEDIATE l_source;
-      
+
    END new_application;
 
    PROCEDURE del_application (p_appid IN tapi_wdx_applications.appid)
@@ -355,12 +352,12 @@ END pk_c_dbax_${appid};]';
          tapi_wdx_map_routes.del (p_appid, c1.route_name);
       END LOOP;
 
-      --Delete Users Roles 
+      --Delete Users Roles
       FOR c1 IN (SELECT   * FROM table (tapi_wdx_users_roles.tt (p_appid => p_appid)))
       LOOP
          tapi_wdx_users_roles.del (c1.username, c1.rolename, p_appid);
-      END LOOP;    
-   
+      END LOOP;
+
      --Delete Roles Permissions
       FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles_pmsn.tt (p_appid => p_appid)))
       LOOP
@@ -392,12 +389,11 @@ END pk_c_dbax_${appid};]';
       BEGIN
         EXECUTE IMMEDIATE 'DROP PROCEDURE ' || p_appid;
       EXCEPTION
-      WHEN OTHERS 
+      WHEN OTHERS
       THEN
         dbax_log.warn ('Error dropping '|| p_appid ||'procedure:' || SQLCODE ||' ' || SQLERRM);
       END;
    END del_application;
-END pk_m_dbax_console;
+END pk_m_dbax_console; 
 /
-
 

@@ -65,3 +65,42 @@
 + JSON_UTIL
 + XLSX_BUILDER
 
+
+"attention", "caution", "danger", "error", "hint", "important", "note", "tip", "warning", "admonition"
+
+!!! attention
+    This is attention
+
+!!! caution
+    This is caution
+
+!!! danger
+    This is danger
+
+!!! error
+    This is error
+
+!!! hint
+    This is hint
+
+!!! important
+    This is important
+
+!!! note
+    This is note
+
+!!! tip
+    This is tip
+
+!!! warning
+    This is warning
+
+!!! admonition
+    This is admonition
+
+
+
+Some text with an ABBR and a REF.
+
+*[ABBR]: Abbreviation abreviatura con titulillo
+*[REF]: Reference refenrecia
