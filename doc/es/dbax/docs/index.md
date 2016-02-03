@@ -4,7 +4,7 @@
 
 [TOC]
 
-## Bienvenido a DBAX
+##Bienvenido a DBAX
 
 ## Introducción a DABX
 - Empezando
@@ -17,40 +17,85 @@
 ## Instrucciones de instalación
 - Descargar DBAX
 - Instrucciones de instalación
-- Atualizar desde una versión anterior
+<!--- Atualizar desde una versión anterior-->
 - Solucionar problemas
 
-## Tutorial
-- Páginas estáticas
-- ...
+## Tutorial Sencillo
+- ¿Qué necesito?
+- Su primera página con DBAX
+- Algo útil
+- Tratar con formularios
+- Aplicación báscica de Notinicas
+    + Páginas estáticas
+    + Seccion noticias
+    + Crer una noticia
+    + Conslusión
+
+## Guía de usuario Consola de DBAX
+- Aplicaciones
+    - Crear una nueva aplicación
+    - Ajustes
+        + Ajustes generales (Settings)
+        + Propiedades (Properties)
+        + Enrutado (Routing)
+        + Vistas (Views)
+        + Función de Validación de petición (Request Validation Function)
+        + Seguridad (Security)
+            * Roles (Roles)
+            * Permisos (Permissions)
+- Seguridad
+    + Usuarios (Users)
+    + Esquemas de autenticación (Auth Schemes)
+- Monitorización
+    + Logs
+
+## Referencias del lenguaje
+- Sintaxis básica
+    - Etiquetas de DBAX
+    - Salir de HTML
+    - Separación de instrucciones
+    - Comentarios
+- Variables
+    - Conceptos básicos
+    - Variables Predefinidas
+    - Ámbito de las variables
+    - Variables variables
+    - Variables desde fuentes externas
+- Variables predefinidas
+    + dbax_core 
+        * g$server — Información del entorno del servidor y de ejecución
+        * g$get — Variables HTTP GET
+        * g$post — Variables POST de HTTP
+        * g$view 
+        * g$http_header
+        * g$status_line
+        * g$controller
+        * g$view_name
+        *  g$parameter 
+        * g$path 
+        * g$appid 
+        * g$h_view 
+        * g$content_type
+        * g$username        
+        * g_stop_process
+    + dbax_cookie
+        * g$req_cookies 
+        * g$res_cookies
+    + dbax_exception
+        * g$error 
+    + dbax_session
+        * g$session  — Variables de sesión
 
 ## Temas Generales
 - DBAX URLs
 - Controllers
-- Reserved Names
 - Views
 - Models
-- Helpers
-- Using DBAX Libraries
-- Creating Libraries
-- Using DBAX Drivers
-- Creating Drivers
-- Creating Core System Classes
-- Creating Ancillary Classes
-- Hooks - Extending the Framework Core
-- Auto-loading Resources
-- Common Functions
-- Compatibility Functions
 - URI Routing
 - Error Handling
-- Caching
-- Profiling Your Application
-- Running via the CLI
-- Managing your Applications
-- Handling Multiple Environments
-- Alternate PHP Syntax for View Files
+<!-- - Caching -->
 - Security
-- PHP Style Guide
+- DBAX Style Guide
 
 ## DBAX API Referencia
 + DBAX_COOKIE
