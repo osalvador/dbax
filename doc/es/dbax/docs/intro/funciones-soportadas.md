@@ -1,3 +1,3 @@
-#Empezando el tutorial
+<p class="page-header1"><b>Titulo principal</b></p>
 
-Solo quiero otra pagina de pruebas
+Vacía

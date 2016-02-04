@@ -5,9 +5,10 @@
 [TOC]
 
 ##Bienvenido a DBAX
+- [Bienvenido](welcome.md)
 
 ## Introducción a DABX
-- Empezando
+- [Empezando](intro/empezando.md)
 - DBAX a simple vista
 - Funciones soportadas
 - Diagrama de flujo de las aplicaciones DBAX
@@ -25,13 +26,13 @@
 - Su primera página con DBAX
 - Algo útil
 - Tratar con formularios
-- Aplicación báscica de Notinicas
+- Aplicación báscica de Noticias
     + Páginas estáticas
-    + Seccion noticias
+    + Sección noticias
     + Crer una noticia
     + Conslusión
 
-## Guía de usuario Consola de DBAX
+## Consola Web DBAX
 - Aplicaciones
     - Crear una nueva aplicación
     - Ajustes
@@ -48,6 +49,16 @@
     + Esquemas de autenticación (Auth Schemes)
 - Monitorización
     + Logs
+
+## Temas Generales
+- DBAX URLs
+- Controladores
+- Vistas
+- Modelos
+- Enrutado URI
+- Gestíón de excepciones
+<!-- - Caching -->
+- Seguridad
 
 ## Referencias del lenguaje
 - Sintaxis básica
@@ -86,18 +97,7 @@
     + dbax_session
         * g$session  — Variables de sesión
 
-## Temas Generales
-- DBAX URLs
-- Controllers
-- Views
-- Models
-- URI Routing
-- Error Handling
-<!-- - Caching -->
-- Security
-- DBAX Style Guide
-
-## DBAX API Referencia
+## Referencia APIs DBAX
 + DBAX_COOKIE
 + DBAX_CORE
 + DBAX_DATATABLE
