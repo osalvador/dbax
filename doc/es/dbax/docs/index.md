@@ -6,6 +6,8 @@
 
 ##Bienvenido a DBAX
 - [Bienvenido](welcome.md)
+- [¿Porqué DBAX?](why.md)
+
 
 ## Introducción a DABX
 - [Empezando](intro/empezando.md)

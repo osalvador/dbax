@@ -12,6 +12,7 @@ markdown_extensions:
 pages:
 - Índice: 'index.md'
 - Bienvenido a DBAX: 'welcome.md'
+- ¿Por qué DBAX?: 'why.md'
 - Introdcción:
   - 'Empezando': 'intro/empezando.md'
   - 'DBAX a simple vista': 'intro/a-simple-vista.md'
