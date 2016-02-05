@@ -5,7 +5,7 @@ DBAX es un potente framework de desarrollo de aplicaciones, un conjunto de herra
 
 Su objetivo es permitir el desarrollo de proyectos mucho más rápido de lo que lo haría si estuviera escribiendo el código desde cero, proporcionando un conjunto de librerías (APIs) para las tareas comunes, así como una interfaz simple. DBAX le permite centrarse en su proyecto, reduciendo al mínimo la cantidad de código necesaria para una desarrollar una tarea.
 
-##DBAX es gratuito
+##DBAX es libre
 DBAX está disponible bajo la licencia LGPL para que puedas usarlo como quieras. Para obtener más información, puede leer el [acurdo de licencia](https://github.com/osalvador/dbax/blob/master/LICENSE).
 
 ##DBAX es ligero
@@ -23,7 +23,7 @@ Las URLs generadas por DBAX son limpias y amigables para los motores de búsqued
     example.com/noticias/articulo/345
 
 !!! note
-    Nota: Por defecto, el `dad_name` y el `appid`  estan incluidos en la URL pero puede ser eliminado mediante `mod_rewrite` de Apache.
+    Por defecto, el `dad_name` y el `appid`  estan incluidos en la URL pero puede ser eliminado mediante `mod_rewrite` de Apache.
 
 ##DBAX Pega Fuerte
 DBAX viene con una serie completa de las librerias o paquetes que simplifican las tareas de desarrollo web más comunes, como el login de un usaurio, el envío de correo electrónico, la validación de los datos del formulario, el mantenimiento de sesiones, trabajar con datos XML y mucho más.

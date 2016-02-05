@@ -17,6 +17,7 @@ pages:
   - 'Empezando': 'intro/empezando.md'
   - 'DBAX a simple vista': 'intro/a-simple-vista.md'
   - 'Funciones soportadas': 'intro/funciones-soportadas.md'
+  - 'Arquitectura DBAX': 'intro/arquitectura.md'
   - 'Diagrama de flujo': 'intro/diagrama-flujo.md'
   - 'Model-Vista-Controlador': 'intro/mvc.md'
   - 'Objetivos de arquitectura': 'intro/objetivos-arquitectura.md'
