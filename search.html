@@ -22,17 +22,13 @@
   <link href="./extra.css" rel="stylesheet">
 
   
-  <script>
-    // Current page data
-    var mkdocs_page_name = "None";
-    var mkdocs_page_input_path = "index.md";
-    var mkdocs_page_url = "/";
-  </script>
-  
   <script src="./js/jquery-2.1.1.min.js"></script>
   <script src="./js/modernizr-2.8.3.min.js"></script>
   <script type="text/javascript" src="./js/highlight.pack.js"></script>
-  <script src="./js/theme.js"></script> 
+  <script src="./js/theme.js"></script>
+  <script>var base_url = '.';</script>
+  <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
+
 
   
 </head>
@@ -56,36 +52,8 @@
         <ul class="current">
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href=".">Índice</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#bienvenido-a-dbax">Bienvenido a DBAX</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#introduccion-a-dabx">Introducción a DABX</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#instrucciones-de-instalacion">Instrucciones de instalación</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#tutorial-sencillo">Tutorial Sencillo</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#consola-web-dbax">Consola Web DBAX</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#temas-generales">Temas Generales</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#referencias-del-lenguaje">Referencias del lenguaje</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#referencia-apis-dbax">Referencia APIs DBAX</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href=".">Índice</a>
         
     </li>
 <li>
@@ -598,9 +566,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".">Docs</a> &raquo;</li>
     
-      
     
-    <li>Índice</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -610,216 +576,22 @@
           <div role="main">
             <div class="section">
               
-                <p class="page-header1"><b>DBAX Manual de usuario</b></p>
 
-<p><strong>Contenidos:</strong></p>
-<div class="toc">
-<ul>
-<li><a href="#bienvenido-a-dbax">Bienvenido a DBAX</a></li>
-<li><a href="#introduccion-a-dabx">Introducción a DABX</a></li>
-<li><a href="#instrucciones-de-instalacion">Instrucciones de instalación</a></li>
-<li><a href="#tutorial-sencillo">Tutorial Sencillo</a></li>
-<li><a href="#consola-web-dbax">Consola Web DBAX</a></li>
-<li><a href="#temas-generales">Temas Generales</a></li>
-<li><a href="#referencias-del-lenguaje">Referencias del lenguaje</a></li>
-<li><a href="#referencia-apis-dbax">Referencia APIs DBAX</a></li>
-</ul>
-</div>
-<h2 id="bienvenido-a-dbax">Bienvenido a DBAX<a class="headerlink" href="#bienvenido-a-dbax" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="welcome/">Bienvenido</a></li>
-</ul>
-<h2 id="introduccion-a-dabx">Introducción a DABX<a class="headerlink" href="#introduccion-a-dabx" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="intro/empezando/">Empezando</a></li>
-<li>DBAX a simple vista</li>
-<li>Funciones soportadas</li>
-<li>Diagrama de flujo de las aplicaciones DBAX</li>
-<li>Model-Vista-Controlador</li>
-<li>Objetivos de arquitectura</li>
-</ul>
-<h2 id="instrucciones-de-instalacion">Instrucciones de instalación<a class="headerlink" href="#instrucciones-de-instalacion" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Descargar DBAX</li>
-<li>Instrucciones de instalación<br />
-<!--- Atualizar desde una versión anterior--></li>
-<li>Solucionar problemas</li>
-</ul>
-<h2 id="tutorial-sencillo">Tutorial Sencillo<a class="headerlink" href="#tutorial-sencillo" title="Permanent link">&para;</a></h2>
-<ul>
-<li>¿Qué necesito?</li>
-<li>Su primera página con DBAX</li>
-<li>Algo útil</li>
-<li>Tratar con formularios</li>
-<li>Aplicación báscica de Noticias<ul>
-<li>Páginas estáticas</li>
-<li>Sección noticias</li>
-<li>Crer una noticia</li>
-<li>Conslusión</li>
-</ul>
-</li>
-</ul>
-<h2 id="consola-web-dbax">Consola Web DBAX<a class="headerlink" href="#consola-web-dbax" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Aplicaciones<ul>
-<li>Crear una nueva aplicación</li>
-<li>Ajustes<ul>
-<li>Ajustes generales (Settings)</li>
-<li>Propiedades (Properties)</li>
-<li>Enrutado (Routing)</li>
-<li>Vistas (Views)</li>
-<li>Función de Validación de petición (Request Validation Function)</li>
-<li>Seguridad (Security)<ul>
-<li>Roles (Roles)</li>
-<li>Permisos (Permissions)</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Seguridad<ul>
-<li>Usuarios (Users)</li>
-<li>Esquemas de autenticación (Auth Schemes)</li>
-</ul>
-</li>
-<li>Monitorización<ul>
-<li>Logs</li>
-</ul>
-</li>
-</ul>
-<h2 id="temas-generales">Temas Generales<a class="headerlink" href="#temas-generales" title="Permanent link">&para;</a></h2>
-<ul>
-<li>DBAX URLs</li>
-<li>Controladores</li>
-<li>Vistas</li>
-<li>Modelos</li>
-<li>Enrutado URI</li>
-<li>Gestíón de excepciones<br />
-<!-- - Caching --></li>
-<li>Seguridad</li>
-</ul>
-<h2 id="referencias-del-lenguaje">Referencias del lenguaje<a class="headerlink" href="#referencias-del-lenguaje" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Sintaxis básica<ul>
-<li>Etiquetas de DBAX</li>
-<li>Salir de HTML</li>
-<li>Separación de instrucciones</li>
-<li>Comentarios</li>
-</ul>
-</li>
-<li>Variables<ul>
-<li>Conceptos básicos</li>
-<li>Variables Predefinidas</li>
-<li>Ámbito de las variables</li>
-<li>Variables variables</li>
-<li>Variables desde fuentes externas</li>
-</ul>
-</li>
-<li>Variables predefinidas<ul>
-<li>dbax_core <ul>
-<li>g$server — Información del entorno del servidor y de ejecución</li>
-<li>g$get — Variables HTTP GET</li>
-<li>g$post — Variables POST de HTTP</li>
-<li>g$view </li>
-<li>g$http_header</li>
-<li>g$status_line</li>
-<li>g$controller</li>
-<li>g$view_name</li>
-<li>g$parameter </li>
-<li>g$path </li>
-<li>g$appid </li>
-<li>g$h_view </li>
-<li>g$content_type</li>
-<li>g$username        </li>
-<li>g_stop_process</li>
-</ul>
-</li>
-<li>dbax_cookie<ul>
-<li>g$req_cookies </li>
-<li>g$res_cookies</li>
-</ul>
-</li>
-<li>dbax_exception<ul>
-<li>g$error </li>
-</ul>
-</li>
-<li>dbax_session<ul>
-<li>g$session  — Variables de sesión</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="referencia-apis-dbax">Referencia APIs DBAX<a class="headerlink" href="#referencia-apis-dbax" title="Permanent link">&para;</a></h2>
-<ul>
-<li>DBAX_COOKIE</li>
-<li>DBAX_CORE</li>
-<li>DBAX_DATATABLE</li>
-<li>DBAX_DOCUMENT</li>
-<li>DBAX_EXCEPTION</li>
-<li>DBAX_FILE_PARSER</li>
-<li>DBAX_LDAP</li>
-<li>DBAX_LOG</li>
-<li>DBAX_SECURITY</li>
-<li>DBAX_SSESSION</li>
-<li>DBAX_UTILS</li>
-<li>JSON_UTIL</li>
-<li>XLSX_BUILDER</li>
-</ul>
-<p>&ldquo;attention&rdquo;, &ldquo;caution&rdquo;, &ldquo;danger&rdquo;, &ldquo;error&rdquo;, &ldquo;hint&rdquo;, &ldquo;important&rdquo;, &ldquo;note&rdquo;, &ldquo;tip&rdquo;, &ldquo;warning&rdquo;, &ldquo;admonition&rdquo;</p>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>This is attention</p>
-</div>
-<div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>This is caution</p>
-</div>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<p>This is danger</p>
-</div>
-<div class="admonition error">
-<p class="admonition-title">Error</p>
-<p>This is error</p>
-</div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>This is hint</p>
-</div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>This is important</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is note</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>This is tip</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This is warning</p>
-</div>
-<div class="admonition admonition">
-<p class="admonition-title">Admonition</p>
-<p>This is admonition</p>
-</div>
-<p>Some text with an <abbr title="Abbreviation abreviatura con titulillo">ABBR</abbr> and a <abbr title="Reference refenrecia">REF</abbr>.</p>
-              
+  <h1 id="search">Search Results</h1>
+
+  <form id="content_search" action="search.html">
+    <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+    <input name="q" id="mkdocs-search-query" type="text" class="search_input search-query ui-autocomplete-input" placeholder="Search the Docs" autocomplete="off" autofocus>
+  </form>
+
+  <div id="mkdocs-search-results">
+    Sorry, page not found.
+  </div>
+
+
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="welcome/" class="btn btn-neutral float-right" title="Bienvenido a DBAX">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-    </div>
   
 
   <hr/>
@@ -844,15 +616,8 @@
       
       
       
-        <span style="margin-left: 15px"><a href="welcome/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
     </span>
 </div>
 
 </body>
 </html>
-
-<!--
-MkDocs version : 0.15.0
-Build Date UTC : 2016-02-05 08:51:16.650643
--->

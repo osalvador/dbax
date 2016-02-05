@@ -1,0 +1,344 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "DBAX Manual de usuario\n\n\n\nContenidos:\n\n\n\n\n\n\nBienvenido a DBAX\n\n\nIntroducci\u00f3n a DABX\n\n\nInstrucciones de instalaci\u00f3n\n\n\nTutorial Sencillo\n\n\nConsola Web DBAX\n\n\nTemas Generales\n\n\nReferencias del lenguaje\n\n\nReferencia APIs DBAX\n\n\n\n\n\n\nBienvenido a DBAX\n\n\n\n\nBienvenido\n\n\n\n\nIntroducci\u00f3n a DABX\n\n\n\n\nEmpezando\n\n\nDBAX a simple vista\n\n\nFunciones soportadas\n\n\nDiagrama de flujo de las aplicaciones DBAX\n\n\nModel-Vista-Controlador\n\n\nObjetivos de arquitectura\n\n\n\n\nInstrucciones de instalaci\u00f3n\n\n\n\n\nDescargar DBAX\n\n\nInstrucciones de instalaci\u00f3n\n\n\n\n\nSolucionar problemas\n\n\n\n\nTutorial Sencillo\n\n\n\n\n\u00bfQu\u00e9 necesito?\n\n\nSu primera p\u00e1gina con DBAX\n\n\nAlgo \u00fatil\n\n\nTratar con formularios\n\n\nAplicaci\u00f3n b\u00e1scica de Noticias\n\n\nP\u00e1ginas est\u00e1ticas\n\n\nSecci\u00f3n noticias\n\n\nCrer una noticia\n\n\nConslusi\u00f3n\n\n\n\n\n\n\n\n\nConsola Web DBAX\n\n\n\n\nAplicaciones\n\n\nCrear una nueva aplicaci\u00f3n\n\n\nAjustes\n\n\nAjustes generales (Settings)\n\n\nPropiedades (Properties)\n\n\nEnrutado (Routing)\n\n\nVistas (Views)\n\n\nFunci\u00f3n de Validaci\u00f3n de petici\u00f3n (Request Validation Function)\n\n\nSeguridad (Security)\n\n\nRoles (Roles)\n\n\nPermisos (Permissions)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSeguridad\n\n\nUsuarios (Users)\n\n\nEsquemas de autenticaci\u00f3n (Auth Schemes)\n\n\n\n\n\n\nMonitorizaci\u00f3n\n\n\nLogs\n\n\n\n\n\n\n\n\nTemas Generales\n\n\n\n\nDBAX URLs\n\n\nControladores\n\n\nVistas\n\n\nModelos\n\n\nEnrutado URI\n\n\nGest\u00ed\u00f3n de excepciones\n\n\n\n\nSeguridad\n\n\n\n\nReferencias del lenguaje\n\n\n\n\nSintaxis b\u00e1sica\n\n\nEtiquetas de DBAX\n\n\nSalir de HTML\n\n\nSeparaci\u00f3n de instrucciones\n\n\nComentarios\n\n\n\n\n\n\nVariables\n\n\nConceptos b\u00e1sicos\n\n\nVariables Predefinidas\n\n\n\u00c1mbito de las variables\n\n\nVariables variables\n\n\nVariables desde fuentes externas\n\n\n\n\n\n\nVariables predefinidas\n\n\ndbax_core \n\n\ng$server \u2014 Informaci\u00f3n del entorno del servidor y de ejecuci\u00f3n\n\n\ng$get \u2014 Variables HTTP GET\n\n\ng$post \u2014 Variables POST de HTTP\n\n\ng$view \n\n\ng$http_header\n\n\ng$status_line\n\n\ng$controller\n\n\ng$view_name\n\n\ng$parameter \n\n\ng$path \n\n\ng$appid \n\n\ng$h_view \n\n\ng$content_type\n\n\ng$username        \n\n\ng_stop_process\n\n\n\n\n\n\ndbax_cookie\n\n\ng$req_cookies \n\n\ng$res_cookies\n\n\n\n\n\n\ndbax_exception\n\n\ng$error \n\n\n\n\n\n\ndbax_session\n\n\ng$session  \u2014 Variables de sesi\u00f3n\n\n\n\n\n\n\n\n\n\n\n\n\nReferencia APIs DBAX\n\n\n\n\nDBAX_COOKIE\n\n\nDBAX_CORE\n\n\nDBAX_DATATABLE\n\n\nDBAX_DOCUMENT\n\n\nDBAX_EXCEPTION\n\n\nDBAX_FILE_PARSER\n\n\nDBAX_LDAP\n\n\nDBAX_LOG\n\n\nDBAX_SECURITY\n\n\nDBAX_SSESSION\n\n\nDBAX_UTILS\n\n\nJSON_UTIL\n\n\nXLSX_BUILDER\n\n\n\n\nattention\n, \ncaution\n, \ndanger\n, \nerror\n, \nhint\n, \nimportant\n, \nnote\n, \ntip\n, \nwarning\n, \nadmonition\n\n\n\n\nAttention\n\n\nThis is attention\n\n\n\n\n\n\nCaution\n\n\nThis is caution\n\n\n\n\n\n\nDanger\n\n\nThis is danger\n\n\n\n\n\n\nError\n\n\nThis is error\n\n\n\n\n\n\nHint\n\n\nThis is hint\n\n\n\n\n\n\nImportant\n\n\nThis is important\n\n\n\n\n\n\nNote\n\n\nThis is note\n\n\n\n\n\n\nTip\n\n\nThis is tip\n\n\n\n\n\n\nWarning\n\n\nThis is warning\n\n\n\n\n\n\nAdmonition\n\n\nThis is admonition\n\n\n\n\nSome text with an \nABBR\n and a \nREF\n.",
+            "title": "\u00cdndice"
+        },
+        {
+            "location": "/#bienvenido-a-dbax",
+            "text": "Bienvenido",
+            "title": "Bienvenido a DBAX"
+        },
+        {
+            "location": "/#introduccion-a-dabx",
+            "text": "Empezando  DBAX a simple vista  Funciones soportadas  Diagrama de flujo de las aplicaciones DBAX  Model-Vista-Controlador  Objetivos de arquitectura",
+            "title": "Introducci\u00f3n a DABX"
+        },
+        {
+            "location": "/#instrucciones-de-instalacion",
+            "text": "Descargar DBAX  Instrucciones de instalaci\u00f3n   Solucionar problemas",
+            "title": "Instrucciones de instalaci\u00f3n"
+        },
+        {
+            "location": "/#tutorial-sencillo",
+            "text": "\u00bfQu\u00e9 necesito?  Su primera p\u00e1gina con DBAX  Algo \u00fatil  Tratar con formularios  Aplicaci\u00f3n b\u00e1scica de Noticias  P\u00e1ginas est\u00e1ticas  Secci\u00f3n noticias  Crer una noticia  Conslusi\u00f3n",
+            "title": "Tutorial Sencillo"
+        },
+        {
+            "location": "/#consola-web-dbax",
+            "text": "Aplicaciones  Crear una nueva aplicaci\u00f3n  Ajustes  Ajustes generales (Settings)  Propiedades (Properties)  Enrutado (Routing)  Vistas (Views)  Funci\u00f3n de Validaci\u00f3n de petici\u00f3n (Request Validation Function)  Seguridad (Security)  Roles (Roles)  Permisos (Permissions)        Seguridad  Usuarios (Users)  Esquemas de autenticaci\u00f3n (Auth Schemes)    Monitorizaci\u00f3n  Logs",
+            "title": "Consola Web DBAX"
+        },
+        {
+            "location": "/#temas-generales",
+            "text": "DBAX URLs  Controladores  Vistas  Modelos  Enrutado URI  Gest\u00ed\u00f3n de excepciones   Seguridad",
+            "title": "Temas Generales"
+        },
+        {
+            "location": "/#referencias-del-lenguaje",
+            "text": "Sintaxis b\u00e1sica  Etiquetas de DBAX  Salir de HTML  Separaci\u00f3n de instrucciones  Comentarios    Variables  Conceptos b\u00e1sicos  Variables Predefinidas  \u00c1mbito de las variables  Variables variables  Variables desde fuentes externas    Variables predefinidas  dbax_core   g$server \u2014 Informaci\u00f3n del entorno del servidor y de ejecuci\u00f3n  g$get \u2014 Variables HTTP GET  g$post \u2014 Variables POST de HTTP  g$view   g$http_header  g$status_line  g$controller  g$view_name  g$parameter   g$path   g$appid   g$h_view   g$content_type  g$username          g_stop_process    dbax_cookie  g$req_cookies   g$res_cookies    dbax_exception  g$error     dbax_session  g$session  \u2014 Variables de sesi\u00f3n",
+            "title": "Referencias del lenguaje"
+        },
+        {
+            "location": "/#referencia-apis-dbax",
+            "text": "DBAX_COOKIE  DBAX_CORE  DBAX_DATATABLE  DBAX_DOCUMENT  DBAX_EXCEPTION  DBAX_FILE_PARSER  DBAX_LDAP  DBAX_LOG  DBAX_SECURITY  DBAX_SSESSION  DBAX_UTILS  JSON_UTIL  XLSX_BUILDER   attention ,  caution ,  danger ,  error ,  hint ,  important ,  note ,  tip ,  warning ,  admonition   Attention  This is attention    Caution  This is caution    Danger  This is danger    Error  This is error    Hint  This is hint    Important  This is important    Note  This is note    Tip  This is tip    Warning  This is warning    Admonition  This is admonition   Some text with an  ABBR  and a  REF .",
+            "title": "Referencia APIs DBAX"
+        },
+        {
+            "location": "/welcome/",
+            "text": "Bienvenido a DBAX\n\n\n\nBienvenido\n\n\nDBAX es un potente framework de desarrollo de aplicaciones, un conjunto de herramientas (toolkit) para construir aplicaciones web usando SQL y PL/SQL en las bases de datos Oracle.\n\n\nSu objetivo es permitir el desarrollo de proyectos mucho m\u00e1s r\u00e1pido de lo que lo har\u00eda si estuviera escribiendo el c\u00f3digo desde cero, proporcionando un conjunto de librer\u00edas (APIs) para las tareas comunes, as\u00ed como una interfaz simple. DBAX le permite centrarse en su proyecto, reduciendo al m\u00ednimo la cantidad de c\u00f3digo necesaria para una desarrollar una tarea. \n\n\n\u00bfPara qui\u00e9n es DBAX?\n\n\nDBAX es adecuado para ti si:\n\n\n\n\nSi el n\u00facleo de su aplicaci\u00f3n reside en una base de datos Oracle.\n\n\nSi quieres tener control total sobre el c\u00f3digo de tu aplicaci\u00f3n (front-end y back-end).\n\n\nSi quieres un framework no restrictivo, abierto y flexible. \n\n\nSi necesitas crear aplicaciones web est\u00e1ndar con todas las funcionalidades de las aplicaciones web modernas (Adaptables, Ajax, AngularJS, ReactJS\n) \n\n\nEs necesario un rendimiento excepcional.\n\n\nSi quieres un framework que no obligue con a una codificaci\u00f3n restrictiva.\n\n\nSi quieres un framework preparado para un entorno empresarial.\n\n\nSi quieres un framework open source.\n\n\nSi quieres un framework seguro.\n\n\nSi quieres abstenerte de complejidad, favoreciendo soluciones simples.\n\n\nEs necesario una documentaci\u00f3n clara, exhaustiva.\n\n\nSi quieres un framework en el que te \nensucies las manos en el c\u00f3digo",
+            "title": "Bienvenido a DBAX"
+        },
+        {
+            "location": "/welcome/#bienvenido",
+            "text": "DBAX es un potente framework de desarrollo de aplicaciones, un conjunto de herramientas (toolkit) para construir aplicaciones web usando SQL y PL/SQL en las bases de datos Oracle.  Su objetivo es permitir el desarrollo de proyectos mucho m\u00e1s r\u00e1pido de lo que lo har\u00eda si estuviera escribiendo el c\u00f3digo desde cero, proporcionando un conjunto de librer\u00edas (APIs) para las tareas comunes, as\u00ed como una interfaz simple. DBAX le permite centrarse en su proyecto, reduciendo al m\u00ednimo la cantidad de c\u00f3digo necesaria para una desarrollar una tarea.",
+            "title": "Bienvenido"
+        },
+        {
+            "location": "/welcome/#para-quien-es-dbax",
+            "text": "DBAX es adecuado para ti si:   Si el n\u00facleo de su aplicaci\u00f3n reside en una base de datos Oracle.  Si quieres tener control total sobre el c\u00f3digo de tu aplicaci\u00f3n (front-end y back-end).  Si quieres un framework no restrictivo, abierto y flexible.   Si necesitas crear aplicaciones web est\u00e1ndar con todas las funcionalidades de las aplicaciones web modernas (Adaptables, Ajax, AngularJS, ReactJS )   Es necesario un rendimiento excepcional.  Si quieres un framework que no obligue con a una codificaci\u00f3n restrictiva.  Si quieres un framework preparado para un entorno empresarial.  Si quieres un framework open source.  Si quieres un framework seguro.  Si quieres abstenerte de complejidad, favoreciendo soluciones simples.  Es necesario una documentaci\u00f3n clara, exhaustiva.  Si quieres un framework en el que te  ensucies las manos en el c\u00f3digo",
+            "title": "\u00bfPara qui\u00e9n es DBAX?"
+        },
+        {
+            "location": "/intro/empezando/",
+            "text": "Empezando con DBAX\n\n\n\nCualquier aplicaci\u00f3n de software requiere un cierto esfuerzo para aprender. Hemos hecho todo lo posible para minimizar la curva de aprendizaje y que este proceso sea lo m\u00e1s agradable posible.\n\n\nEl primer paso es instalar DBAX, a continuaci\u00f3n, lea todos los temas en la secci\u00f3n \nIntroducci\u00f3n\n. \n\n\nA continuaci\u00f3n, lea la \nGu\u00eda de uso de la consola web de DBAX\n para comenzar a crear sus primeras aplicaciones. \n\n\nPara continuar revise los \nTemas Generales\n que le ayudar\u00e1n a entender los conceptos de MVC que introduce DBAX.\n\n\nEste manual presupone que usted conoce del lenguaje SQL y PL/SQL de Oracle. Adem\u00e1s DBAX junto a sus APIs a\u00f1ade nuevas \nReferencais del Lenguaje\n as\u00ed como un sencillo lenguaje de vistas. \n\n\nUna vez que entienda los conceptos b\u00e1sicos que estar\u00e1 listo para explorar las p\u00e1ginas de \nReferencia de las APIs\n para aprender a usarlas.",
+            "title": "Empezando"
+        },
+        {
+            "location": "/intro/a-simple-vista/",
+            "text": "Empezando el tutorial\n\n\nSolo quiero otra pagina de pruebas",
+            "title": "DBAX a simple vista"
+        },
+        {
+            "location": "/intro/a-simple-vista/#empezando-el-tutorial",
+            "text": "Solo quiero otra pagina de pruebas",
+            "title": "Empezando el tutorial"
+        },
+        {
+            "location": "/intro/funciones-soportadas/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Funciones soportadas"
+        },
+        {
+            "location": "/intro/diagrama-flujo/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Diagrama de flujo"
+        },
+        {
+            "location": "/intro/mvc/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Model-Vista-Controlador"
+        },
+        {
+            "location": "/intro/objetivos-arquitectura/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Objetivos de arquitectura"
+        },
+        {
+            "location": "/install/descarga/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Descargar DBAX"
+        },
+        {
+            "location": "/install/install/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Instrucciones de instalaci\u00f3n"
+        },
+        {
+            "location": "/install/solucionar-problemas/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Solucionar problemas"
+        },
+        {
+            "location": "/tutorial/que-necesito/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "\u00bfQue necesito?"
+        },
+        {
+            "location": "/tutorial/primera-pagina/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Su primera p\u00e1gina"
+        },
+        {
+            "location": "/tutorial/util/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Algo util"
+        },
+        {
+            "location": "/tutorial/formularios/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Formularios"
+        },
+        {
+            "location": "/tutorial/app/paginas-estaticas/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "P\u00e1ginas est\u00e1ticas"
+        },
+        {
+            "location": "/tutorial/app/noticias/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Secci\u00f3n noticias"
+        },
+        {
+            "location": "/tutorial/app/crear-noticia/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Crear noticia"
+        },
+        {
+            "location": "/tutorial/app/conclusion/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Conclusi\u00f3n"
+        },
+        {
+            "location": "/console/apps/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Aplicaciones"
+        },
+        {
+            "location": "/console/nueva-app/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Crear aplicaci\u00f3n"
+        },
+        {
+            "location": "/console/ajustes/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Ajustes"
+        },
+        {
+            "location": "/console/seguridad/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Seguridad"
+        },
+        {
+            "location": "/console/monit/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Monitorizaci\u00f3n"
+        },
+        {
+            "location": "/general/urls/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX URLs"
+        },
+        {
+            "location": "/general/controladores/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Controladores"
+        },
+        {
+            "location": "/general/vistas/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Vistas"
+        },
+        {
+            "location": "/general/modelos/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Modelos"
+        },
+        {
+            "location": "/general/enrutado/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Enrutado URI"
+        },
+        {
+            "location": "/general/excepciones/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Gesti\u00f3n de Excepciones"
+        },
+        {
+            "location": "/general/seguridad/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Seguridad"
+        },
+        {
+            "location": "/reference/syntax/etiquetas-dbax/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Etiquetas de DBAX"
+        },
+        {
+            "location": "/reference/syntax/salir-html/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Salir de HTML"
+        },
+        {
+            "location": "/reference/syntax/separar-instrucciones/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Separaci\u00f3n de instrucciones"
+        },
+        {
+            "location": "/reference/syntax/comentarios/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Comentarios"
+        },
+        {
+            "location": "/reference/variables/basico/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Conceptos b\u00e1sicos"
+        },
+        {
+            "location": "/reference/variables/predefinidas/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Variables Predefinidas"
+        },
+        {
+            "location": "/reference/variables/ambito/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "\u00c1mbito de las variables"
+        },
+        {
+            "location": "/reference/variables/variables/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Variables variables"
+        },
+        {
+            "location": "/reference/variables/externas/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "Variables desde fuentes externas"
+        },
+        {
+            "location": "/reference/reserved/dbax_core/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "dbax_core"
+        },
+        {
+            "location": "/reference/reserved/dbax_cookie/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "dbax_cookie"
+        },
+        {
+            "location": "/reference/reserved/dbax_exception/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "dbax_exception"
+        },
+        {
+            "location": "/reference/reserved/dbax_session/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "dbax_session"
+        },
+        {
+            "location": "/api/dbax_cookie/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_COOKIE"
+        },
+        {
+            "location": "/api/dbax_core/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_CORE"
+        },
+        {
+            "location": "/api/dbax_datatable/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_DATATABLE"
+        },
+        {
+            "location": "/api/dbax_document/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_DOCUMENT"
+        },
+        {
+            "location": "/api/dbax_exception/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_EXCEPTION"
+        },
+        {
+            "location": "/api/dbax_file_parser/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_FILE_PARSER"
+        },
+        {
+            "location": "/api/dbax_ldap/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_LDAP"
+        },
+        {
+            "location": "/api/dbax_log/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_LOG"
+        },
+        {
+            "location": "/api/dbax_security/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_SECURITY"
+        },
+        {
+            "location": "/api/dbax_session/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_SESSION"
+        },
+        {
+            "location": "/api/dbax_utils/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "DBAX_UTILS"
+        },
+        {
+            "location": "/api/json_util/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "JSON_UTIL"
+        },
+        {
+            "location": "/api/xlsx_builder/",
+            "text": "Titulo principal\n\n\n\nVac\u00eda",
+            "title": "XLSX_BUILDER"
+        }
+    ]
+}
