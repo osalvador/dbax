@@ -2,7 +2,7 @@
 
 EL motor de DBAX reside en una Base de Datos Oracle. Por ello, los navegadores web mediante las peticiones HTTP deben llegar de alguna forma al motor de DBAX. 
 
-Existen varias arquitecturas que se pueden emplear para usar DBAX que deberemos elegir en función de nuestras necesidades. Por ejemplo, dependiendo el entorno (desarrollo o producción) en el que estemos, si estamos programando en nuestro ordenador en local o por el contrario lo quremos hacer sobre un entorno en remoto de desarrollo, o incluso si ya tenemos middleware antiguo que queramos reutilizar y no tener así que configurar nada nuevo. 
+Existen varias arquitecturas que se pueden emplear para usar DBAX que deberemos elegir en función de nuestras necesidades. Dependiendo el entorno en el que estemos trabajando, si se trata de desarrolloo producción, o si ya tenemos middleware antiguo que queramos reutilizar y no tener así que configurar nada nuevo. 
 
 Ya que DBAX y Oracle APEX comparten la misma tecnologia las arquitecturas de ambos son similares. 
 
@@ -17,7 +17,7 @@ Oracle comenta lo siguiente sobre este tipo de instalación:
 ![Arquitectura DBAX con ORDS](ORDS.png)
 
 
-##Entorno Desarrollo local
+##Entorno Desarrollo
 Para un entorno de desarrollo, preferiblemente local, es muy util el uso de DBMS_EPG (Embedded PL/SQL Gateway).
 
 Oracle comenta lo siguiente sobre este tipo de instalación:
@@ -26,7 +26,7 @@ Oracle comenta lo siguiente sobre este tipo de instalación:
 
 ![Arquitectura DBAX con DBMS_EPG](DBMS_EPG.png)
 
-##Reaprovechando su middleware antiguo
+##Aprovechando su middleware antiguo
 Si en su empresa ya dispone de un Servidor web Oacle HTTP Server (OHS) o los antiguos Oracle IAS que disponene de `mod_plsql` puede continuar usandolos con total compatibilidad. 
 
 Oracle comenta lo siguiente sobre este tipo de instalación:
