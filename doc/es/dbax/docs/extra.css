@@ -1,3 +1,27 @@
 .page-header1 {
   font-size: 2em;
 }
+
+blockquote {
+    padding: 0 15px;
+    color: #777;
+    border-left: 4px solid #ddd;
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 40px;
+    -webkit-margin-end: 40px;
+}
+
+code {
+font-size: 90%;
+}
+
+
+.wy-nav-content {
+    padding: 1.618em 3.236em;
+    height: 100%;
+    /* max-width: 800px; */
+    max-width: 100%;
+    margin: auto;
+}
