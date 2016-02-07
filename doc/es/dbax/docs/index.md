@@ -11,10 +11,11 @@
 
 ## Introducción a DABX
 - [Empezando](intro/empezando.md)
-- DBAX a simple vista
+- [DBAX a simple vista](intro/a-simple-vista.md)
 - Funciones soportadas
 - Diagrama de flujo de las aplicaciones DBAX
 - Model-Vista-Controlador
+- Buenas prácticas MVC
 - Objetivos de arquitectura
 
 ## Instrucciones de instalación

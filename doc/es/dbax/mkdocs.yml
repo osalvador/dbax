@@ -20,6 +20,7 @@ pages:
   - 'Arquitectura DBAX': 'intro/arquitectura.md'
   - 'Diagrama de flujo': 'intro/diagrama-flujo.md'
   - 'Model-Vista-Controlador': 'intro/mvc.md'
+  - 'Buenas prácticas MVC': 'intro/buenas-practivas-mvc.md'
   - 'Objetivos de arquitectura': 'intro/objetivos-arquitectura.md'
 - Instalación:
   - 'Descargar DBAX': 'install/descarga.md'
