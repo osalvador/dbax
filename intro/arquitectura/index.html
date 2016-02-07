@@ -8,7 +8,7 @@
   
   
   
-  <title>Crear aplicación - DBAX</title>
+  <title>Arquitectura DBAX - DBAX</title>
   
 
   <link rel="shortcut icon" href="../../img/favicon.ico">
@@ -24,9 +24,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Crear aplicación";
-    var mkdocs_page_input_path = "console\nueva-app.md";
-    var mkdocs_page_url = "/console/nueva-app/";
+    var mkdocs_page_name = "Arquitectura DBAX";
+    var mkdocs_page_input_path = "intro\arquitectura.md";
+    var mkdocs_page_url = "/intro/arquitectura/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -80,49 +80,49 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/empezando/">Empezando</a>
+        <a class="" href="../empezando/">Empezando</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/a-simple-vista/">DBAX a simple vista</a>
+        <a class="" href="../a-simple-vista/">DBAX a simple vista</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/funciones-soportadas/">Funciones soportadas</a>
+        <a class="" href="../funciones-soportadas/">Funciones soportadas</a>
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Arquitectura DBAX</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/arquitectura/">Arquitectura DBAX</a>
+        <a class="" href="../diagrama-flujo/">Diagrama de flujo</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/diagrama-flujo/">Diagrama de flujo</a>
+        <a class="" href="../mvc/">Model-Vista-Controlador</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/mvc/">Model-Vista-Controlador</a>
+        <a class="" href="../buenas-practivas-mvc/">Buenas prácticas MVC</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/buenas-practivas-mvc/">Buenas prácticas MVC</a>
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../intro/objetivos-arquitectura/">Objetivos de arquitectura</a>
+        <a class="" href="../objetivos-arquitectura/">Objetivos de arquitectura</a>
     </li>
 
         
@@ -231,19 +231,19 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../apps/">Aplicaciones</a>
-    </li>
-
-        
-            
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Crear aplicación</a>
+        <a class="" href="../../console/apps/">Aplicaciones</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../ajustes/">Ajustes</a>
+        <a class="" href="../../console/nueva-app/">Crear aplicación</a>
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../console/ajustes/">Ajustes</a>
     </li>
 
         
@@ -252,13 +252,13 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../seguridad/">Seguridad</a>
+        <a class="" href="../../console/seguridad/">Seguridad</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../monit/">Monitorización</a>
+        <a class="" href="../../console/monit/">Monitorización</a>
     </li>
 
         
@@ -533,15 +533,11 @@
     
       
         
-          <li>Consola Web &raquo;</li>
-        
-      
-        
-          <li>Aplicaciones &raquo;</li>
+          <li>Introdcción &raquo;</li>
         
       
     
-    <li>Crear aplicación</li>
+    <li>Arquitectura DBAX</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -551,9 +547,79 @@
           <div role="main">
             <div class="section">
               
-                <p class="page-header1"><b>Titulo principal</b></p>
+                <p class="page-header1"><b>Arquitectura DABX</b></p>
 
-<p>Vacía</p>
+<p>EL motor de DBAX reside en una Base de Datos Oracle. Por ello, los navegadores web mediante las peticiones HTTP deben llegar de alguna forma al motor de DBAX. </p>
+<p>Existen varias arquitecturas que se pueden emplear para usar DBAX que deberemos elegir en función de nuestras necesidades. Dependiendo el entorno en el que estemos trabajando, si se trata de desarrolloo producción, o si ya tenemos middleware antiguo que queramos reutilizar y no tener así que configurar nada nuevo. </p>
+<p>Ya que DBAX y Oracle APEX comparten la misma tecnologia las arquitecturas de ambos son similares. </p>
+<h2 id="entorno-produccion">Entorno Producción<a class="headerlink" href="#entorno-produccion" title="Permanent link">&para;</a></h2>
+<p>El siguiente gráfico muestra la arquitectura de DBAX en un entorno de producción, haciendo uso de Oracle Rest Data Services (ORDS). </p>
+<p>Oracle comenta lo siguiente sobre este tipo de instalación:</p>
+<blockquote>
+<p>The Oracle REST Data Services (ORDS) is Java based gateway, can be installed into any J2EE compliant Web Server, and is the preferred option for use with Oracle Application Express. It is a <strong>free</strong> tool that is fully supported against Oracle WebLogic Server, Oracle Glassfish Server, and <strong>Apache Tomcat</strong>. Oracle REST Data Services is part of the reference architecture used to operate the Oracle Database Cloud Service.</p>
+</blockquote>
+<p><img alt="Arquitectura DBAX con ORDS" src="../ORDS.png" /></p>
+<h2 id="entorno-desarrollo">Entorno Desarrollo<a class="headerlink" href="#entorno-desarrollo" title="Permanent link">&para;</a></h2>
+<p>Para un entorno de desarrollo, preferiblemente local, es muy util el uso de DBMS_EPG (Embedded PL/SQL Gateway).</p>
+<p>Oracle comenta lo siguiente sobre este tipo de instalación:</p>
+<blockquote>
+<p>The Embedded PL/SQL Gateway (EPG) runs in the Oracle XML DB Protocal Server within the Oracle database and includes the core features of mod_plsql. Licensing for the Embedded PL/SQL Gateway is <strong>included</strong> with the Oracle Database license</p>
+</blockquote>
+<p><img alt="Arquitectura DBAX con DBMS_EPG" src="../DBMS_EPG.png" /></p>
+<h2 id="aprovechando-su-middleware-antiguo">Aprovechando su middleware antiguo<a class="headerlink" href="#aprovechando-su-middleware-antiguo" title="Permanent link">&para;</a></h2>
+<p>Si en su empresa ya dispone de un Servidor web Oacle HTTP Server (OHS) o los antiguos Oracle IAS que disponene de <code>mod_plsql</code> puede continuar usandolos con total compatibilidad. </p>
+<p>Oracle comenta lo siguiente sobre este tipo de instalación:</p>
+<blockquote>
+<p>The Oracle HTTP Server (Apache) with <code>mod_plsql</code> plugin can be placed on the same physical machine as the database, or on a separate physical machine.<br />
+Note: If installed on the same physical machine as the database then the Oracle HTTP Server is included as part of the limited-use license included with the Oracle Database license - otherwise the Oracle HTTP Server will need to be licensed.<br />
+Warning: mod_plsql is deprecated as of Oracle HTTP Server 12c (12.1.3). Oracle recommends using Oracle REST Data Services instead..</p>
+</blockquote>
+<p><img alt="Arquitectura DBAX con OHS y mod_plsql" src="../OHS_mod_plsq.png" /></p>
+<h2 id="tabla-comparativa-de-gateways-para-dabx">Tabla comparativa de Gateways para DABX<a class="headerlink" href="#tabla-comparativa-de-gateways-para-dabx" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Capabilities</th>
+<th>Oracle REST Data Services</th>
+<th>Embedded PL/SQL Gateway</th>
+<th>Oracle  HTTP Server</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Configuration options</td>
+<td>GUI Interface (Release &gt;= 2.0); Administration pages</td>
+<td>Database initialization parameters</td>
+<td>Database Access Descriptor (DAD)</td>
+</tr>
+<tr>
+<td>Connection Pool settings</td>
+<td>JDBC connection parameters</td>
+<td>SHARED_SERVERS; MAX_SHARED_SERVERS</td>
+<td>Min/MaxSpareServers; MaxClients</td>
+</tr>
+<tr>
+<td>Emit RESTful Web Services</td>
+<td>Yes (Release &gt;= 2.0)</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Support multi-databases</td>
+<td>Yes, including RAC</td>
+<td>No</td>
+<td>Yes, including RAC</td>
+</tr>
+<tr>
+<td>Environment recommendations</td>
+<td>All</td>
+<td>Development only</td>
+<td>All</td>
+</tr>
+</tbody>
+</table>
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<p>Puedes conocer más acerca de estos servidores en el <a href="http://www.oracle.com/technetwork/developer-tools/apex/application-express/apex-deploy-installation-1878444.html">siguiente enlace</a>  </p>
               
             </div>
           </div>
@@ -561,10 +627,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ajustes/" class="btn btn-neutral float-right" title="Ajustes">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../diagrama-flujo/" class="btn btn-neutral float-right" title="Diagrama de flujo">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../apps/" class="btn btn-neutral" title="Aplicaciones"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../funciones-soportadas/" class="btn btn-neutral" title="Funciones soportadas"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -590,10 +656,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../apps/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../funciones-soportadas/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../ajustes/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../diagrama-flujo/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

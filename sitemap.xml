@@ -4,7 +4,7 @@
     
     <url>
      <loc>http://dbax.io/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,7 +12,15 @@
     
     <url>
      <loc>http://dbax.io/welcome/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>http://dbax.io/why/</loc>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -21,37 +29,49 @@
         
     <url>
      <loc>http://dbax.io/intro/empezando/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/intro/a-simple-vista/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/intro/funciones-soportadas/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://dbax.io/intro/arquitectura/</loc>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/intro/diagrama-flujo/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/intro/mvc/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://dbax.io/intro/buenas-practivas-mvc/</loc>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/intro/objetivos-arquitectura/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -61,19 +81,19 @@
         
     <url>
      <loc>http://dbax.io/install/descarga/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/install/install/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/install/solucionar-problemas/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -83,25 +103,25 @@
         
     <url>
      <loc>http://dbax.io/tutorial/que-necesito/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/tutorial/primera-pagina/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/tutorial/util/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/tutorial/formularios/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -123,13 +143,13 @@
         
     <url>
      <loc>http://dbax.io/console/seguridad/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/console/monit/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -139,43 +159,43 @@
         
     <url>
      <loc>http://dbax.io/general/urls/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/general/controladores/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/general/vistas/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/general/modelos/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/general/enrutado/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/general/excepciones/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/general/seguridad/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -207,79 +227,79 @@
         
     <url>
      <loc>http://dbax.io/api/dbax_cookie/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_core/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_datatable/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_document/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_exception/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_file_parser/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_ldap/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_log/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_security/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_session/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/dbax_utils/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/json_util/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://dbax.io/api/xlsx_builder/</loc>
-     <lastmod>2016-02-05</lastmod>
+     <lastmod>2016-02-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

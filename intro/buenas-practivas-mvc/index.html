@@ -8,7 +8,7 @@
   
   
   
-  <title>Crear aplicación - DBAX</title>
+  <title>Buenas prácticas MVC - DBAX</title>
   
 
   <link rel="shortcut icon" href="../../img/favicon.ico">
@@ -24,9 +24,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Crear aplicación";
-    var mkdocs_page_input_path = "console\nueva-app.md";
-    var mkdocs_page_url = "/console/nueva-app/";
+    var mkdocs_page_name = "Buenas prácticas MVC";
+    var mkdocs_page_input_path = "intro\buenas-practivas-mvc.md";
+    var mkdocs_page_url = "/intro/buenas-practivas-mvc/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -80,49 +80,49 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/empezando/">Empezando</a>
+        <a class="" href="../empezando/">Empezando</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/a-simple-vista/">DBAX a simple vista</a>
+        <a class="" href="../a-simple-vista/">DBAX a simple vista</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/funciones-soportadas/">Funciones soportadas</a>
+        <a class="" href="../funciones-soportadas/">Funciones soportadas</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/arquitectura/">Arquitectura DBAX</a>
+        <a class="" href="../arquitectura/">Arquitectura DBAX</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/diagrama-flujo/">Diagrama de flujo</a>
+        <a class="" href="../diagrama-flujo/">Diagrama de flujo</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/mvc/">Model-Vista-Controlador</a>
+        <a class="" href="../mvc/">Model-Vista-Controlador</a>
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Buenas prácticas MVC</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../intro/buenas-practivas-mvc/">Buenas prácticas MVC</a>
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../intro/objetivos-arquitectura/">Objetivos de arquitectura</a>
+        <a class="" href="../objetivos-arquitectura/">Objetivos de arquitectura</a>
     </li>
 
         
@@ -231,19 +231,19 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../apps/">Aplicaciones</a>
-    </li>
-
-        
-            
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Crear aplicación</a>
+        <a class="" href="../../console/apps/">Aplicaciones</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../ajustes/">Ajustes</a>
+        <a class="" href="../../console/nueva-app/">Crear aplicación</a>
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../console/ajustes/">Ajustes</a>
     </li>
 
         
@@ -252,13 +252,13 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../seguridad/">Seguridad</a>
+        <a class="" href="../../console/seguridad/">Seguridad</a>
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../monit/">Monitorización</a>
+        <a class="" href="../../console/monit/">Monitorización</a>
     </li>
 
         
@@ -533,15 +533,11 @@
     
       
         
-          <li>Consola Web &raquo;</li>
-        
-      
-        
-          <li>Aplicaciones &raquo;</li>
+          <li>Introdcción &raquo;</li>
         
       
     
-    <li>Crear aplicación</li>
+    <li>Buenas prácticas MVC</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -551,9 +547,52 @@
           <div role="main">
             <div class="section">
               
-                <p class="page-header1"><b>Titulo principal</b></p>
+                <p class="page-header1"><b>Buenas practicas MVC</b></p>
 
-<p>Vacía</p>
+<p>Aunque el modelo Model-View-Controller (MVC) es conocido por casi todos los desarrolladores Web, cómo utilizarlo correctamente en el desarrollo de aplicaciones reales todavía es desconocido por muchos de ellos. La principal idea central detrás MVC es la reutilización del código y la separación de las responsabilidades. En esta sección, se describen algunas pautas generales sobre cómo implementar MVC en el desarrollo de una aplicación DBAX.</p>
+<p>Para explicar mejor estas directrices, se supone una aplicación web se compone de varias sub-aplicaciones: </p>
+<ul>
+<li>front end: es la parte de un sitio web que interactua con los usuarios finales;</li>
+<li>back end: es la parte que normalmente procesa la entrada desde el fron end y que contiene la funcionalidad administrativa para la gestión de la aplicación. El acceso suele estar restringida a administradores;</li>
+<li>consola web: se trata de una aplicación web que ayuda a configurar y controlar la aplicación;</li>
+<li>Web API: interfaces con terceros para la integración con la aplicación.</li>
+</ul>
+<p>El conjunto de estas sub-aplicaciones conforman un aplicación DBAX. </p>
+<h2 id="modelo">Modelo<a class="headerlink" href="#modelo" title="Permanent link">&para;</a></h2>
+<p>Los Modelos representan la estructura de datos subyacente de una aplicación web. Los modelos normalmente son reutilizados y compartidos entre las diferentes sub-aplicaciones de una aplicación web. Por ejemplo, un modelo llamado Noticias puede ser utilizado por las APIs Web o por el front end o back end de la aplicación, o incluso por otras aplicaciones. Por lo tanto, los modelos</p>
+<ul>
+<li>deben contener las propiedades (variables, arrays, records) para procesar sus datos específicos;</li>
+<li>deben contener la lógica de negocio (por ejemplo, reglas de validación) para asegurar que los datos tratados cumplen los requisitos del negocio;</li>
+<li>contienen el código para la manipulación de datos. Por ejemplo, un modelo para un formulario de busqueda SearchModel, además de procesar los datos de entrada, puede contener una método (procedimiento o función) para ejecutar la búsqueda real.</li>
+</ul>
+<p>Por norma general, los modelos no deben contener lógica que se comunique directamente con los usuarios finales. Más concretamente, los modelos</p>
+<ul>
+<li>no deben usar <code>dbax_core.g$get</code>, <code>dbax_core.g$post</code>, u otras variables similares que están directamente vinculados a la solicitud del usuario final. Recordemos que un modelo puede ser utilizado por una sub-aplicación totalmente independiente (por ejemplo, pruebas unitarias, API web) que no usan estas variables en las peticiones. Estas variables relativas a la solicitud del usuario deben ser gestionadas por el controlador.</li>
+<li>deben evitar contener código HTML u otro código de presentación. Ya que el código de presentación varía en función de los requerimientos del usuario (por ejemplo, el front end y back end muestran el detalle de una noticia en formatos diferentes, uno en HTML y otro en XML), el código de presentación se incorpora en las vistas.</li>
+</ul>
+<h2 id="vistas">Vistas<a class="headerlink" href="#vistas" title="Permanent link">&para;</a></h2>
+<p>Las vistas son las responsables de presentar los modelos en el formato que los usuarios finales desean. En general las vistas</p>
+<ul>
+<li>debe contener principalmente código de presentación, tales como HTML, y simple código PL/SQL para procesar, formatear y representar los datos;</li>
+<li>deben evitar contener código que realiza consultas explícitas en la DB. Este código se coloca en los modelos.</li>
+<li>no deben usar <code>dbax_core.g$get</code>, <code>dbax_core.g$post</code>, u otras variables similares que están directamente vinculados a la solicitud del usuario. Este es el trabajo del controlador. La vista se debe centrar en la pantalla y en el diseño de los datos facilitados por el controlador y/o modelos, pero no intentar acceder a las variables de la petición o al modelo de datos funcional directamente.</li>
+<li>puede acceder a las propiedades(variables, arrays, records&hellip;) y métodos (funciones o procedimientos) de los modelos directamente. Sin embargo, esto debe hacerse sólo con el propósito de presentación.</li>
+</ul>
+<p>Las vistas pueden ser reutilizados en diferentes formas:</p>
+<ul>
+<li>Layout y Vistas parciales: áreas de presentación comunes (por ejemplo, las cabeceras de página, pie de página) se pueden poner en una vista Layout.</li>
+<li>Widgets: si se necesita una gran cantidad de lógica para presentar una vista parcial, ésta se puede convertir en un widget para contener esta lógica.</li>
+<li>Helpers (Clases de ayuda): a menudo se necesitan algunos fragmentos de código para realizar tareas pequeñas, como la generación de etiquetas HTML. En lugar de colocar el código directamente en las vistas, un mejor enfoque consiste en colocar todos estos fragmentos de código en un Helper. </li>
+</ul>
+<h2 id="controlador">Controlador<a class="headerlink" href="#controlador" title="Permanent link">&para;</a></h2>
+<p>Los controladores son el pegamento que une a los modelos, las vistas y otros componentes en una aplicación. Los controladores son responsables de tratar directamente con las peticiones del usuario final. Por lo tanto, los controladores:</p>
+<ul>
+<li>deben usar <code>dbax_core.g$get</code>, <code>dbax_core.g$post</code> y otras variables que representan las solicitudes de los usuarios;</li>
+<li>invocan a los modelos y gestionan su ciclo de vida. Por ejemplo, en una acción típica de un modelo, una actualización, el controlador invoca al modelo pasando los parámetros que necesita que ha recogido del usuario desde <code>dbax_core.g$post</code>; después de que el modelo realiza la actualización, el controlador puede redirigir el navegador del usuario a la página de detalle del modelo. </li>
+<li>deben evitar contener sentencias SQL de modificacion de datos, esto se realiza en los modelos.</li>
+<li>deben evitar contener código HTML o cualquier otro lenguaje de presentación. Esto se realiza en las vistas.</li>
+</ul>
+<p>En una aplicación MVC bien diseñado, los controladores son muy ligeros, contienen unas pocas docenas de líneas de código; mientras que los modelos son muy pesados, ya que contiene la mayor parte del código responsable de procesar y manipular los datos. Esto es porque la estructura de datos y la lógica de negocio que contienen los modelos es específica para una aplicación en particular, y necesitan ser personalizados para satisfacer los requisitos específicos de la misma; mientras que la lógica de los controladores a menudo sigue un patrón similar en todas las aplicaciones.</p>
               
             </div>
           </div>
@@ -561,10 +600,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ajustes/" class="btn btn-neutral float-right" title="Ajustes">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../objetivos-arquitectura/" class="btn btn-neutral float-right" title="Objetivos de arquitectura">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../apps/" class="btn btn-neutral" title="Aplicaciones"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mvc/" class="btn btn-neutral" title="Model-Vista-Controlador"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -590,10 +629,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../apps/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../mvc/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../ajustes/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../objetivos-arquitectura/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
