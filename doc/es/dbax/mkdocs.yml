@@ -21,11 +21,11 @@ pages:
   - 'Diagrama de flujo': 'intro/diagrama-flujo.md'
   - 'Model-Vista-Controlador': 'intro/mvc.md'
   - 'Buenas prácticas MVC': 'intro/buenas-practivas-mvc.md'
+  - 'Conceptos aplicaciones': 'intro/conceptos-aplicaciones.md'
   - 'Objetivos de arquitectura': 'intro/objetivos-arquitectura.md'
 - Instalación:
   - 'Descargar DBAX': 'install/descarga.md'
   - 'Instrucciones de instalación': 'install/install.md'
-  - 'Solucionar problemas': 'install/solucionar-problemas.md'
 - Tutorial:
   - '¿Que necesito?' : 'tutorial/que-necesito.md'
   - 'Su primera página': 'tutorial/primera-pagina.md'
@@ -61,7 +61,6 @@ pages:
       - 'Conceptos básicos': 'reference/variables/basico.md'
       - 'Variables Predefinidas': 'reference/variables/predefinidas.md'
       - 'Ámbito de las variables': 'reference/variables/ambito.md'
-      - 'Variables variables': 'reference/variables/variables.md'
       - 'Variables desde fuentes externas': 'reference/variables/externas.md'
    - 'Variables predefinidas':
       - 'dbax_core': 'reference/reserved/dbax_core.md'

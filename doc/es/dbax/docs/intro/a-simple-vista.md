@@ -8,7 +8,7 @@ Su objetivo es permitir el desarrollo de proyectos mucho más rápido de lo que 
 ##DBAX es libre
 DBAX está disponible bajo la licencia LGPL para que puedas usarlo como quieras. Para obtener más información, puede leer el [acurdo de licencia](https://github.com/osalvador/dbax/blob/master/LICENSE).
 
-##DBAX es ligeroº
+##DBAX es ligero
 Verdaderamente ligero. El núcleo del sistema requiere sólo unas pocas librerias muy pequeñas. Al contrario que con muchos frameworks que requieren muchos más recursos. Con PL/SQL las librerias se cargan de forma dinámica a petición, por lo que el sistema de base es muy delgado y bastante rápido.
 
 ##DBAX es rápido
