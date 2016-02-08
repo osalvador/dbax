@@ -1,7 +1,7 @@
 --
 -- DBAX_CORE  (Package Body) 
 --
-CREATE OR REPLACE PACKAGE BODY      dbax_core
+create or replace PACKAGE BODY      dbax_core
 AS
    /*Global Variables*/
    g_parser                 BOOLEAN := FALSE;
@@ -108,7 +108,7 @@ AS
 
    FUNCTION set_app (p_app_path IN VARCHAR)
       RETURN BOOLEAN
-   AS      
+   AS
    BEGIN
       --TODO Revisar el "contexto" de aplicacion
       g$appid     := UPPER (p_app_path);
@@ -298,18 +298,18 @@ AS
       l_application_rt  tapi_wdx_applications.wdx_applications_rt;
       --
       e_stop_process exception;
-      e_inactive_app exception;   
+      e_inactive_app exception;
 
    BEGIN
       -- 1. Definir la aplicacion
       -- 2. Obtener la URL para enrutar
       -- 2. Realizar Enrutado
       -- 3. A partir de la URL enrutada, o no, recuperar el Controlador, La funcion y los Parametros
-      -- 4. Buscar la pagina en la caché. (por la URL)
-      -- 4.1 SEGURIDAD. realiza un tratamiento de seguridad sobre la entrada que tengamos, tanto de la información que haya en la URL como de la información que haya en un posible POST
-      -- 5. Invocar al controlador.función, los parametros podrán estár en un array global por ahí...
+      -- 4. Buscar la pagina en la cachï¿½. (por la URL)
+      -- 4.1 SEGURIDAD. realiza un tratamiento de seguridad sobre la entrada que tengamos, tanto de la informaciï¿½n que haya en la URL como de la informaciï¿½n que haya en un posible POST
+      -- 5. Invocar al controlador.funciï¿½n, los parametros podrï¿½n estï¿½r en un array global por ahï¿½...
       -- 6. Interpretar las vistas que el controlador ha cargado
-      -- 7. Meter el HTML generado en la caché, si procede
+      -- 7. Meter el HTML generado en la cachï¿½, si procede
       -- 8. Imprimir la pagina
 
       /***************
@@ -336,7 +336,7 @@ AS
 
       --Check active application
       l_application_rt := tapi_wdx_applications.rt(p_appid);
-      
+
       if l_application_rt.active = 'N'
       then
         raise e_inactive_app;
@@ -486,7 +486,7 @@ AS
       * 3.1 Check authentication
       ***************/
       --TODO revisar el acceso del usuario en la aplicacion
-      -- ¿Vale con solo validar si hay sesion activa?
+      -- ï¿½Vale con solo validar si hay sesion activa?
       IF dbax_security.check_auth = '1'
       THEN
          IF FALSE
@@ -909,10 +909,11 @@ AS
          --Obtenemos la instruccion a ejecutar
          l_dyn_sql   := DBMS_LOB.SUBSTR (l_source, (l_end) - (l_start + 7), l_start + 7);
 
-         -- Le añadimos el BEGIN / END
+         -- Le aï¿½adimos el BEGIN / END
 
          l_dyn_sql   :=
-            'BEGIN htp.prn(''<!-- DBAX interpreter -->''); /*Your code starts here*/ ' || l_dyn_sql || 'END;';
+            'BEGIN htp.prn(''<!-- DBAX interpreter -->''); /*Your code starts here*/ ' || l_dyn_sql || '
+            END;';
 
          --DBMS_OUTPUT.PUT_LINE ('l_dyn_sql = ' || l_dyn_sql);
 
@@ -950,13 +951,13 @@ AS
 
          --DBMS_SQL.close_cursor (ln_cursor);
 
-         --Recogemos el resultado de la ejecución
+         --Recogemos el resultado de la ejecuciï¿½n
 
          l_out       := dump_owa_page;
 
 
          --Only if is not null
-         --Añadimos el resultado de la ejecucion a la variable resultado
+         --Aï¿½adimos el resultado de la ejecucion a la variable resultado
          IF LENGTH (l_out) > 0
          THEN
             DBMS_LOB.COPY (l_result
@@ -967,7 +968,7 @@ AS
          END IF;
 
 
-         --Añadimos el resto de la fuente a la varbiable resultado
+         --Aï¿½adimos el resto de la fuente a la varbiable resultado
          DBMS_LOB.COPY (l_result
                       , l_source
                       , DBMS_LOB.getlength (l_source)
@@ -975,7 +976,7 @@ AS
                       , l_end + 2);
       END IF;
 
-      --La funcion es recursiva, si hay mas intrucciones dbax, se llama a sí misma.
+      --La funcion es recursiva, si hay mas intrucciones dbax, se llama a sï¿½ misma.
       IF NVL (DBMS_LOB.INSTR (l_result, '<?dbax'), 0) > 0
       THEN
          RETURN interpreter (l_result);
@@ -1048,10 +1049,10 @@ AS
                IF name_array (i) LIKE '%[]'
                THEN
                   j           := 1;
-                  
+
                   --Set Name of the parameter[n]
                   l_name_array := SUBSTR (name_array (i), 1, INSTR (name_array (i), '[]') - 1) || '[' || j || ']';
-                  
+
                   --Generate Array index
                   WHILE g$post.EXISTS(l_name_array)
                   LOOP
@@ -1064,10 +1065,10 @@ AS
                ELSE
                   g$get (LOWER (name_array (i))) := CONVERT (value_array (i), g$server ('REQUEST_CHARSET'), 'AL32UTF8');
                   dbax_log.debug (LOWER (name_array (i)) || ':' || g$get (LOWER (name_array (i))));
-               END IF;      
-               
+               END IF;
+
             END LOOP;
-            
+
          END IF;
       ELSIF g$server ('REQUEST_METHOD') = 'POST'
       THEN
@@ -1082,10 +1083,10 @@ AS
                IF name_array (i) LIKE '%[]'
                THEN
                   j           := 1;
-                  
+
                   --Set Name of the parameter[n]
                   l_name_array := SUBSTR (name_array (i), 1, INSTR (name_array (i), '[]') - 1) || '[' || j || ']';
-                  
+
                   --Generate Array index
                   WHILE g$post.EXISTS(l_name_array)
                   LOOP
@@ -1121,6 +1122,3 @@ AS
       END IF;
    END print_http_header;
 END dbax_core;
-/
-
-
