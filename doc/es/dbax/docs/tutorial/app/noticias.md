@@ -32,7 +32,14 @@ Ahora que que tenemos el modelo creado, donde se consulta la tabla de noticias, 
 
 
 Crearemos un controlador que cargue la vista para mostrar las noticias. 
-
+```plsql
+  PROCEDURE mostrar
+  AS
+  BEGIN
+    dbax_core.g$view('id') := dbax_core.g$parameter(1);
+    dbax_core.load_view('blank');
+  END;  
+```
 
 Dentro de la vista, haremos referencia a nuestro controlador pintando una tabla para ello
 
@@ -47,7 +54,7 @@ Dentro de la vista, haremos referencia a nuestro controlador pintando una tabla 
    </thead>
    <tbody>
       <?dbax
-         FOR c1 IN (select * from table (tapi_news.tt()))
+         FOR c1 IN (select * from table (tapi_news.tt(${id})))
          LOOP                                            
            p('<tr>');                                     
                 p('<td>'|| c1.id ||'</td>');
@@ -59,3 +66,8 @@ Dentro de la vista, haremos referencia a nuestro controlador pintando una tabla 
    </tbody>
 </table>
 ```
+
+
+Modificaremos el enrutado: 
+
+    basic   pk_c_dbax_NOTICIAS.mostrar
