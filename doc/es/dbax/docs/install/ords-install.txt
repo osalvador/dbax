@@ -1,0 +1,22 @@
+chown -R tomcat:tomcat /u01/ords/config
+
+Renombro el ords.war a dbax.war. 
+
+[root@dbaxio ordsDBAX]# java -jar dbax.war install advanced
+This Oracle REST Data Services instance has not yet been configured.
+Please complete the following prompts
+
+Enter the location to store configuration data:/u01/dbax/config
+Enter the name of the database server [localhost]:
+Enter the database listen port [1521]:
+Enter 1 to specify the database service name, or 2 to specify the database SID [1]:
+Enter the database service name:xe
+Enter 1 if you want to verify/install Oracle REST Data Services schema or 2 to skip this step [1]:2
+Enter 1 if you want to use PL/SQL Gateway or 2 to skip this step [1]:1
+Enter the PL/SQL Gateway database user name [APEX_PUBLIC_USER]:DBAX
+Enter the database password for DBAX:
+Confirm password:
+Enter 1 to specify passwords for Application Express RESTful Services database users (APEX_LISTENER, APEX_REST_PUBLIC_USER) or 2 to skip this step [1]:2
+Feb 11, 2016 12:54:05 PM oracle.dbtools.common.config.file.ConfigurationFilesBase update
+INFO: Updated configurations: defaults, apex
+Enter 1 if you wish to start in standalone mode or 2 to exit [1]:2

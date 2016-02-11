@@ -34,6 +34,16 @@ Si usas un servidor web Apache como listener web y servidores de recueros, y és
     De momento no haga demasiado caso a lo que se comenta sobre reescribirlas urls.
 
 
+    <VirtualHost *:80>
+      ProxyRequests Off
+      ProxyPreserveHost On
+      <Proxy *>
+        Order deny,allow
+        Allow from all
+      </Proxy>
+      RewriteEngine On
+      RewriteRule ^/console/(.*)/? ajp://localhost:8009/dbax/!console?p=/$1/ [P,L,QSA]      
+      RewriteRule ^/(.*) ajp://localhost:8009/dbax/$1 [P,L]
+    </VirtualHost>
 
-
-
+Con este rewrite lo que hago es que toda peticion se haga proxy y que el queryString se concatene a la petición proxy al final

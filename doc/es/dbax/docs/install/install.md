@@ -34,6 +34,8 @@ CREATE USER dbax IDENTIFIED BY password DEFAULT TABLESPACE TS_DBAX
   
   GRANT CREATE TYPE TO dbax;
 
+  GRANT EXECUTE ON UTL_FILE TO dbax;
+
   grant create public synonym, drop public synonym to dbax;
   
   
