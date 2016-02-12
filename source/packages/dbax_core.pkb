@@ -1122,3 +1122,4 @@ AS
       END IF;
    END print_http_header;
 END dbax_core;
+/

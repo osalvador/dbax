@@ -19,21 +19,44 @@ PROMPT ------------------------------------------;
 PROMPT -- Checking user grants --;
 PROMPT ------------------------------------------;
 
--- User Grants
+-- User Grants. 
 DECLARE
    l_count   PLS_INTEGER := 0;
 BEGIN
+   --DBMS_CRYPTO
    SELECT   COUNT ( * )
      INTO   l_count
-     FROM   user_tab_privs
-    WHERE   table_name = 'DBMS_CRYPTO' AND privilege = 'EXECUTE';
+     FROM   (SELECT   1
+               FROM   user_tab_privs u
+              WHERE   table_name = 'DBMS_CRYPTO' AND privilege = 'EXECUTE'
+             UNION ALL
+             SELECT   1
+               FROM   all_tab_privs a
+              WHERE   table_name = 'DBMS_CRYPTO' AND privilege = 'EXECUTE' AND grantee = 'PUBLIC');
 
    IF l_count = 0
    THEN
       raise_application_error (-20000, 'Execute on DBMS_CRYPTO grant is necessary.');
-   END IF;   
+   END IF;
+
+   --UTL_FILE
+   SELECT   COUNT ( * )
+     INTO   l_count
+     FROM   (SELECT   1
+               FROM   user_tab_privs u
+              WHERE   table_name = 'UTL_FILE' AND privilege = 'EXECUTE'
+             UNION ALL
+             SELECT   1
+               FROM   all_tab_privs a
+              WHERE   table_name = 'UTL_FILE' AND privilege = 'EXECUTE' AND grantee = 'PUBLIC');
+
+   IF l_count = 0
+   THEN
+      raise_application_error (-20000, 'Execute on UTL_FILE grant is necessary.');
+   END IF;
 END;
 /
+
 
 PROMPT -- Setting optimize level --
 whenever sqlerror exit
@@ -47,7 +70,7 @@ PROMPT ------------------------------------------;
 @@../types/json_v1_0_4/install.sql;
 
 PROMPT ------------------------------------------;
-PROMPT -- Installing Tables --;
+PROMPT -- Creating Tables --;
 PROMPT ------------------------------------------;
 @@../tables/wdx_log_seq.sql;
 @@../tables/te_templates.sql;
