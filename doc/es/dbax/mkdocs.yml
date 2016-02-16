@@ -32,7 +32,7 @@ pages:
   - 'Algo util': 'tutorial/util.md'
   - 'Formularios': 'tutorial/formularios.md'
   - 'Aplicación básica noticias':
-    - 'Crear aplicación': 'tutorial/app/crear-aplicacion.md'    
+    - 'Crear aplicación': 'tutorial/app/crear-aplicacion.md'
     - 'Sección noticias': 'tutorial/app/noticias.md'
     - 'Crear noticia': 'tutorial/app/crear-noticia.md'
     - 'Conclusión': 'tutorial/app/conclusion.md'

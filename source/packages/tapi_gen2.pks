@@ -6,7 +6,7 @@
 --   USER_TAB_COLUMNS (Synonym)
 --   USER_CONSTRAINTS (Synonym)
 --
-CREATE OR REPLACE PACKAGE tapi_gen2
+CREATE OR REPLACE PACKAGE tapi_gen2 authid current_user
 AS
 
    /**

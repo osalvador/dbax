@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE json_util_pkg
+CREATE OR REPLACE PACKAGE json_util_pkg authid current_user
 AS
    /*
    Purpose:    JSON utilities for PL/SQL

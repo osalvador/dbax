@@ -6,7 +6,7 @@
 --   XMLTYPE (Synonym)
 --   JSON (Type)
 --
-CREATE OR REPLACE PACKAGE      dbax_datatable
+CREATE OR REPLACE PACKAGE dbax_datatable authid current_user
 AS
 
 g_xml2json xmltype := xmltype(q'[<?xml version="1.0" encoding="UTF-8"?>

@@ -127,6 +127,7 @@ PROMPT ------------------------------------------;
 @@../packages/pk_m_dbax_console.pks;
 @@../packages/xlsx_builder_pkg.pks;
 @@../packages/json_util_pkg.pks
+@@../packages/dbax_htmltable.pks
 
 PROMPT ------------------------------------------;
 PROMPT -- Installing Packages Bodies --;
@@ -165,6 +166,7 @@ PROMPT ------------------------------------------;
 @@../packages/pk_m_dbax_console.pkb;
 @@../packages/console.prc;
 @@../packages/json_util_pkg.pkb
+@@../packages/dbax_htmltable.pkb
 
 quit;
 /
