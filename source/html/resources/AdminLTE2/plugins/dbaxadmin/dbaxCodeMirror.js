@@ -16,7 +16,8 @@ function dbaxCodeMirror(textareaId,formId){
               cm.setOption("fullScreen", !cm.getOption("fullScreen"));
             },
             "Esc": function(cm) {
-              if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+              //if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+              cm.setOption("fullScreen", !cm.getOption("fullScreen"));
             },
             "Ctrl-S": function(cm) {
               //Save editor
