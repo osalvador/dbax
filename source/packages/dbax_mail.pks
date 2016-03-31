@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE dbax.dbax_mail
+CREATE OR REPLACE PACKAGE dbax_mail
 IS
    /**
   * DBAX_MAIL

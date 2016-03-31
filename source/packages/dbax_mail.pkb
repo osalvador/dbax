@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY dbax.dbax_mail
+CREATE OR REPLACE PACKAGE BODY dbax_mail
 IS
    g_smtp_host        VARCHAR2 (256);
    g_smtp_port        PLS_INTEGER; 
