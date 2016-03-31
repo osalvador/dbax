@@ -128,6 +128,9 @@ PROMPT ------------------------------------------;
 @@../packages/xlsx_builder_pkg.pks;
 @@../packages/json_util_pkg.pks
 @@../packages/dbax_htmltable.pks
+@@../packages/dbax_google_recaptcha.pks
+@@../packages/dbax_mail.pks
+
 
 PROMPT ------------------------------------------;
 PROMPT -- Installing Packages Bodies --;
@@ -167,6 +170,8 @@ PROMPT ------------------------------------------;
 @@../packages/console.prc;
 @@../packages/json_util_pkg.pkb
 @@../packages/dbax_htmltable.pkb
+@@../packages/dbax_google_recaptcha.pkb
+@@../packages/dbax_mail.pkb
 
 quit;
 /

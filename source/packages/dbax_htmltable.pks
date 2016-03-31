@@ -1,4 +1,3 @@
-/* Formatted on 15/02/2016 15:07:27 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE dbax_htmltable
    AUTHID CURRENT_USER
 AS
