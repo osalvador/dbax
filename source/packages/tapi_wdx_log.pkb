@@ -49,6 +49,15 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_log IS
       FOR UPDATE;
 
 
+    FUNCTION num_rows RETURN PLS_INTEGER
+    AS
+       l_count pls_integer;
+    BEGIN
+       SELECT   COUNT (id) into l_count FROM wdx_log;
+       return l_count; 
+    END num_rows;
+    
+
     FUNCTION hash (
         p_id     IN      wdx_log.id%TYPE
           )

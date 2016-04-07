@@ -24,17 +24,39 @@ AS
 
    PROCEDURE index_
    AS
+      l_count   PLS_INTEGER;
+      l_cursor sys_refcursor;
    BEGIN
-      --If you put any HTML comments, then it will be send to the buffer and send to the client
-      --p('Estoy entrando por aqui?');
-      IF dbax_core.g$parameter.EXISTS (1)
-      THEN
-         FOR i IN 1 .. dbax_core.g$parameter.LAST
-         LOOP
-            p (dbax_core.g$parameter (i));
-         END LOOP;
-      END IF;
+      --Applications      
+      dbax_core.g$view ('count_apps') := tapi_wdx_applications.num_rows;
+      
+      --Views      
+      dbax_core.g$view ('count_views') := tapi_wdx_views.num_rows;
 
+      --Routes      
+      dbax_core.g$view ('count_routes') := tapi_wdx_map_routes.num_rows;
+
+      --Users      
+      dbax_core.g$view ('count_users') := tapi_wdx_users.num_rows;
+
+      --Sessions
+      dbax_core.g$view ('count_sessions') := tapi_wdx_sessions.num_rows;
+
+      --Logs      
+      dbax_core.g$view ('count_logs') := tapi_wdx_log.num_rows;
+      
+      --activityChartTime
+      l_cursor := pk_m_dbax_console.get_activity_chart_time(480,30);      
+      dbax_core.g$view ('activityChartTimes') := json_util_pkg.ref_cursor_to_json_2(p_ref_cursor =>l_cursor,  p_format_type => 1) ;
+      
+      --activityChartData
+      l_cursor := pk_m_dbax_console.get_activity_chart_data(480,30);      
+      dbax_core.g$view ('activityChartData') := json_util_pkg.ref_cursor_to_json_2(p_ref_cursor =>l_cursor,  p_format_type => 1) ;
+
+      --Browser usage
+      l_cursor := pk_m_dbax_console.get_browser_usage_chart_data(480);      
+      dbax_core.g$view ('pieChartValues') := json_util_pkg.ref_cursor_to_json_2(p_ref_cursor =>l_cursor,  p_format_type => 1) ;
+ 
       dbax_core.load_view ('index');
    END index_;
 
@@ -92,55 +114,6 @@ AS
       dbax_core.g$http_header ('Location') := dbax_core.get_path ('/index');
    END logout;
 
-
-   PROCEDURE ejemplos
-   AS
-   BEGIN
-   
-      IF dbax_security.user_hash_pmsn('P_DBAX_EJEMPLOS_R', dbax_core.g$appid) = 0
-      THEN         
-         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
-         RETURN;
-      END IF;
-   
-      --Paso los parametros entrada al array de la vista
-      IF dbax_security.user_hash_pmsn('P_DBAX_EJEMPLOS_W', dbax_core.g$appid) = 1
-      THEN
-          IF dbax_core.g$parameter.EXISTS (1)
-          THEN
-             FOR i IN 1 .. dbax_core.g$parameter.LAST
-             LOOP
-                dbax_core.g$view ('P' || i) := dbax_core.g$parameter (i);
-             END LOOP;
-          END IF;
-      ELSE
-        dbax_core.g$view ('P') := '<h2>Usted no tiene permisos para ver los parametros de entrada</h2>';
-      END IF;
-
-      dbax_core.load_view ('ejemplos');
-   END ejemplos;
-
-   PROCEDURE handsontable
-   AS
-      l_clob   CLOB;
-   BEGIN
-      /**
-      * Permisos para acceder a la pagina
-      * En este ejemplo solo pueden acceder a la pagina HandsOnTable los usuarios que tengan el permiso MIRON
-      * por tanto, si NO tiene el permiso miron, redireccionamos a la pagina de error 401 Unauthorized
-      **/
-      IF dbax_security.user_hash_pmsn('MIRON', dbax_core.g$appid) = 0
-      THEN
-         --OWA_UTIL.redirect_url (curl => '401');
-         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
-
-         RETURN;
-      END IF;
-
-      dbax_core.load_view ('HandsOnTable');
-   END handsontable;
-
-
    PROCEDURE get_log
    AS
     l_return CLOB;
@@ -185,7 +158,7 @@ AS
    PROCEDURE download
    AS
    BEGIN
-      --Donwload file from parameter /dbax/admin/download/file_to_download
+      --Donwload file from parameter /console/download/file_to_download
       --If parameter is not null
       IF dbax_core.g$parameter.EXISTS (1) AND dbax_core.g$parameter (1) IS NOT NULL
       THEN

@@ -1,10 +1,3 @@
---
--- TAPI_WDX_APPLICATIONS  (Package) 
---
---  Dependencies: 
---   STANDARD (Package)
---   WDX_APPLICATIONS (Table)
---
 CREATE OR REPLACE PACKAGE tapi_wdx_applications
 IS
    /**
@@ -54,6 +47,9 @@ IS
    e_upd_failed      EXCEPTION; --The update operation failed
    e_del_failed      EXCEPTION; --The delete operation failed
 
+    
+    FUNCTION num_rows RETURN PLS_INTEGER;
+    
     /**
     --## Function Name: HASH
     --### Description:
@@ -110,7 +106,7 @@ IS
     --|16-SEP-2015 09:43   | DBAX | Created
     */
    FUNCTION rt (
-                p_appid IN wdx_applications.appid%TYPE 
+                p_appid IN wdx_applications.appid%TYPE
                )
     RETURN wdx_applications_rt RESULT_CACHE;
 
@@ -138,7 +134,7 @@ IS
     --|16-SEP-2015 09:43   | DBAX | Created
     */
    FUNCTION rt_for_update (
-                          p_appid IN wdx_applications.appid%TYPE 
+                          p_appid IN wdx_applications.appid%TYPE
                           )
     RETURN wdx_applications_rt RESULT_CACHE;
 
@@ -324,7 +320,6 @@ IS
     */
     PROCEDURE web_del_rowid (p_rowid IN varchar2,p_hash IN varchar2);
 
-END tapi_wdx_applications;
+END tapi_wdx_applications; 
 /
-
 

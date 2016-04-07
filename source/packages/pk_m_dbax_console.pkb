@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY pk_m_dbax_console
+CREATE OR REPLACE PACKAGE BODY DBAX.pk_m_dbax_console
 AS
    PROCEDURE properties_ins (p_wdx_properties_rec IN OUT tapi_wdx_properties.wdx_properties_rt)
    AS
@@ -128,12 +128,12 @@ AS
                      FROM   table (tapi_wdx_map_routes.tt (p_appid_template))
                  ORDER BY   priority)
       LOOP
-         l_route_rt.route_name := REPLACE(c1.route_name,'${appid}',l_application_rt.appid);
+         l_route_rt.route_name := REPLACE (c1.route_name, '${appid}', l_application_rt.appid);
          l_route_rt.priority := c1.priority;
-         l_route_rt.url_pattern := REPLACE(c1.url_pattern,'${appid}',l_application_rt.appid);
-         l_route_rt.controller_method := REPLACE(c1.controller_method,'${appid}',l_application_rt.appid);
-         l_route_rt.view_name := REPLACE(c1.view_name,'${appid}',l_application_rt.appid);
-         l_route_rt.description := REPLACE(c1.description,'${appid}',l_application_rt.appid);
+         l_route_rt.url_pattern := REPLACE (c1.url_pattern, '${appid}', l_application_rt.appid);
+         l_route_rt.controller_method := REPLACE (c1.controller_method, '${appid}', l_application_rt.appid);
+         l_route_rt.view_name := REPLACE (c1.view_name, '${appid}', l_application_rt.appid);
+         l_route_rt.description := REPLACE (c1.description, '${appid}', l_application_rt.appid);
          l_route_rt.active := c1.active;
          tapi_wdx_map_routes.ins (l_route_rt);
       END LOOP;
@@ -251,7 +251,8 @@ END pk_c_dbax_${appid};]';
       --Compile package spec
       EXECUTE IMMEDIATE l_source;
 
-      l_source := q'[CREATE OR REPLACE PACKAGE BODY pk_c_dbax_${appid}
+      l_source    :=
+         q'[CREATE OR REPLACE PACKAGE BODY pk_c_dbax_${appid}
 AS
 
    PROCEDURE index_
@@ -322,7 +323,6 @@ END pk_c_dbax_${appid};]';
 
       --Compile package body
       EXECUTE IMMEDIATE l_source;
-
    END new_application;
 
    PROCEDURE del_application (p_appid IN tapi_wdx_applications.appid)
@@ -358,7 +358,7 @@ END pk_c_dbax_${appid};]';
          tapi_wdx_users_roles.del (c1.username, c1.rolename, p_appid);
       END LOOP;
 
-     --Delete Roles Permissions
+      --Delete Roles Permissions
       FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles_pmsn.tt (p_appid => p_appid)))
       LOOP
          tapi_wdx_roles_pmsn.del (c1.pmsname, c1.rolename, p_appid);
@@ -387,13 +387,212 @@ END pk_c_dbax_${appid};]';
 
       --Drop procedure
       BEGIN
-        EXECUTE IMMEDIATE 'DROP PROCEDURE ' || p_appid;
+         EXECUTE IMMEDIATE 'DROP PROCEDURE ' || p_appid;
       EXCEPTION
-      WHEN OTHERS
-      THEN
-        dbax_log.warn ('Error dropping '|| p_appid ||'procedure:' || SQLCODE ||' ' || SQLERRM);
+         WHEN OTHERS
+         THEN
+            dbax_log.warn ('Error dropping ' || p_appid || 'procedure:' || SQLCODE || ' ' || SQLERRM);
       END;
    END del_application;
+
+
+   FUNCTION latest_modifications
+      RETURN latest_mod_tt
+      PIPELINED
+   IS
+      l_latest_mod_rt   latest_mod_rt;
+   BEGIN
+      FOR c1 IN (SELECT   *
+                   FROM   (SELECT   'Application' description
+                                  , 'Settings' name
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_applications
+                           UNION ALL
+                           SELECT   'Auth Scheme'
+                                  , scheme_name name
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_auth_schemes a
+                           UNION ALL
+                           SELECT   'Document'
+                                  , name
+                                  , appid
+                                  , NULL
+                                  , last_updated
+                             FROM   wdx_documents a
+                           UNION ALL
+                           SELECT   'LDAP Settings'
+                                  , ldap_name
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_ldap aa
+                           UNION ALL
+                           SELECT   'Route'
+                                  , route_name
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_map_routes a
+                           UNION ALL
+                           SELECT   'Permission'
+                                  , pmsname
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_permissions a
+                           UNION ALL
+                           SELECT   'Propertie'
+                                  , key
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_properties a
+                           UNION ALL
+                           SELECT   'Request Validation Function'
+                                  , procedure_name
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_request_valid_function a
+                           UNION ALL
+                           SELECT   'Role'
+                                  , rolename
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_roles a
+                           UNION ALL
+                           SELECT   'Role-Permission'
+                                  , rolename || '-' || pmsname
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_roles_pmsn a
+                           UNION ALL
+                           SELECT   'User-Role'
+                                  , username || '-' || rolename
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_users_roles a
+                           UNION ALL
+                           SELECT   'User'
+                                  , username
+                                  , ''
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_users a
+                           UNION ALL
+                           SELECT   'View'
+                                  , name
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_views a
+                           UNION ALL
+                           SELECT   'User Option'
+                                  , username || '-' || key
+                                  , appid
+                                  , modified_by
+                                  , modified_date
+                             FROM   wdx_user_options a
+                           ORDER BY   modified_date DESC)
+                  WHERE   ROWNUM <= 10)
+      LOOP
+         l_latest_mod_rt.description := c1.description;
+         l_latest_mod_rt.name := c1.name;
+         l_latest_mod_rt.appid := c1.appid;
+         l_latest_mod_rt.modified_by := c1.modified_by;
+         l_latest_mod_rt.modified_date := c1.modified_date;
+
+         PIPE ROW (l_latest_mod_rt);
+      END LOOP;
+
+      RETURN;
+   END latest_modifications;
+
+   FUNCTION get_activity_chart_time (p_minutes_since     IN PLS_INTEGER DEFAULT 480
+                                   , p_minutes_section   IN PLS_INTEGER DEFAULT 15 )
+      RETURN sys_refcursor
+   AS
+      l_return_cursor   sys_refcursor;
+   BEGIN
+      OPEN l_return_cursor FOR
+           SELECT   TO_CHAR (TRUNC (created_date, 'hh24')
+                             + ( (TRUNC (TO_CHAR (created_date, 'mi') / p_minutes_section) * p_minutes_section) / 24 / 60)
+                           , 'dd,hh24:mi')
+                       fec
+             FROM   wdx_log
+            WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
+         GROUP BY   TRUNC (created_date, 'hh24')
+                    + ( (TRUNC (TO_CHAR (created_date, 'mi') / p_minutes_section) * p_minutes_section) / 24 / 60)
+         ORDER BY   TRUNC (created_date, 'hh24')
+                    + ( (TRUNC (TO_CHAR (created_date, 'mi') / p_minutes_section) * p_minutes_section) / 24 / 60);
+
+      RETURN l_return_cursor;
+   END get_activity_chart_time;
+
+   FUNCTION get_activity_chart_data (p_minutes_since     IN PLS_INTEGER DEFAULT 480
+                                   , p_minutes_section   IN PLS_INTEGER DEFAULT 15 )
+      RETURN sys_refcursor
+   AS
+      l_return_cursor   sys_refcursor;
+   BEGIN
+      OPEN l_return_cursor FOR
+           SELECT   COUNT ( * )
+             FROM   wdx_log
+            WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
+         GROUP BY   TRUNC (created_date, 'hh24')
+                    + ( (TRUNC (TO_CHAR (created_date, 'mi') / p_minutes_section) * p_minutes_section) / 24 / 60)
+         ORDER BY   TRUNC (created_date, 'hh24')
+                    + ( (TRUNC (TO_CHAR (created_date, 'mi') / p_minutes_section) * p_minutes_section) / 24 / 60);
+
+      RETURN l_return_cursor;
+   END get_activity_chart_data;
+
+
+   FUNCTION get_browser_usage_chart_data (p_minutes_since IN PLS_INTEGER DEFAULT 480 )
+      RETURN sys_refcursor
+   AS
+      l_return_cursor   sys_refcursor;
+   BEGIN
+      OPEN l_return_cursor FOR
+         SELECT   SUM (regexp_count (log_text, 'Chrome/[0-9]')) chrome
+           FROM   wdx_log a
+          WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
+          UNION ALL
+         SELECT   SUM (regexp_count (log_text, 'MSIE\+[0-9]|rv:11|IE\+11')) ie
+           FROM   wdx_log a
+          WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
+         UNION ALL          
+         SELECT   SUM (regexp_count (log_text, 'Firefox/[0-9]')) firefox
+           FROM   wdx_log a
+          WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)         
+         UNION ALL
+         SELECT   SUM (regexp_count (log_text, 'Version/[0-9].*Safari/[0-9]')) safari
+           FROM   wdx_log a
+          WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
+         UNION ALL
+         SELECT   COUNT ( * ) total
+           FROM   wdx_log a
+          WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60);
+
+/*
+           SELECT   SUM (regexp_count (log_text, 'Firefox/[0-9]')) firefox
+                         , SUM (regexp_count (log_text, 'Chrome/[0-9]')) chrome
+                         , SUM (regexp_count (log_text, 'Version/[0-9].*Safari/[0-9]')) safari
+                         , SUM (regexp_count (log_text, 'MSIE\+[0-9]|rv:11|IE\+11')) ie
+                         , COUNT ( * ) total
+                    FROM   wdx_log a
+                   WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60);
+*/
+
+      RETURN l_return_cursor;
+   END get_browser_usage_chart_data;
 END pk_m_dbax_console; 
 /
 

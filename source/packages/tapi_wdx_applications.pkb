@@ -1,7 +1,4 @@
---
--- TAPI_WDX_APPLICATIONS  (Package Body) 
---
-CREATE OR REPLACE PACKAGE BODY      tapi_wdx_applications IS
+CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
 
    /**
    -- # TAPI_wdx_applications
@@ -55,6 +52,13 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_applications IS
       WHERE ROWID = p_rowid
       FOR UPDATE;
 
+    FUNCTION num_rows RETURN PLS_INTEGER
+    AS
+       l_count pls_integer;
+    BEGIN
+       SELECT   COUNT (appid) into l_count FROM wdx_applications;
+       return l_count; 
+    END num_rows;
 
     FUNCTION hash (
                   p_appid IN wdx_applications.appid%TYPE
@@ -551,7 +555,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_applications IS
         raise_application_error (-20000 , 'Delete operation failed because the row is no longer in the database.');
    END web_del_rowid;
 
-END tapi_wdx_applications;
+END tapi_wdx_applications; 
 /
-
 

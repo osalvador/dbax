@@ -1,11 +1,4 @@
---
--- PK_C_DBAX_CONSOLE  (Package) 
---
---  Dependencies: 
---   STANDARD (Package)
---   WDX_APPLICATIONS (Table)
---
-CREATE OR REPLACE PACKAGE      pk_c_dbax_console
+CREATE OR REPLACE PACKAGE pk_c_dbax_console
 AS
    /**
    -- # PK_DBAX_ADMIN
@@ -24,18 +17,15 @@ AS
    * Controller for login user
    */
    PROCEDURE login;
-   
+
    /**
    * Controller for logout user
-   */   
+   */
    PROCEDURE logout;
 
    /*
    * Example controllers
-   */
-   PROCEDURE ejemplos;
-
-   PROCEDURE handsontable;
+   */   
 
    PROCEDURE get_log;
 
@@ -145,7 +135,7 @@ AS
    PROCEDURE upsert_role;
 
    PROCEDURE upsert_roles_users;
-   
+
    PROCEDURE upsert_roles_permissions;
 
 
@@ -153,7 +143,7 @@ AS
    * Permissions controllers
    */
 
-   PROCEDURE new_pmsn;             
+   PROCEDURE new_pmsn;
 
    PROCEDURE edit_pmsn;
 
@@ -173,12 +163,10 @@ AS
    PROCEDURE delete_users;
 
    PROCEDURE update_user;
-   
+
    PROCEDURE change_user_password;
-   
+
    PROCEDURE user_layout_options;
 
 END pk_c_dbax_console;
 /
-
-

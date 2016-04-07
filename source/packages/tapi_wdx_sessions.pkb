@@ -60,6 +60,13 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_sessions IS
       WHERE ROWID = p_rowid
       FOR UPDATE;
 
+    FUNCTION num_rows RETURN PLS_INTEGER
+    AS
+       l_count pls_integer;
+    BEGIN
+       SELECT   COUNT (*) into l_count FROM wdx_sessions;
+       return l_count; 
+    END num_rows;
 
     FUNCTION hash (
                   p_appid IN wdx_sessions.appid%TYPE,

@@ -61,6 +61,15 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
       FOR UPDATE;
 
 
+    FUNCTION num_rows RETURN PLS_INTEGER
+    AS
+       l_count pls_integer;
+    BEGIN
+       SELECT   COUNT (*) into l_count FROM wdx_map_routes;
+       return l_count; 
+    END num_rows;
+
+
     FUNCTION hash (
         p_appid     IN      wdx_map_routes.appid%TYPE,
   p_route_name     IN      wdx_map_routes.route_name%TYPE

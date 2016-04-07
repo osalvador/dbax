@@ -57,6 +57,8 @@ IS
    e_upd_failed      exception; --The update operation failed
    e_del_failed      exception; --The delete operation failed
 
+   FUNCTION num_rows RETURN PLS_INTEGER;
+
     /**
     --## Function Name: HASH
     --### Description:

@@ -59,6 +59,14 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_users IS
       FOR UPDATE;
 
 
+    FUNCTION num_rows RETURN PLS_INTEGER
+    AS
+       l_count pls_integer;
+    BEGIN
+       SELECT   COUNT (*) into l_count FROM wdx_users;
+       return l_count; 
+    END num_rows;
+
     FUNCTION hash (
                   p_username IN wdx_users.username%TYPE
                   )

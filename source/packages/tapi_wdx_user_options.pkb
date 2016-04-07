@@ -58,7 +58,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_user_options IS
       WHERE ROWID = p_rowid
       FOR UPDATE;
 
-
     FUNCTION hash (
                   p_username IN wdx_user_options.username%TYPE,
                   p_appid IN wdx_user_options.appid%TYPE,
