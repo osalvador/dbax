@@ -1,7 +1,9 @@
+/* Formatted on 07/04/2016 12:58:37 (QP5 v5.115.810.9015) */
 --
--- DBAX_EXCEPTION  (Package Body) 
+-- DBAX_EXCEPTION  (Package Body)
 --
-CREATE OR REPLACE PACKAGE BODY      dbax_exception
+
+CREATE OR REPLACE PACKAGE BODY dbax_exception
 AS
    FUNCTION call_stack2html_table (p_call_stack IN VARCHAR2 DEFAULT NULL , p_table_attr IN VARCHAR2 DEFAULT NULL )
       RETURN VARCHAR2
@@ -69,64 +71,36 @@ AS
                </table>';
    END call_stack2html_table;
 
-   PROCEDURE bind_vars (p_source IN OUT NOCOPY CLOB)
-   AS
-      l_key   VARCHAR2 (256);
-   BEGIN
-      IF g$error.COUNT () <> 0
-      THEN
-         l_key       := g$error.FIRST;
-
-         LOOP
-            EXIT WHEN l_key IS NULL;
-            --HTP.p (l_key || '=' || g$error (l_key));
-            --p_source    := dbax_core.bind (p_source, '${' || l_key || '}', TO_CLOB (g$error (l_key)));
-            p_source    := REPLACE (p_source, '${' || l_key || '}', TO_CLOB (g$error (l_key)));
-            l_key       := g$error.NEXT (l_key);
-         END LOOP;
-      END IF;
-   END bind_vars;
-
-
    PROCEDURE raise (p_error_code IN NUMBER, p_error_msg IN VARCHAR2)
    AS
-      v_html   CLOB;
-      v_dummy integer;
+      v_html    CLOB;
+      v_dummy   INTEGER;
    BEGIN
       --TODO Error level Reporting like PHP
       dbax_core.g_stop_process := TRUE;
-      
-      g$error ('errorCode') := p_error_code;
-      g$error ('errorMsg') := p_error_msg;
 
-      g$error ('callStackTable') :=
+      dbax_core.g$view ('errorCode') := p_error_code;
+      dbax_core.g$view ('errorMsg') := p_error_msg;
+
+      dbax_core.g$view ('callStackTable') :=
          call_stack2html_table (p_call_stack => DBMS_UTILITY.format_call_stack ()
                               , p_table_attr => 'class="table table-striped table-condensed table-bordered"');
 
-      g$error ('errorStack') := DBMS_UTILITY.format_error_stack ();
-      g$error ('errorBacktrace') := DBMS_UTILITY.format_error_backtrace ();
+      dbax_core.g$view ('errorStack') := DBMS_UTILITY.format_error_stack ();
+      dbax_core.g$view ('errorBacktrace') := DBMS_UTILITY.format_error_backtrace ();
 
-      dbax_log.error( 'raise' || g$error ('errorCode'));
-      dbax_log.error( 'raise' || g$error ('errorMsg'));
-      dbax_log.error( 'raise' || DBMS_UTILITY.format_call_stack ());
-      dbax_log.error( 'raise' || g$error ('errorStack'));
-      dbax_log.error( 'raise' || g$error ('errorBacktrace'));       
-      
-      
-      DBMS_LOB.createtemporary (v_html, TRUE);
-      v_html := dbax_core.LOAD_VIEW('500','DEFAULT');
-
-      bind_vars (v_html);
+      dbax_log.error ('raise: ' || g$error ('errorCode'));
+      dbax_log.error ('raise: ' || g$error ('errorMsg'));
+      dbax_log.error ('raise: ' || DBMS_UTILITY.format_call_stack ());
+      dbax_log.error ('raise: ' || g$error ('errorStack'));
+      dbax_log.error ('raise: ' || g$error ('errorBacktrace'));
 
       HTP.init;
-      OWA_UTIL.mime_header ('text/html', FALSE, dbax_core.get_propertie ('ENCODING'));      
-      OWA_UTIL.status_line (200);
+      OWA_UTIL.mime_header ('text/html', FALSE, dbax_core.get_propertie ('ENCODING'));
+      OWA_UTIL.status_line (500);
       OWA_UTIL.http_header_close;
-      
-      dbax_core.print (v_html);
-            
+
+      dbax_teplsql.execute (p_template_name => '500');
    END raise;
 END dbax_exception;
 /
-
-

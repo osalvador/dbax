@@ -1,4 +1,3 @@
-/* Formatted on 16/02/2016 14:54:52 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY dbax_htmltable
 AS
    FUNCTION refcursor2html (p_cursor        IN sys_refcursor

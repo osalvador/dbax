@@ -9,8 +9,8 @@
 --   DBAX_CORE (Package)
 --   DBAX_LOG (Package)
 --
-CREATE OR REPLACE PROCEDURE CONSOLE (name_array    IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr
-                                  , value_array   IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr )
+CREATE OR REPLACE PROCEDURE CONSOLE (name_array  IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr
+                                 , value_array   IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr )
 AS
    l_appid CONSTANT   VARCHAR2 (100) := 'CONSOLE';
 BEGIN
@@ -20,8 +20,8 @@ EXCEPTION
    WHEN OTHERS
    THEN
       dbax_log.set_log_context ('error');
-      dbax_core.g$appid := l_appid;
-      dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+      dbax_core.g$appid                                  := l_appid;
+      dbax_log.error (SQLCODE || ' ' || SQLERRM || ' '   || DBMS_UTILITY.format_error_backtrace ());
       dbax_log.close_log;
       RAISE;
 END;

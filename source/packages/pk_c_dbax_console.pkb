@@ -26,7 +26,7 @@ AS
    AS
    BEGIN
       --If you put any HTML comments, then it will be send to the buffer and send to the client
-      -- p('<!-- DEBUG -->');
+      --p('Estoy entrando por aqui?');
       IF dbax_core.g$parameter.EXISTS (1)
       THEN
          FOR i IN 1 .. dbax_core.g$parameter.LAST
@@ -143,6 +143,7 @@ AS
 
    PROCEDURE get_log
    AS
+    l_return CLOB;
    BEGIN
       --Esto es una prueba y no deberia ir en un controlador, sino en el Modelo
       SELECT   DBMS_XMLGEN.getxml('SELECT appid, dbax_session, created_date, log_user, log_level, substr(log_text, 1,2000) log_text
@@ -151,10 +152,11 @@ AS
                                   || dbax_core.g$parameter (1)
                                   || ''',dbax_session)
               order by created_date desc')
-        INTO   dbax_core.g$h_view
+        INTO   l_return
         FROM   DUAL;
 
       dbax_core.g$content_type := 'text/xml';
+      dbax_core.p(l_return);
    END;
 
 
@@ -258,7 +260,7 @@ AS
           l_json.put ('text', 'Ok');
 
           --Return json
-          dbax_core.g$h_view := l_json.TO_CHAR;
+          dbax_core.p( l_json.TO_CHAR);
       ELSE
         NULL;
       END IF;
@@ -388,20 +390,20 @@ AS
       l_json.put ('modified_date', TO_CHAR (l_application_rt.modified_date, 'YYYY/MM/DD hh24:mi:ss'));
       l_json.put ('text', '');
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p( l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
          ROLLBACK;
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id is mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
    END upsert_app;
 
 
@@ -442,13 +444,13 @@ AS
 
       --Return values
       dbax_core.g$status_line := 200;
-      dbax_core.g$h_view := l_out_json.TO_CHAR;
+      dbax_core.p( l_out_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.p(  SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          dbax_log.error(SQLCODE ||' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_app;
 
@@ -613,7 +615,7 @@ AS
       l_json.put ('text', '');
 
       --Return json
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p( l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
@@ -621,13 +623,13 @@ AS
 
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and key are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
    END upsert_propertie;
 
 
@@ -656,7 +658,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p( 'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -684,13 +686,13 @@ AS
 
       --Return values
       dbax_core.g$status_line := 200;
-      dbax_core.g$h_view := l_out_json.TO_CHAR;
+      dbax_core.p( l_out_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.p( SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_propertie;
 
 
@@ -849,14 +851,14 @@ AS
 
 
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p( l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
          ROLLBACK;
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and route_name are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
@@ -864,7 +866,7 @@ AS
 
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
    END upsert_route;
 
    PROCEDURE new_route
@@ -886,7 +888,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p( 'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -925,7 +927,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p( 'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -945,7 +947,7 @@ AS
       l_json.put ('text', l_data_values.COUNT () || ' items deleted.');
 
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
@@ -954,7 +956,7 @@ AS
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
 
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
    END delete_route;
 
    PROCEDURE save_routes_order
@@ -987,7 +989,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p( 'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -1019,7 +1021,7 @@ AS
       l_json.put ('text', 'Routes order saved succesfully.');
 
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p( l_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
@@ -1027,7 +1029,7 @@ AS
          l_json      := json ();
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
    END save_routes_order;
 
    PROCEDURE test_route
@@ -1064,7 +1066,7 @@ AS
 
       --Return values
 
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p( l_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
@@ -1072,7 +1074,7 @@ AS
          l_json      := json ();
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p( l_json.TO_CHAR);
    END test_route;
 
    PROCEDURE views_
@@ -1216,7 +1218,7 @@ AS
       ELSE
          RAISE e_null_param;
       END IF;
-
+     
       l_view_rt   := tapi_wdx_views.rt (l_view_rt.appid, l_view_rt.name);
 
       --Return JSON
@@ -1227,21 +1229,21 @@ AS
 
 
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p( l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
          ROLLBACK;
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and name are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
 
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END upsert_view;
 
    PROCEDURE get_source_view
@@ -1296,7 +1298,7 @@ AS
 
       --Source code is a CLOB type, json.to_CLOB fails so I return plain text.
       --l_json.TO_CLOB(dbax_core.g$h_view);
-      dbax_core.g$h_view := l_view_rt.source;
+      dbax_core.p(  l_view_rt.source);
    EXCEPTION
       WHEN OTHERS
       THEN
@@ -1304,7 +1306,7 @@ AS
          l_json      := json ();
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END get_source_view;
 
 
@@ -1312,6 +1314,9 @@ AS
    PROCEDURE save_source_view
    AS
       l_view_rt   tapi_wdx_views.wdx_views_rt;
+      --
+      l_error_template clob;
+      --
       l_json      json := json ();
    BEGIN
       /**
@@ -1332,16 +1337,27 @@ AS
 
       --Get textarea CLOB from code(n) parameter
       l_view_rt.source := dbax_utils.get_clob (dbax_core.g$post, 'code');
+      
       --Delete Control Chars excep tabs and newlines
       l_view_rt.source := REPLACE (l_view_rt.source, CHR (10), '@|;newline@|;');
-
       l_view_rt.source := REPLACE (l_view_rt.source, CHR (09), '@|;tab@|;');
       l_view_rt.source := REGEXP_REPLACE (l_view_rt.source, '[[:cntrl:]]', '');
       l_view_rt.source := REPLACE (l_view_rt.source, '@|;newline@|;', CHR (10));
       l_view_rt.source := REPLACE (l_view_rt.source, '@|;tab@|;', CHR (09));
 
-      --Update propertie
+      --Update view
       tapi_wdx_views.web_upd (p_wdx_views_rec => l_view_rt, p_ignore_nulls => TRUE);
+
+      --Compile and compile dependencies
+      BEGIN
+         dbax_teplsql.compile (l_view_rt.name, l_error_template);
+         dbax_teplsql.comile_dependencies (l_view_rt.name, l_error_template);
+      EXCEPTION
+         WHEN OTHERS
+         THEN
+            dbax_log.error ('Error compiling view or dependencies: ' || l_error_template);
+            RAISE;
+      END; 
 
       l_view_rt   := tapi_wdx_views.rt (l_view_rt.appid, l_view_rt.name);
 
@@ -1353,14 +1369,14 @@ AS
       l_json.put ('text', '');
 
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END save_source_view;
 
 
@@ -1384,7 +1400,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p(  'APPID Must be not null');
          RETURN;
       ELSE
          dbax_core.g$view ('current_app_id') := UPPER (dbax_core.g$parameter (1));
@@ -1422,7 +1438,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p(  'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -1443,7 +1459,7 @@ AS
       l_json.put ('text', l_data_values.COUNT () || ' items deleted.');
 
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
@@ -1451,7 +1467,7 @@ AS
          l_json      := json ();
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END delete_view;
 
    /*
@@ -1611,21 +1627,21 @@ AS
 
 
       --Return values
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
          ROLLBACK;
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and procedure_name are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
 
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END upsert_reqvalidation;
 
    PROCEDURE delete_reqvalidation
@@ -1654,7 +1670,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p(  'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -1678,13 +1694,13 @@ AS
       --Return values
       dbax_core.g$status_line := 200;
 
-      dbax_core.g$h_view := l_out_json.TO_CHAR;
+      dbax_core.p(  l_out_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.p(  SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_reqvalidation;
 
    /*
@@ -1776,7 +1792,7 @@ AS
       l_json.put ('text', '');
 
       --Return json
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
@@ -1784,13 +1800,13 @@ AS
 
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and key are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END upsert_role;
 
    PROCEDURE edit_role
@@ -1872,7 +1888,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p(  'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -1900,13 +1916,13 @@ AS
 
       --Return values
       dbax_core.g$status_line := 200;
-      dbax_core.g$h_view := l_out_json.TO_CHAR;
+      dbax_core.p(  l_out_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.p(  SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_role;
 
 
@@ -1939,7 +1955,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p(  'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -1967,21 +1983,21 @@ AS
       l_json.put ('text', 'Users assigned to the role ' || l_rolename || ' successfully');
 
       --Return json
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
          ROLLBACK;
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and key are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END upsert_roles_users;
    
    
@@ -2014,7 +2030,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p(  'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -2042,21 +2058,21 @@ AS
       l_json.put ('text', 'Permissions assigned to the role ' || l_rolename || ' successfully');
 
       --Return json
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
          ROLLBACK;
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and key are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END upsert_roles_permissions;   
 
 
@@ -2142,7 +2158,7 @@ AS
       l_json.put ('text', '');
 
       --Return json
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
@@ -2150,13 +2166,13 @@ AS
 
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and key are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END upsert_pmsn;
 
    PROCEDURE edit_pmsn
@@ -2239,7 +2255,7 @@ AS
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
       THEN
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := 'APPID Must be not null';
+         dbax_core.p(  'APPID Must be not null');
          RETURN;
       ELSE
          l_appid     := UPPER (dbax_core.g$parameter (1));
@@ -2265,13 +2281,13 @@ AS
 
       --Return values
       dbax_core.g$status_line := 200;
-      dbax_core.g$h_view := l_out_json.TO_CHAR;
+      dbax_core.p(  l_out_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.p(  SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_pmsn;
 
    PROCEDURE logs
@@ -2479,7 +2495,7 @@ AS
       --The response is application/json
       dbax_core.g$content_type := 'application/json';
       dbax_core.g$status_line := 200;
-      dbax_core.g$h_view := l_json_clob;
+      dbax_core.p(  l_json_clob);
    END logs_get_list;
 
 
@@ -2515,7 +2531,7 @@ AS
 
       --Return values
       dbax_core.g$status_line := 200;
-      dbax_core.g$h_view := l_out_json.TO_CHAR;
+      dbax_core.p(  l_out_json.TO_CHAR);
    END logs_search;
 
    PROCEDURE logs_delete
@@ -2566,7 +2582,7 @@ AS
 
          dbax_core.g$content_type := 'text/plain';
          --Escape log text
-         dbax_core.g$h_view := DBMS_XMLGEN.CONVERT (l_wdx_log_rt.log_text, 0);
+         dbax_core.p(  DBMS_XMLGEN.CONVERT (l_wdx_log_rt.log_text, 0));
       END IF;
    END logs_get_log;
 
@@ -2711,7 +2727,7 @@ AS
       l_json.put ('text', '');
 
       --Return json
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN e_null_param
       THEN
@@ -2719,13 +2735,13 @@ AS
 
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and key are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END update_user;
 
 
@@ -2791,7 +2807,7 @@ AS
       l_json.put ('text', ' Password changed');
 
       --Return json
-      dbax_core.g$h_view := l_json.TO_CHAR;
+      dbax_core.p(  l_json.TO_CHAR);
    EXCEPTION
       WHEN e_changed
       THEN
@@ -2799,27 +2815,27 @@ AS
 
          l_json.put ('cod_error', -2);
          l_json.put ('msg_error', ' Invalid username/password');
-         dbax_core.g$h_view := l_json.TO_CHAR;   
+         dbax_core.p(  l_json.TO_CHAR);   
       WHEN e_null_param
       THEN
          ROLLBACK;
 
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', ' some parameters are null');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN e_confirm_pwd
       THEN
          ROLLBACK;
 
          l_json.put ('cod_error', -2);
          l_json.put ('msg_error', 'New Password and Confirm Password are not the same');
-         dbax_core.g$h_view := l_json.TO_CHAR;         
+         dbax_core.p(  l_json.TO_CHAR);         
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
    END change_user_password;
 
 
@@ -2866,13 +2882,13 @@ AS
 
       --Return values
       dbax_core.g$status_line := 200;
-      dbax_core.g$h_view := l_out_json.TO_CHAR;
+      dbax_core.p(  l_out_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
          dbax_core.g$status_line := 500;
-         dbax_core.g$h_view := SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.p(  SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_users;
 
    PROCEDURE new_user
@@ -2933,7 +2949,7 @@ AS
           l_json.put ('text', '');
 
           --Return json
-          dbax_core.g$h_view := l_json.TO_CHAR;
+          dbax_core.p(  l_json.TO_CHAR);
       ELSE
         NULL;
       END IF;
@@ -2944,20 +2960,20 @@ AS
 
          l_json.put ('cod_error', 100);
          l_json.put ('msg_error', 'current_app_id and key are mondatory');
-         dbax_core.g$h_view := l_json.TO_CHAR;
+         dbax_core.p(  l_json.TO_CHAR);
       WHEN e_confirm_pwd
       THEN
          ROLLBACK;
 
          l_json.put ('cod_error', -2);
          l_json.put ('msg_error', 'New Password and Confirm Password are not the same');
-         dbax_core.g$h_view := l_json.TO_CHAR;      
+         dbax_core.p(  l_json.TO_CHAR);      
       WHEN OTHERS
       THEN
          ROLLBACK;
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_core.g$h_view := l_json.TO_CHAR;      
+         dbax_core.p(  l_json.TO_CHAR);      
    END new_user;
    
     PROCEDURE user_layout_options
@@ -3015,7 +3031,7 @@ AS
        l_json.put ('text', 'ok');
 
        --Return json
-       dbax_core.g$h_view := l_json.TO_CHAR;
+       dbax_core.p(  l_json.TO_CHAR);
     EXCEPTION
        WHEN OTHERS
        THEN
