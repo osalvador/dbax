@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <meta charset="utf-8">
+      <title>DBAX Exception</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+      <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->    
+   </head>
+   <body>
+      <header class="navbar navbar-default navbar-static-top" role="banner">
+         <div class="container">
+            <div class="navbar-header">
+               <a href="http://dbax-project.org" class="navbar-brand">DBAX Exception. 500 Error</a>
+            </div>
+         </div>
+      </header>
+      <!-- Begin Body -->
+      <div class="container">
+         <div class="row">
+            <div class="col-md-3" id="leftCol">
+               <div class="well">
+                  <ul class="nav nav-stacked" id="sidebar">
+                     <li><a href="#userError">User Error</a></li>
+                     <li><a href="#callStack">Call Stack</a></li>
+                     <li><a href="#errorStack">Error Stack</a></li>
+                     <li><a href="#errorBacktrace">Error Backtrace</a></li>
+                  </ul>
+               </div>
+            </div>
+            <div class="col-md-9">
+               <h1 class="text-danger"><b>Error 500. Internal Server Error</b></h1>
+                <br>
+               <p>There is a problem with the resource you are looking for, and it cannot be displayed. <code id="http_referer"></code></p>
+
+               <hr>
+               <h2 id="userError">User Error</h2>
+               <div>
+                  <div class="panel panel-default">
+                     <div class="panel-heading">
+                        <h4>Error Code: ${errorCode}</h4>
+                     </div>
+                     <div class="panel-body">Error Message: ${errorMsg}
+                     </div>
+                  </div>
+               </div>
+               <hr>
+               <h2 id="callStack">Call Stack</h2>
+               ${callStackTable}
+
+               <hr>
+               <h2 id="errorStack">Error Stack</h2>
+               <p>
+                  <code>${errorStack}</code>
+               </p>
+               <hr>
+               <h2 id="errorBacktrace">Error Backtrace</h2>
+               <p><code>${errorBacktrace}</code>
+               </p>
+            </div>
+         </div>
+      </div>
+      <!-- script references -->
+      <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+      <!-- Latest compiled and minified JavaScript -->
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+          document.getElementById("http_referer").innerHTML = window.location.pathname;       
+       </script>
+   </body>
+</html>
