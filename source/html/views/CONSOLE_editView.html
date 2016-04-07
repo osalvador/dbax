@@ -1,0 +1,307 @@
+<?dbax dbax_core.include('header'); ?>
+
+<?dbax
+    dbax_core.g$view('page_head') := '
+    <!-- SweetAlert 2 -->
+    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="${resources_url}/plugins/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="${resources_url}/plugins/codemirror/addon/dialog/dialog.css">
+    <link rel="stylesheet" href="${resources_url}/plugins/codemirror/addon/display/fullscreen.css">
+    <link rel="stylesheet" href="${resources_url}/plugins/codemirror/theme/monokai.css">
+    ';
+?>
+
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?> 
+
+ <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            ${name}
+            <small>Edit View</small>
+          </h1>
+          
+          <ol class="breadcrumb">
+			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
+            <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
+            <li><a href="${base_path}/applications/edit/${current_app_id}/views"><i class="fa fa-eye"></i> Views</a></li>            
+            <li>${name}</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">        
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#Edit" data-toggle="tab">Edit</a></li>
+                    <li><a href="#Source" data-toggle="tab">Source Code of the View</a></li>                                 
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="Edit">
+        
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><i class="fa fa-pencil"></i> Edit Properties</h3>
+                            </div><!-- /.box-header -->
+                            <div class="box-body">                    
+                                
+                                  <!-- form start -->
+                                  <form name="viewEditForm" id="viewEditForm" action="${base_path}/applications/edit/${current_app_id}/views/upsert" class="form-horizontal" method="POST">                        
+                                     
+                                     <div class="form-group">
+                                        <label for="current_app_id" class="col-sm-2 control-label">Application ID</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="current_app_id" id="current_app_id" value="${current_app_id}" readonly="readonly">
+                                        </div>
+                                      </div>
+                                      
+                                    <div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">View Name</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="name" id="name" value="${name}" readonly="readonly">
+                                        </div>
+                                    </div>  
+                                    
+                                    <div class="form-group">
+                                        <label for="title" class="col-sm-2 control-label">Title</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="title" id="title" value="${view_title}" required>
+                                        </div>
+                                    </div>
+  
+                                    <div class="form-group">
+                                      <label for="visible" class="col-sm-2 control-label">Visible</label>
+                                      <div class="col-sm-10">
+                                        <input type="checkbox" name="visible" id="visible" ${view_visible} />
+                                      </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description" class="col-sm-2 control-label">Description</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="description" id="description" value="${description}" maxlength="2000">
+                                        </div>
+                                      </div>                        
+                                      
+                                      <div class="form-group">
+                                        <label for="created_by" class="col-sm-2 control-label">Created By</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="created_by" id="created_by" value="${created_by}" readonly="readonly">
+                                        </div>
+                                      </div>
+                                      
+                                      <div class="form-group">
+                                        <label for="created_date" class="col-sm-2 control-label">Created Date</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="created_date" id="created_date" value="${created_date}" readonly="readonly">
+                                        </div>
+                                      </div>                          
+                                      
+                                      <div class="form-group">
+                                        <label for="modified_by" class="col-sm-2 control-label">Modified By</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="modified_by" id="modified_by" value="${modified_by}" readonly="readonly">
+                                        </div>
+                                      </div>                            
+
+                                      <div class="form-group">
+                                        <label for="modified_date" class="col-sm-2 control-label">Modified Date</label>
+                                        <div class="col-sm-10">
+                                          <input type="text" class="form-control" name="modified_date" id="modified_date" value="${modified_date}" readonly="readonly">
+                                        </div>
+                                      </div>                          
+                                    
+                                      <input type="hidden" name="row_id" value="${row_id}">
+                                      <input type="hidden" name="hash" id="hash" value="${hash}">
+                                  </form>
+                            </div><!-- /.box-body -->
+                              
+                            <div class="box-footer">
+                              <button id="viewEditBtn" class="btn btn-info" onclick="SubmitForm('viewEditForm')"><i class="fa fa-save"></i> Save</button>
+                              <div class="pull-right">
+                                <a href="${base_path}/applications/edit/${current_app_id}#Views" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                              </div>
+                            </div><!-- /.box-footer -->
+                        </div> <!-- /.box -->              
+                </div><!-- /.tab-pane -->              
+
+                <div class="tab-pane" id="Source">
+                    
+                    <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Source Code of the View</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">          
+
+                      <div class="btn-group" role="group" aria-label="...">
+                        <button id="viewCodeBtn" class="btn btn-info" onclick="editor.save(); SubmitClobForm('viewCodeForm'); changes=false;"><i class="fa fa-save"></i> Save</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalExport"><i class="fa fa-download"></i> Export</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImport"><i class="fa fa-upload"></i> Import</button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalInfo"><i class="fa fa-info"></i> Keyboard shortcuts</button>
+                      </div>
+                      <br><br>
+                      
+                        <form name="viewCodeForm" id="viewCodeForm" action="${base_path}/applications/edit/${current_app_id}/views/save-source" method="POST">
+                        
+                            <textarea id="code"  name="code"></textarea>
+                            <input type="hidden" name="current_app_id" value="${current_app_id}">
+                            <input type="hidden" name="name" value="${name}" >
+                            <input type="hidden" name="hash" id="hash" value="${hash}">
+                        </form>
+                        
+                    </div><!-- /.box-body -->
+                      
+                    <div class="box-footer">                      
+                      <button id="viewCodeBtn" class="btn btn-info" onclick="editor.save(); SubmitClobForm('viewCodeForm'); changes=false;"><i class="fa fa-save"></i> Save</button>
+                      <div class="pull-right">
+                        <a href="${base_path}/applications/edit/${current_app_id}#Views" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                      </div>                      
+                    </div><!-- /.box-footer -->
+                </div> <!-- /.box -->
+                  
+              </div><!-- /.tab-pane -->
+            </div><!-- /.tab-content -->
+          </div><!-- nav-tabs-custom -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+
+     <!-- Modal Export -->
+    <div class="modal fade" id="modalExport" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">Export View</h4>
+          </div>
+          <div class="modal-body">
+            <!--<form>-->
+              <div class="form-group">
+                <label for="filenameToSave" class="control-label">File name to save:</label>
+                <input type="text" class="form-control" id="filenameToSave" required value="${current_app_id}_${name}.html">
+              </div>
+            <!--</form>-->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="closeExp">Close</button>
+            <button type="button" class="btn btn-primary" onclick="exportEditor('code','filenameToSave'); $('#closeExp').click();">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+     <!-- Modal Import-->
+    <div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Import View</h4>
+          </div>
+          <div class="modal-body">            
+              <div class="form-group">
+                <label for="fileToLoad" class="control-label">Select file to load</label>
+                <input type="file" id="fileToLoad">
+              </div>            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="closeImp">Close</button>
+            <button type="button" class="btn btn-primary" onclick="importEditor('code','fileToLoad', 'modalImport'); $('#closeImp').click();">Import</button>
+          </div>
+        </div>
+      </div>
+    </div>
+ 	<!-- Modal Info-->
+    <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Keyboard shortcuts</h4>
+          </div>
+          <div class="modal-body">            			
+           <ul>                         
+              <li><code>Ctrl-S / Cmd-S </code> Save</li>
+              <li><code>F11 / ESC </code> Enter and Exit Full screen</li>              
+              <li><code>Ctrl-F / Cmd-F </code> Start searching</li>
+              <li><code>Ctrl-G / Cmd-G </code> Find next</li>
+              <li><code>Shift-Ctrl-G / Shift-Cmd-G </code> Find previous</li>
+              <li><code>Shift-Ctrl-F / Cmd-Option-F </code> Replace</li>
+              <li><code>Shift-Ctrl-R / Shift-Cmd-Option-F </code> Replace all</li>
+              <li><code>Alt-F </code> Persistent search (dialog doesn't autoclose, enter to find next, shift-enter to find previous)    </li>
+         	</ul>       
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="closeImp">Ok</button>            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <?dbax dbax_core.include('footer'); ?>
+
+    <!-- JqueryValidate -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js" type="text/javascript"></script>
+
+    <!-- SweetAlert 2 -->
+    <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+
+   <!-- CodeMirror -->
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/lib/codemirror.js"></script>   
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/xml/xml.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/javascript/javascript.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/css/css.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script> 
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/display/fullscreen.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/dialog/dialog.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/search/search.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/search/searchcursor.js"></script>
+
+    <!-- dbaxAdmin -->
+    <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
+    <script src="${resources_url}/plugins/dbaxadmin/dbaxCodeMirror.js" type="text/javascript"></script>
+    
+    <script>    
+      //Confirm exit on before onluoad
+      window.onbeforeunload = confirmExit;
+      //Iinicialize editor
+      dbaxCodeMirror('code','viewCodeForm');
+      
+        //Submit jQuery Ajax Form 
+        function SubmitForm(formId){        
+            dbaxSubmitForm(formId).done(function(data) {
+              if (data.cod_error === undefined){
+                  //Update Values
+                  $('#hash').val(data.hash)
+                  $('#modified_by').val(data.modified_by)
+                  $('#modified_date').val(data.modified_date)
+              }
+            });
+        }       
+           
+        //Get jQuery Ajax View Source                    
+       $.get( '${base_path}/applications/edit/${current_app_id}/views/get-source/${name}', function( data ) {
+            try {
+                  //parse Data into JSON   
+                  json = $.parseJSON(data);
+                if (json.cod_error !== undefined){
+                      swal({  title: "Error getting view source code"
+                            ,html: "There is a problem getting your data" + '<br/><br/><pre><code class="prettyprint">' + json.msg_error + '</code></pre>'
+                            ,type: "error"}); 
+                }
+            } catch (e) {
+                  //data are plain/text
+                  editor.setValue(data);
+                  editor.setSize("100%",500);                                   
+            }            
+         });
+      
+     </script> 
+
+  </body>
+</HTML> 

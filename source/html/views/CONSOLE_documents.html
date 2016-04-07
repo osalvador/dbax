@@ -1,0 +1,70 @@
+<?dbax 
+    dbax_core.g$view('page_head') := '
+        <style type="text/css">
+            @import url(''//cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/css/dropzone.css'');
+        </style>';
+    dbax_core.include('header');
+?>
+
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?>   
+    
+    <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+          <section class="content-header">
+             <h1>
+                Test File upload page
+             </h1>             
+             <?dbax dbax_core.include('breadcrumb');?>
+          </section>
+          
+          <!-- Main content -->
+          <section class="content">             
+               
+            <form enctype="multipart/form-data" action="${base_path}/upload" method="POST">              
+              <input type="file" id="file" name="file">
+              <input type="text" id="user" name="user" hidden>
+              <button type="submit" class="btn btn-default">Subir</button>              
+            </form>
+            
+            <hr>
+            <?dbax
+                BEGIN
+                   FOR c1 IN (SELECT   name
+                                     , mime_type
+                                     , doc_size
+                                     , dad_charset
+                                     , last_updated
+                                     , content_type
+                                FROM   wdx_documents)
+                   LOOP
+                      p ('<a href="${base_path}/download/' || c1.name || '"> ' || c1.name || '</a>' || '; ');
+                      p (c1.mime_type || '; ');
+                      p (c1.doc_size || '; ');
+                      p (c1.dad_charset || '; ');
+                      p (TO_CHAR(c1.last_updated, 'DD/MM/YYYY HH24:mi:ss') || '; ');
+                      p (c1.content_type || '; ');
+                      p ('<hr>');
+                   END LOOP;
+                END;
+            ?>
+            
+
+          <div> 
+              <form id="my-awesome-dropzone" action="${base_path}/upload" class="dropzone">
+              
+              </form>      
+          </div>
+      
+                                 
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+   
+    <?dbax dbax_core.include('footer'); ?>
+   
+    <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/dropzone.min.js"></script>
+   
+   
+  </body>
+</HTML>

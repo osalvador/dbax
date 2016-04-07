@@ -1,0 +1,98 @@
+<?dbax dbax_core.include('header'); ?>
+
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?> 
+
+   
+ <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            ${procedure_name} 
+            <small>Request Validation Function</small>
+          </h1>
+          <ol class="breadcrumb">
+			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
+            <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
+            <li><a href="${base_path}/applications/edit/${current_app_id}/reqvalidation"><i class="fa fa-check"></i> Request Validation</a></li>            
+            <li>${procedure_name}</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-pencil"></i> ${procedure_name} function</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">                    
+                    
+                      <!-- form start -->
+                      <form name="reqvalidationEditForm" id="reqvalidationEditForm" action="" class="form-horizontal" method="POST">                        
+                         
+                         <div class="form-group">
+                            <label for="current_app_id" class="col-sm-2 control-label">Application ID</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="current_app_id" id="current_app_id" value="${current_app_id}" readonly="readonly">
+                            </div>
+                          </div>
+                          
+                        <div class="form-group">
+                            <label for="procedure_name" class="col-sm-2 control-label">Procedure Name</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="procedure_name" id="procedure_name" value="${procedure_name}" readonly="readonly">
+                            </div>
+                        </div>  
+                          
+                          <div class="form-group">
+                            <label for="created_by" class="col-sm-2 control-label">Created By</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="created_by" id="created_by" value="${created_by}" readonly="readonly">
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="created_date" class="col-sm-2 control-label">Created Date</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="created_date" id="created_date" value="${created_date}" readonly="readonly">
+                            </div>
+                          </div>                          
+                          
+                          <div class="form-group">
+                            <label for="modified_by" class="col-sm-2 control-label">Modified Date</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="modified_by" id="modified_by" value="${modified_by}" readonly="readonly">
+                            </div>
+                          </div>                            
+
+                          <div class="form-group">
+                            <label for="modified_date" class="col-sm-2 control-label">Modified Date</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="modified_date" id="modified_date" value="${modified_date}" readonly="readonly">
+                            </div>
+                          </div>                          
+                        
+                          <input type="hidden" name="row_id" value="${row_id}">
+                          <input type="hidden" name="hash" id="hash" value="${hash}">
+                      </form>
+                </div><!-- /.box-body -->
+                  
+                <div class="box-footer">                  
+                  <div class="pull-right">
+                    <a href="${base_path}/applications/edit/${current_app_id}#RequestValidation" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                  </div>
+                </div><!-- /.box-footer -->
+            </div> <!-- /.box -->              
+
+
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+
+   
+    <?dbax dbax_core.include('footer'); ?>
+   
+     
+  </body>
+</HTML>

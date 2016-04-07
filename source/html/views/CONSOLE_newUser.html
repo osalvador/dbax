@@ -1,0 +1,155 @@
+<?dbax dbax_core.include('header'); ?>
+
+<?dbax  
+    dbax_core.g$view('page_head') := '        
+    <!-- SweetAlert 2-->     
+    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
+        
+    ';
+?>
+
+
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?> 
+
+   
+ <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            <i class="fa fa-user-plus"></i> New User
+          </h1>
+          <ol class="breadcrumb">
+			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${base_path}/users"><i class="fa fa-rocket"></i> Users</a></li>
+            <li>New</li>
+          </ol> 
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-solid box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">New user</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">                    
+                    
+                  <!-- form start -->
+                  <form name="userNewForm" id="userNewForm" action="${base_path}/users/new" class="form-horizontal" method="POST">                        
+
+                    <div class="form-group">
+                      <label for="new_username" class="col-sm-2 control-label">*User Name</label>
+                      <div class="col-sm-10">
+                        <div class="input-group">
+                       		<input type="text" class="form-control" name="new_username" id="new_username" required>
+                        	<div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+                     	</div>
+                      </div>
+                    </div>
+                    <hr>
+                    
+                    <h4>Personal Info</h4>
+                    <div class="form-group">
+                      <label for="new_first_name" class="col-sm-2 control-label">*First Name</label>
+                      <div class="col-sm-10">
+                        <div class="input-group">
+	                        <input type="text" class="form-control" name="new_first_name" id="new_first_name" required>
+                        	<div class="input-group-addon"><i class="fa fa-user"></i></div>
+                     	</div>
+                      </div>
+                    </div>                         
+
+                    <div class="form-group">
+                      <label for="new_last_name" class="col-sm-2 control-label">Last Name</label>
+                      <div class="col-sm-10">
+                        <div class="input-group">
+                        	<input type="text" class="form-control" name="new_last_name" id="new_last_name">
+                        	<div class="input-group-addon"><i class="fa fa-user"></i></div>
+                     	</div>
+                      </div>
+                    </div>                         
+
+                    <div class="form-group">
+                      <label for="new_display_name" class="col-sm-2 control-label">Display Name</label>
+                      <div class="col-sm-10">
+                        <div class="input-group">
+                        	<input type="text" class="form-control" name="new_display_name" id="new_display_name">
+                        	<div class="input-group-addon"><i class="fa fa-desktop"></i></div>
+                        </div>
+                      </div>
+                    </div>
+					
+                    <div class="form-group">
+                        <label for="new_email" class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                              <input type="email" class="form-control" name="new_email" id="new_email">
+                              <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                            </div>
+                        </div>
+                    </div>
+					<hr>
+                    
+                    <h4>Security</h4>
+                    <div class="form-group">
+                      <label for="new_password" class="col-sm-2 control-label">*Password</label>
+                      <div class="col-sm-10">
+                        <div class="input-group">
+                        	<input type="password" class="form-control" name="new_password" id="new_password" required>
+                              <div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="new_confirm_password" class="col-sm-2 control-label">*Confirm Password</label>
+                      <div class="col-sm-10">
+                        <div class="input-group">
+                        	  <input type="password" class="form-control" name="new_confirm_password" id="new_confirm_password" required>
+                              <div class="input-group-addon"><i class="glyphicon glyphicon-log-in"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                   </form>
+                </div><!-- /.box-body -->
+                  
+                <div class="box-footer">
+                  <button id="usersNewBtn" onclick="SubmitForm('userNewForm')" class="btn btn-info"><i class="fa fa-user-plus"></i> Create User</button>
+                  <div class="pull-right">
+                    <a href="${base_path}/users" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                  </div>
+                </div><!-- /.box-footer -->
+                
+            </div> <!-- /.box -->              
+
+
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+
+   
+    <?dbax dbax_core.include('footer'); ?>
+    
+    <!-- JqueryValidate -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js" type="text/javascript"></script>        
+    <!-- SweetAlert 2 -->
+    <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>        
+    <!-- dbaxAdmin -->
+    <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
+  
+   <script type="text/javascript">          
+        //Submit jQuery Ajax Form 
+        function SubmitForm(formId){        
+            dbaxSubmitForm(formId).done(function(data) {
+                if (data.cod_error === undefined)
+                    window.location.href = "${base_path}/users/"+$('#new_username').val();
+            });
+        }       
+
+    </script>   
+ 
+     
+  </body>
+</HTML>

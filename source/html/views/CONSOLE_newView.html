@@ -1,0 +1,144 @@
+<?dbax dbax_core.include('header'); ?>
+
+<?dbax  
+    dbax_core.g$view('page_head') := '        
+    <!-- SweetAlert 2-->     
+    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
+        
+    ';
+?>
+
+
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?> 
+
+<!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            New View            
+          </h1>
+          <ol class="breadcrumb">
+			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
+            <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
+            <li><a href="${base_path}/applications/edit/${current_app_id}/views"><i class="fa fa-eye"></i> Views</a></li>            
+            <li>New</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">New</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">                    
+                    
+                      <!-- form start -->
+                      <form name="viewNewForm" id="viewNewForm" action="${base_path}/applications/edit/${current_app_id}/views/upsert" class="form-horizontal" method="POST">
+
+                        <div class="form-group">
+                          <label for="current_app_id" class="col-sm-2 control-label">Application ID</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="current_app_id" id="current_app_id" value="${current_app_id}" readonly="readonly">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">View Name</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="name" id="name" required maxlength="300">
+                          </div>
+                        </div>  
+
+                        <div class="form-group">
+                          <label for="title" class="col-sm-2 control-label">Title</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="title" id="title" required maxlength="300">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="visible" class="col-sm-2 control-label">Visible</label>
+                          <div class="col-sm-10">
+                            <input type="checkbox" name="visible" id="visible" />
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="description" class="col-sm-2 control-label">Description</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="description" id="description" maxlength="300">
+                          </div>
+                        </div>                        
+
+                        <div class="form-group">
+                          <label for="created_by" class="col-sm-2 control-label">Created By</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="created_by" id="created_by" value="${created_by}" readonly="readonly">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="created_date" class="col-sm-2 control-label">Created Date</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="created_date" id="created_date" value="${created_date}" readonly="readonly">
+                          </div>
+                        </div>                          
+
+                        <div class="form-group">
+                          <label for="modified_by" class="col-sm-2 control-label">Modified By</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="modified_by" id="modified_by" value="${modified_by}" readonly="readonly">
+                          </div>
+                        </div>                            
+
+                        <div class="form-group">
+                          <label for="modified_date" class="col-sm-2 control-label">Modified Date</label>
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="modified_date" id="modified_date" value="${modified_date}" readonly="readonly">
+                          </div>
+                        </div> 
+                      </form>
+                </div><!-- /.box-body -->
+                  
+                <div class="box-footer">
+                  <button id="viewNewBtn" class="btn btn-info" onclick="SubmitForm('viewNewForm')"><i class="fa fa-save"></i> Save</button>
+                  <div class="pull-right">
+                    <a href="${base_path}/applications/edit/${current_app_id}#Views" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                  </div>
+                </div><!-- /.box-footer -->
+            </div> <!-- /.box -->              
+
+
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+
+   
+    <?dbax dbax_core.include('footer'); ?>
+    
+    <!-- SweetAlert 2 -->
+    <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+
+    <!-- JqueryValidate -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js" type="text/javascript"></script>
+    
+    <!-- dbaxAdmin -->
+    <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
+    
+          
+	<script type="text/javascript">          
+        //Submit jQuery Ajax Form 
+        function SubmitForm(formId){        
+            dbaxSubmitForm(formId).done(function(data) {
+                if (data.cod_error === undefined)
+                    window.location.href = "${base_path}/applications/edit/${current_app_id}/views/edit/"+$('#name').val();
+            });
+        }
+    </script>
+ 
+     
+  </body>
+</HTML>

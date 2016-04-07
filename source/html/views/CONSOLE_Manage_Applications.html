@@ -1,0 +1,763 @@
+<?dbax dbax_core.include('header'); ?>
+
+<?dbax  
+    dbax_core.g$view('page_head') := '        
+    <!-- SweetAlert 2-->     
+    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
+
+    <!--Footable -->
+    <link href="${resources_url}/plugins/footable/css/footable.core.css" rel="stylesheet" type="text/css"/>
+    
+    <style type="text/css">
+        th, td { white-space: nowrap; }
+        .handle {cursor: move;}
+		
+		.bottom-buffer { margin-bottom: 3px; }	    
+    </style>        
+    ';
+?>
+
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?> 
+   
+   <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            <i class="fa fa-rocket"></i> Settings for ${current_app_id} application
+            <small>${appName}</small>
+          </h1>
+          <ol class="breadcrumb">
+			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
+            <li><a href="${base_path}/applications/edit/${appid}"><i class="fa fa-cogs"></i> ${current_app_id}</a></li>
+          </ol> 
+        </section>
+
+        <!-- Main content -->
+        <section class="content">          
+        
+          <!-- Custom Tabs -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#Settings" data-toggle="tab"><i class="fa fa-wrench"></i> Settings</a></li>
+              <li><a href="#Properties" data-toggle="tab"><i class="fa fa-cog"></i> Properties</a></li>
+              <li><a href="#Routing" data-toggle="tab"><i class="fa fa-road"></i> Routing</a></li>
+              <li><a href="#Views" data-toggle="tab"><i class="fa fa-eye"></i> Views</a></li>              
+              <li><a href="#RequestValidation" data-toggle="tab"><i class="fa fa-check"></i> Request Validation</a></li>
+              <li><a href="#Security" data-toggle="tab"><i class="fa fa-lock"></i> Security</a></li>
+            </ul>
+            
+            <div class="tab-content">             
+             <div class="tab-pane active" id="Settings">
+
+                <div class="box box-default box-solid">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">General Settings</h3>
+                        </div><!-- /.box-header -->
+                    <div class="box-body">
+                      <!-- form start -->
+               
+                      <form name="appSettingsForm" id="appSettingsForm" action="${base_path}/applications/upsert" class="form-horizontal" method="POST">                        
+                         
+                         <div class="form-group">
+                            <label for="current_app_id" class="col-sm-2 control-label">Application ID</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="current_app_id" id="current_app_id" value="${current_app_id}" readonly="readonly" required>
+                            </div>
+                          </div>
+                          
+                        <div class="form-group">
+                            <label for="app_name" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="app_name" id="app_name" value="${app_name}" maxlength="50" required>
+                            </div>
+                        </div>  
+                          
+                        <div class="form-group">
+                            <label for="app_desc" class="col-sm-2 control-label">Description</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="app_desc" id="app_desc" value="${app_desc}" maxlength="300" required>
+                            </div>
+                          </div>                        
+                          
+                          <div class="form-group">
+                            <label for="app_active" class="col-sm-2 control-label">Active</label>
+                            <div class="col-sm-10">
+                              <input type="checkbox" name="app_active" id="app_active" ${app_active} />
+                            </div>
+                          </div>
+                          
+                           <div class="form-group">                          
+                            <label for="app_access_control" class="col-sm-2 control-label">Access Control</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="app_access_control" name="app_access_control" required>
+                                  <option "<?dbax IF '${app_access_control}' = 'PUBLIC' THEN p('selected'); END IF; ?>">PUBLIC</option>
+                                  <option "<?dbax IF '${app_access_control}' = 'PRIVATE' THEN p('selected'); END IF; ?>">PRIVATE</option>                                  
+                                </select>
+                            </div>
+                          </div>
+                          
+                           <div class="form-group">                          
+                            <label for="app_auth_scheme" class="col-sm-2 control-label">Auth Scheme</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="app_auth_scheme" name="app_auth_scheme">                                                    
+                                  <option></option>
+                                  <?dbax
+                                      FOR c1 IN (SELECT scheme_name FROM wdx_auth_schemes)
+                                      LOOP
+                                          IF '${app_auth_scheme}' = c1.scheme_name
+                                          THEN
+                                              p('<option selected>'|| c1.scheme_name ||'</option>');
+                                          ELSE                                        
+                                              p('<option>'|| c1.scheme_name ||'</option>');
+                                          END IF;
+                                      END LOOP;
+                                  ?>                                
+                                </select>
+                            </div>
+                          </div>
+                          
+                           <div class="form-group">
+                             <label for="app_created_by" class="col-sm-2 control-label">Created By</label>
+                             <div class="col-sm-10">
+                               <input type="text" class="form-control" name="app_created_by" id="app_created_by" value="${app_created_by}" readonly="readonly">
+                             </div>
+                           </div>
+
+                           <div class="form-group">
+                             <label for="app_created_date" class="col-sm-2 control-label">Created Date</label>
+                             <div class="col-sm-10">
+                               <input type="text" class="form-control" name="app_created_date" id="app_created_date" value="${app_created_date}" readonly="readonly">
+                             </div>
+                           </div>                          
+
+                           <div class="form-group">
+                             <label for="app_modified_by" class="col-sm-2 control-label">Modified By</label>
+                             <div class="col-sm-10">
+                               <input type="text" class="form-control" name="app_modified_by" id="app_modified_by" value="${app_modified_by}" readonly="readonly">
+                             </div>
+                           </div>                            
+
+                           <div class="form-group">
+                             <label for="app_modified_date" class="col-sm-2 control-label">Modified Date</label>
+                             <div class="col-sm-10">
+                               <input type="text" class="form-control" name="app_modified_date" id="app_modified_date" value="${app_modified_date}" readonly="readonly">
+                             </div>
+                           </div> 
+               
+                          <input type="hidden" name="app_hash" id="app_hash" value="${app_hash}">
+                        </form>                                                                  
+                   </div><!-- /.box-body -->
+                  
+                    <div class="box-footer">
+                      <button id="appSettingsBtn" onclick="SubmitForm('appSettingsForm')" class="btn btn-info"><i class="fa fa-save"></i> Save</button>
+                      <!--<button type="submit" class="btn btn-default pull-right">Cancel</button>-->
+                    </div><!-- /.box-footer -->
+                </div> <!-- /.box -->
+                
+                
+              </div><!-- /.tab-pane -->              
+              <div class="tab-pane" id="RequestValidation">
+                
+                    <div class="box box-default box-solid">
+                      <div class="box-header with-border">
+                        <h3 class="box-title">Request Validation Function</h3>
+                      </div><!-- /.box-header -->
+                      <div class="box-body">                  
+                        
+                        <p>Request-Validation-Function restricts access to the database procedures that can be invoked from an HTTP request.
+                            In each and every one of the HTTP requests that are made against the database, DBAX will check that the procedure is within this whitelist.</p>                        
+                        <p> Only the requests that belong to <i>Procedure Name</i> can be called from a browser.</p>
+
+                        <div class="bottom-buffer">
+                        	<div class="btn-toolbar">
+                               <div class="btn-group">                                    
+                                   <a href="${base_path}/applications/edit/${current_app_id}/reqvalidation/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                               </div>
+                               <div class="btn-group">                                    
+                                   <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RequestValidationTable','${base_path}/applications/edit/${current_app_id}/reqvalidation/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                               </div>
+                           </div> <!-- /.btn-toolbar -->
+                        </div>
+                         
+                          <div class="table-responsive">
+                            <table class="table table-bordered table-striped footable" data-page-size="15" id="RequestValidationTable">
+                               <thead>
+                                  <tr>
+                                    <th data-sort-ignore="true"><input type="checkbox" id="selectAllReq" onclick="checkAll(this.id, 'RequestValidationTable');" name="all"></th>
+                                    <th data-sort-initial="true">Procedure Name</th> 
+                                    <th>AppId</th>                                     
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                 <?dbax 
+									  DECLARE
+                                        l_link VARCHAR2(1000);
+                                      BEGIN                                      
+                                          FOR c1 IN (select * from table (tapi_wdx_reqvalidation.tt('${current_app_id}')))
+                                          LOOP
+											l_link := '<a href="${base_path}/applications/edit/${current_app_id}/reqvalidation/edit/'|| utl_url.escape (c1.procedure_name, true) ||'">' || c1.procedure_name || '</a>';
+											p('<tr>');
+                                                p('<td><input type="checkbox" value="'|| c1.procedure_name ||'"></td>');
+                                                p('<td>'|| l_link ||'</td>');                                                
+                                                p('<td>'|| c1.appid ||'</td>');                                                
+                                            p('</tr>');                      
+                                          END LOOP;
+									   END;
+                                    ?>
+                                </tbody>
+                                <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <ul class="pagination"></ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>                                    
+                           </table>
+                          </div>  
+               
+                     <div class="btn-toolbar">
+                        <div class="btn-group">
+                            <a href="${base_path}/applications/edit/${current_app_id}/reqvalidation/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RequestValidationTable','${base_path}/applications/edit/${current_app_id}/reqvalidation/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                        </div>                                
+                      </div> <!-- /.btn-toolbar -->
+                    </div><!-- /.box-body -->
+                  </div> <!-- /.box -->
+              
+              
+          </div><!-- /.tab-pane -->
+          <div class="tab-pane" id="Properties">
+
+              <div class="box box-default box-solid">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">Properties</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                    
+                    <p>Properties are configuration values managed as key/value pairs. In each pair, the key and value are both String values. The key identifies, and is used to retrieve, the value, much as a variable name is used to retrieve the variable's value. </p>
+                     <p>Properties can be accessed at any time from <code>dbax_core.g$view('key')</code>
+                        ,can be modified hot and will take effect in the new requests.</p>
+                                            
+                      <div class="bottom-buffer">
+                      	<div class="btn-toolbar">
+                            <div class="btn-group">
+                                <a href="${base_path}/applications/edit/${current_app_id}/properties/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('PropertiesTable','${base_path}/applications/edit/${current_app_id}/properties/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div> <!-- /.btn-toolbar -->
+                      </div>
+                      
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input id="filterProperties" type="text" class="form-control" placeholder="Search...">
+                      </div>                                 
+                        <div class="table-responsive" id="divProperties">
+                            <table class="table table-bordered table-striped footable " data-page-size="15" id="PropertiesTable" data-filter="#filterProperties" data-filter-text-only="true">
+                               <thead>
+                                  <tr>
+                                     <th data-sort-ignore="true"><input type="checkbox" id="selectAllProp" onclick="checkAll(this.id, 'PropertiesTable');" name="all"></th>
+                                     <th data-sort-initial="true">Key</th>
+                                     <th>Value</th>
+                                     <th>Description</th>                           
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                     <?dbax
+                                      DECLARE
+                                        l_link VARCHAR2(1000);
+                                      BEGIN
+                                          FOR c1 IN (select * from table (tapi_wdx_properties.tt('${current_app_id}')))
+                                          LOOP
+                                            l_link := '<a href="${base_path}/applications/edit/${current_app_id}/properties/edit/'|| utl_url.escape (c1.key, true) ||'">' || c1.key || '</a>';
+                                            p('<tr>');
+                                                p('<td><input type="checkbox" value="'|| c1.key||'"></td>');
+                                                p('<td>'|| l_link ||'</td>');
+                                                p('<td>'|| c1.value ||'</td>');
+                                                p('<td>'|| c1.description ||'</td>');                          
+                                            p('</tr>');                      
+                                          END LOOP;
+                                      END;
+                                    ?>
+                                </tbody>
+                                <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <ul class="pagination"></ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                           </table>
+                        </div>
+                        <div class="btn-toolbar">
+                          <div class="btn-group">
+                              <a href="${base_path}/applications/edit/${current_app_id}/properties/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                          </div>
+                          <div class="btn-group">
+                              <button type="button" class="btn btn-danger btn-xs" onclick="Delete('PropertiesTable','${base_path}/applications/edit/${current_app_id}/properties/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                          </div>                                
+                        </div> <!-- /.btn-toolbar -->
+                    </div><!-- /.box-body -->
+                  </div> <!-- /.box -->
+                  
+          </div><!-- /.tab-pane -->
+              
+          <div class="tab-pane" id="Routing">
+
+              <div class="box box-default box-solid">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">MVC Routes</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                    
+                    <p>Routing is the process of taking a URI endpoint (that part of the URI which comes after the base URL) 
+                        and decomposing it into parameters to determine which module, controller, 
+                        and action of that controller should receive the request.</p>
+                    
+                      <div class="bottom-buffer">  
+                      	<div class="btn-toolbar">
+                            <div class="btn-group">
+                                <a href="${base_path}/applications/edit/${current_app_id}/routes/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RoutesTable','${base_path}/applications/edit/${current_app_id}/routes/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-xs" onclick="SaveRoutesOrder()"> <i class="fa fa-floppy-o"></i> Save Routes Order</button>
+                            </div>
+                        </div> <!-- /.btn-toolbar -->
+                      </div>
+
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input id="filterRoute" type="text" class="form-control" placeholder="Search...">
+                      </div>                      
+                     <div class="table-responsive">
+                        <table class="table table-bordered table-striped footable" data-page-size="500" id="RoutesTable" data-filter="#filterRoute" data-filter-text-only="true">
+                           <thead>
+                              <tr>
+                                 <th data-sort-ignore="true"></th>
+                                 <th data-sort-ignore="true"><input type="checkbox" id="selectAllRoute" onclick="checkAll(this.id, 'RoutesTable');" name="all"></th>
+                                 <th data-sort-ignore="true">Order</th>
+                                 <th data-sort-ignore="true">Route Name</th>                                 
+                                 <th data-sort-ignore="true">URL Pattern</th>
+                                 <th data-sort-ignore="true">Controller Method</th>
+                                 <th data-sort-ignore="true">View Name</th>                                                       
+                                 <th data-sort-ignore="true">Active</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                             <?dbax
+                              DECLARE
+                                l_link VARCHAR2(1000);
+                              BEGIN
+                                  FOR c1 IN (SELECT * FROM TABLE (tapi_wdx_map_routes.tt('${current_app_id}')) order by PRIORITY)
+                                  LOOP
+                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/routes/edit/'|| utl_url.escape (c1.route_name, true) ||'">' || c1.route_name || '</a>';
+                                    
+                                    p('<tr>');
+                                        p('<td><span class="handle"><i class="fa fa-ellipsis-v">&nbsp;</i><i class="fa fa-ellipsis-v"> </i></span></td>');
+                                        p('<td><input type="checkbox" value="'|| c1.route_name||'"></td>');
+                                        p('<td class="index RouteKey">'|| c1.PRIORITY ||'</td>');
+                                        p('<td class="RouteKey">'|| l_link ||'</td>');                                    
+                                        p('<td><code>'|| c1.URL_PATTERN ||'</code></td>');
+                                        p('<td>'|| c1.CONTROLLER_METHOD || '</td>');
+                                        p('<td>'|| c1.VIEW_NAME ||'</td>');       
+                                        IF c1.active = 'Y'
+                                        THEN
+                                            p('<td><span class="label label-success">Active</span></td>');
+                                        ELSE
+                                            p('<td><span class="label label-danger">Disable</span></td>');
+                                        END IF;        
+                                    p('</tr>');                      
+                                  END LOOP;
+                              END;
+                            ?>
+                            </tbody>
+                            <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <ul class="pagination"></ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                     </table>
+                </div>
+                    <div class="btn-toolbar">
+                      <div class="btn-group">
+                          <a href="${base_path}/applications/edit/${current_app_id}/routes/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                      </div>
+                      <div class="btn-group">
+                          <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RoutesTable','${base_path}/applications/edit/${current_app_id}/routes/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                      </div>                 
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success btn-xs" onclick="SaveRoutesOrder()"> <i class="fa fa-floppy-o"></i> Save Routes Order</button>
+                        </div>                                     
+                 </div> <!-- /.btn-toolbar -->
+                </div><!-- /.box-body -->                  
+
+            </div> <!-- /.box -->
+
+          </div><!-- /.tab-pane -->
+              
+          <div class="tab-pane" id="Views">
+
+              <div class="box box-default box-solid">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">MVC Views</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                    
+                        <p>Views are code responsible for presenting data to end users.
+                        In a Web application, views are files containing mainly HTML code and presentational PL/SQL code.</p>
+                    
+                      <div class="bottom-buffer">                      
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group" role="group">
+                                <a href="${base_path}/applications/edit/${current_app_id}/views/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div> <!-- /.btn-toolbar -->                      
+                     </div>
+                      
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input id="filterView" type="text" class="form-control" placeholder="Search...">
+                      </div>
+                     <div class="table-responsive">
+                        <table class="table table-bordered table-striped footable" data-page-size="15" id="ViewsTable" data-filter="#filterView" data-filter-text-only="true">
+                           <thead>
+                              <tr>
+                                 <th data-sort-ignore="true"><input type="checkbox" id="selectAllViews" onclick="checkAll(this.id, 'ViewsTable');" name="all"></th>
+                                 <th data-sort-initial="true">Name</th>
+                                 <th >Title</th>                                 
+                                 <th >Description</th>
+                                 <th >Visible</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                             <?dbax
+                              DECLARE
+                                l_link VARCHAR2(1000);
+                              BEGIN
+                                  FOR c1 IN (SELECT name, title, description, visible 
+                                             FROM TABLE (tapi_wdx_views.tt('${current_app_id}')))
+                                  LOOP
+                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/views/edit/'|| utl_url.escape (c1.name, true) ||'">' || c1.name || '</a>';
+                                    
+                                    p('<tr>');
+                                        p('<td><input type="checkbox" value="'|| c1.name||'"></td>');
+                                        p('<td>'|| l_link ||'</td>');
+                                        p('<td>'|| c1.title ||'</td>');                                    
+                                        p('<td>'|| c1.description ||'</td>');
+                                        IF c1.visible = 'Y'
+                                        THEN
+                                            p('<td><span class="label label-success">Visible</span></td>');
+                                        ELSE
+                                            p('<td><span class="label label-danger">Hidden</span></td>');
+                                        END IF;
+                                        --p('<td>'|| c1.visible ||'</td>');
+                                    p('</tr>');                      
+                                  END LOOP;
+                               END;
+                            ?>
+                            </tbody>
+                            <tfoot class="hide-if-no-paging">
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <ul class="pagination"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>                            
+                        </table>
+                    </div>
+                    
+                  <div class="btn-toolbar">
+                      <div class="btn-group">
+                          <a href="${base_path}/applications/edit/${current_app_id}/views/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                      </div>
+                      <div class="btn-group">
+                          <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                      </div>                                
+                 </div> <!-- /.btn-toolbar -->
+                </div><!-- /.box-body -->                  
+
+            </div> <!-- /.box -->
+
+          </div><!-- /.tab-pane -->
+        
+		  <div class="tab-pane" id="Security">
+            
+          <!-- Custom Tabs -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#Roles" data-toggle="tab"><i class="fa fa-user-secret"></i> Roles</a></li>
+              <li><a href="#Permissions" data-toggle="tab"><i class="fa fa-key"></i> Permissions</a></li>
+            </ul>
+            
+            <div class="tab-content">               
+
+              <div class="tab-pane active" id="Roles">
+                 <div class="box box-default box-solid">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">Roles</h3>
+                    </div><!-- /.box-header -->
+                   <div class="box-body">
+                    
+                    <p>A Role defines a set of permissions or tasks a user assigned the role is allowed to perform.</p>
+                    
+                     <div class="bottom-buffer">
+                        <div class="btn-toolbar">
+                            <div class="btn-group">
+                                <a href="${base_path}/applications/edit/${current_app_id}/roles/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RolesTable','${base_path}/applications/edit/${current_app_id}/roles/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>                           
+                        </div> <!-- /.btn-toolbar -->
+                     </div>
+                     
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input id="filterRoles" type="text" class="form-control" placeholder="Search...">
+                      </div>
+                     <div class="table-responsive">
+                        <table class="table table-bordered table-striped footable" data-page-size="15" id="RolesTable" data-filter="#filterRoles" data-filter-text-only="true">
+                           <thead>
+                              <tr>                                 
+                                 <th data-sort-ignore="true"><input type="checkbox" id="selectAllRoles" onclick="checkAll(this.id, 'RolesTable');" name="all"></th>
+                                 <th data-sort-initial="true">Role Name</th>
+                                 <th>Description</th>                                 
+                              </tr>
+                           </thead>
+                           <tbody>
+                             <?dbax
+                              DECLARE
+                                l_link VARCHAR2(1000);
+                              BEGIN
+                                  FOR c1 IN (SELECT * FROM TABLE (tapi_wdx_roles.tt(null,'${current_app_id}')))		
+                                  LOOP
+                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/roles/edit/'|| utl_url.escape (c1.rolename, true) ||'">' || c1.rolename || '</a>';
+                                    
+                                    p('<tr>');
+                                        p('<td><input type="checkbox" value="'|| c1.rolename||'"></td>');
+										p('<td>'|| l_link ||'</td>');
+										p('<td>'|| c1.role_descr ||'</td>');                                       
+                                    p('</tr>');                      
+                                  END LOOP;
+                              END;
+                            ?>
+                            </tbody>
+                            <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <ul class="pagination"></ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                     </table>
+                </div>
+                    <div class="btn-toolbar">
+                      <div class="btn-group">
+                          <a href="${base_path}/applications/edit/${current_app_id}/roles/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                      </div>
+                      <div class="btn-group">
+                          <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RolesTable','${base_path}/applications/edit/${current_app_id}/roles/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                      </div>
+                 </div> <!-- /.btn-toolbar -->
+               </div><!-- /.box-body -->                  
+
+            </div> <!-- /.box -->
+           </div><!-- /.tab-pane Roles-->
+             
+              
+ 			<div class="tab-pane" id="Permissions">
+              <div class="box box-default box-solid">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">Permissions</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                    
+                    <p>List of permissions to actions or objects that can be assigned to roles</p>
+                    <p>A permission is simply a string that controls authorization to do things within an application.
+                      The string can be the name of a page, object, component, control, action on said items, or a combination.
+                      The application protects access to code paths and application resources using this permission string.
+                      So it is not important what goes in the permission name, ony that the application layers agree on its value and format.</p>
+                    
+                      <div class="bottom-buffer">
+                        <div class="btn-toolbar">
+                            <div class="btn-group">
+                                <a href="${base_path}/applications/edit/${current_app_id}/pmsn/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('PmsnTable','${base_path}/applications/edit/${current_app_id}/pmsn/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div> <!-- /.btn-toolbar -->
+                      </div>
+                      
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input id="filterPmsn" type="text" class="form-control" placeholder="Search...">
+                      </div>                      
+                     <div class="table-responsive">
+                        <table class="table table-bordered table-striped footable" data-page-size="15" id="PmsnTable" data-filter="#filterPmsn" data-filter-text-only="true">
+                          <thead>
+                              <tr>
+                                 <th data-sort-ignore="true"><input type="checkbox" id="selectAllPmsn" onclick="checkAll(this.id, 'PmsnTable');" name="all"></th>
+                                 <th data-sort-initial="true">Permission Name</th>                                 
+                                 <th>Description</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                             <?dbax
+                              DECLARE
+                                l_link VARCHAR2(1000);
+                              BEGIN                                  
+								  FOR c1 IN (SELECT * FROM wdx_permissions where appid = '${current_app_id}')
+                                  LOOP
+                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/pmsn/edit/'|| utl_url.escape (c1.pmsname, true) ||'">' || c1.pmsname || '</a>';
+                                    
+                                    p('<tr>');                                        
+                                        p('<td><input type="checkbox" value="'|| c1.pmsname||'"></td>');
+										p('<td>'|| l_link ||'</td>');                                        
+										p('<td>'|| c1.pmsn_descr ||'</td>');
+                                    p('</tr>');                      
+                                  END LOOP;
+                              END;
+                            ?>
+                            </tbody>
+                            <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <ul class="pagination"></ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                     </table>
+                </div>
+                    <div class="btn-toolbar">
+                      <div class="btn-group">
+                          <a href="${base_path}/applications/edit/${current_app_id}/pmsn/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                      </div>
+                      <div class="btn-group">
+                          <button type="button" class="btn btn-danger btn-xs" onclick="Delete('PmsnTable','${base_path}/applications/edit/${current_app_id}/pmsn/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                      </div>
+                 </div> <!-- /.btn-toolbar -->
+                </div><!-- /.box-body -->                  
+
+            </div> <!-- /.box -->
+           </div><!-- /.tab-pane Permissions-->              
+              
+              
+          </div><!--sub  /.tab-content -->        
+         </div><!-- sub nav-tabs-custom -->     
+              
+              
+          </div><!-- /.tab-pane Security-->              
+          
+        </div><!-- /.tab-content -->
+        
+      </div><!-- nav-tabs-custom -->        
+   
+     </section><!-- /.content -->
+   </div><!-- /.content-wrapper -->
+
+   
+    <?dbax dbax_core.include('footer'); ?>
+
+    <!-- JqueryValidate -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js" type="text/javascript"></script>
+    
+    <!-- dbaxAdmin -->
+    <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
+    
+    <!-- SweetAlert 2 -->
+    <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+
+    <!--Footable -->
+   <script src="${resources_url}/plugins/footable/footable.min.js" type="text/javascript"></script>
+   <script src="${resources_url}/plugins/footable/footable.sort.min.js" type="text/javascript"></script>
+   <script src="${resources_url}/plugins/footable/footable.paginate.min.js" type="text/javascript"></script>
+   <script src="${resources_url}/plugins/footable/footable.filter.min.js" type="text/javascript"></script>
+   
+    <!-- jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+   <script type="text/javascript">     
+     //Confirm exit on before onluoad
+     var changes = false;
+     window.onbeforeunload = confirmExit;   
+     
+     //Footables
+        $(function () {
+            $('#RoutesTable').footable();
+            $('#RequestValidationTable').footable();
+            $('#PropertiesTable').footable();
+            $('#ViewsTable').footable();
+            $('#RolesTable').footable();
+            $('#PmsnTable').footable();          
+        });                   
+        
+        //Submit jQuery Ajax Form 
+        function SubmitForm(formId){        
+            dbaxSubmitForm(formId).done(function(data) {
+              if (data.cod_error === undefined){
+                  //Update Values
+                  $('#app_hash').val(data.hash)
+                  $('#app_modified_by').val(data.modified_by)
+                  $('#app_modified_date').val(data.modified_date)                  
+              }
+            });
+        }        
+
+        //Routes Table Drag&Drop
+        $("#RoutesTable tbody").sortable({
+            helper: fixHelperModified,
+            stop: updateIndex,
+            handle: '.handle',
+            cursor: 'move'
+        });       
+        
+        //Save Routes
+        function SaveRoutesOrder(){
+           tableId = 'RoutesTable';
+
+            var tblData = $('#' + tableId +' tbody > tr').get().map(function(row) {
+              return $(row).find('td.RouteKey').get().map(function(cell) {
+                return $(cell).text();
+              });
+            });            
+            
+             $.ajax(
+                    {
+                        url : "${base_path}/applications/edit/${current_app_id}/routes/save-order",
+                        type: "POST",
+                        data : {data: JSON.stringify(tblData)}, 
+                        dataType: "json",
+                        success:function(data, textStatus, jqXHR) 
+                        {
+                            /*Sweet Alert*/
+                            swal({  title: "Successfully saved", text: data.text, type: "success"});
+                            changes = false;
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) 
+                        {   
+                            swal({  title: "Error saving routes order" 
+                                   ,html: "There is a problem saving your data, please try again later or contact with the Adminstrator." + '<br/><br/><pre><code class="prettyprint">' + jqXHR.responseText + '</code></pre>' 
+                                   ,type: "error"
+                                 });                                    
+                        }
+                    });
+        }
+    </script>     
+         
+   </body>
+</HTML>
