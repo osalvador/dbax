@@ -1,10 +1,11 @@
 <?dbax 
-    dbax_core.g$view('page_head') := '
+    dbax_core.g$var('page_head') := '
         <style type="text/css">
             @import url(''//cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/css/dropzone.css'');
-        </style>';
-    dbax_core.include('header');
+        </style>';    
 ?>
+
+<?dbax dbax_core.include('header'); ?>
 
 <!-- SideBar -->
 <?dbax dbax_core.include('sidebar');?>   

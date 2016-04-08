@@ -5,11 +5,11 @@
      l_user_options_rt   tapi_wdx_user_options.wdx_user_options_rt;
   BEGIN
      l_users_rt  := tapi_wdx_users.rt (dbax_core.g$username);
-     dbax_core.g$view ('username') := dbax_core.g$username;
-     dbax_core.g$view ('user_FirstName') := l_users_rt.first_name;
-     dbax_core.g$view ('user_LastName') := l_users_rt.last_name;
-     dbax_core.g$view ('user_display_name') := l_users_rt.display_name;
-     dbax_core.g$view ('user_creation_date') := TO_CHAR (l_users_rt.created_date, 'DD Mon YYYY');
+     dbax_core.g$var ('username') := dbax_core.g$username;
+     dbax_core.g$var ('user_FirstName') := l_users_rt.first_name;
+     dbax_core.g$var ('user_LastName') := l_users_rt.last_name;
+     dbax_core.g$var ('user_display_name') := l_users_rt.display_name;
+     dbax_core.g$var ('user_creation_date') := TO_CHAR (l_users_rt.created_date, 'DD Mon YYYY');
 
      BEGIN
         --Toggle Sidebar Option
@@ -17,7 +17,7 @@
 
         IF l_user_options_rt.VALUE = 'on'
         THEN
-           dbax_core.g$view ('sidebar-collapse') := 'sidebar-collapse';
+           dbax_core.g$var ('sidebar-collapse') := 'sidebar-collapse';
         END IF;
      EXCEPTION
         WHEN NO_DATA_FOUND
@@ -51,10 +51,10 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->    
     
-    ${page_head}
+    <%= dbax_utils.get(dbax_core.g$var,'page_head') %>
     
   </head>
-  <body class="skin-red sidebar-mini ${sidebar-collapse}">
+  <body class="skin-red sidebar-mini <%= dbax_utils.get(dbax_core.g$var,'sidebar-collapse') %>">
     <div class="wrapper">
 
       <header class="main-header">
@@ -81,14 +81,14 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <!--<img src="${resources_url}/dist/img/user2-160x160.jpg" class="user-image" alt="User Image" />-->
                   <i class="glyphicon glyphicon-user"></i>
-                  <span class="hidden-xs">${user_display_name}</span>
+                  <span class="hidden-xs"><%= dbax_core.g$var('user_display_name') %></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
                     <img src="${resources_url}/dist/img/avatar5.png" class="img-circle" alt="User Image" />
-                    <p>${user_FirstName} ${user_LastName}
-                        <small>${user_display_name} member since ${user_creation_date}</small>
+                    <p><%= dbax_core.g$var('user_FirstName') %> <%= dbax_core.g$var('user_LastName') %>
+                        <small><%= dbax_core.g$var('user_display_name') %> member since <%= dbax_core.g$var('user_creation_date') %></small>
                     </p>                    
                   </li>                 
                   <li class="user-footer">

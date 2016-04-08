@@ -1,13 +1,12 @@
-<?dbax dbax_core.include('header'); ?>
 <?dbax  
-    dbax_core.g$view('page_head') := '        
+    dbax_core.g$var('page_head') := '        
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
   	<!-- iCheck for checkboxes and radio inputs -->
   	<link rel="stylesheet" href="${resources_url}/plugins/iCheck/all.css">
     ';
-?>    
-
+?>
+<?dbax dbax_core.include('header'); ?>
 <!-- SideBar -->
 <?dbax dbax_core.include('sidebar');?> 
 
