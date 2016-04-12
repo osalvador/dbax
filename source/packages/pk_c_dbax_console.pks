@@ -1,7 +1,7 @@
 CREATE OR REPLACE PACKAGE pk_c_dbax_console
 AS
    /**
-   -- # PK_DBAX_ADMIN
+   -- # pk_c_dbax_console
    -- Version: 0.1. <br/>
    -- Description: Controllers for DBAX Console application
    */
@@ -25,7 +25,7 @@ AS
 
    /*
    * Example controllers
-   */   
+   */
 
    PROCEDURE get_log;
 
@@ -170,3 +170,4 @@ AS
 
 END pk_c_dbax_console;
 /
+
