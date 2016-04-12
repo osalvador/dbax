@@ -215,29 +215,22 @@ AS
         END LOOP;
      END set_template_directive;/*/
 
-   /**
-   * Receives the name of the object, usually a package,
-   * which contains an embedded template and return the template.
-   *
-   * @param  p_template_name    the name of the template
-   * @param  p_object_name      the name of the object (usually the name of the package)
-   * @param  p_object_type      the type of the object (PACKAGE, PROCEDURE, FUNCTION...)
-   * @param  p_schema           the schema of the object
-   * @return                    the template.
-   */
-   FUNCTION include (p_template_name IN VARCHAR2)
+
+   FUNCTION include (p_template_name IN VARCHAR2, p_appid IN VARCHAR2 DEFAULT NULL )
       RETURN CLOB
    AS
       l_template   CLOB;
-      l_view_rt    tapi_wdx_views.wdx_views_rt;
+      --l_view_rt    tapi_wdx_views.wdx_views_rt;
    BEGIN
       BEGIN
-         l_view_rt   := tapi_wdx_views.rt (dbax_core.g$appid, p_template_name);
+         --l_view_rt   := tapi_wdx_views.rt (NVL (p_appid, dbax_core.g$appid), p_template_name);
+         select source into l_template from wdx_views where name = p_template_name and appid = NVL (p_appid, dbax_core.g$appid);
 
-         l_template  := l_view_rt.source;
+         --l_template  := l_view_rt.source;
       EXCEPTION
          WHEN NO_DATA_FOUND
          THEN
+            dbax_log.trace ('INCLUDE Function, NO_DATA_FOUND');
             l_template  := EMPTY_CLOB ();
       END;
 
@@ -245,15 +238,16 @@ AS
    END include;
 
 
-   FUNCTION include_compiled (p_template_name IN VARCHAR2)
+   FUNCTION include_compiled (p_template_name IN VARCHAR2, p_appid IN VARCHAR2 DEFAULT NULL )
       RETURN CLOB
    AS
       l_template   CLOB;
-      l_view_rt    tapi_wdx_views.wdx_views_rt;
+      --l_view_rt    tapi_wdx_views.wdx_views_rt;
    BEGIN
       BEGIN
-         l_view_rt   := tapi_wdx_views.rt (dbax_core.g$appid, p_template_name);
-         l_template  := l_view_rt.compiled_source;
+         --l_view_rt   := tapi_wdx_views.rt (NVL (p_appid, dbax_core.g$appid), p_template_name);
+         --l_template  := l_view_rt.compiled_source;
+         select compiled_source into l_template from wdx_views where name = p_template_name and appid = NVL (p_appid, dbax_core.g$appid);
       EXCEPTION
          WHEN NO_DATA_FOUND
          THEN
@@ -490,7 +484,9 @@ AS
    * @param  p_template    the template
    * @param  p_vars        the associative array
    */
-   PROCEDURE get_includes (p_template IN OUT NOCOPY CLOB, p_vars IN t_assoc_array DEFAULT null_assoc_array )
+   PROCEDURE get_includes (p_template   IN OUT NOCOPY CLOB
+                         , p_vars       IN            t_assoc_array DEFAULT null_assoc_array
+                         , p_appid      IN            VARCHAR2)
    AS
       l_tmp               CLOB;
       l_result            CLOB;
@@ -518,7 +514,7 @@ AS
           concatenate result template into p_template
       done
       */
-      WHILE REGEXP_INSTR (p_template, '<%@ include\((.*?)\)\s*%>') <> 0
+      WHILE REGEXP_INSTR (p_template, '<%@\s*include\((.*?)\)\s*%>') <> 0
       LOOP
          --Init
          l_str_tmp   := NULL;
@@ -533,7 +529,7 @@ AS
          --get include directive
          l_template_name :=
             TRIM (REGEXP_SUBSTR (p_template
-                               , '<%@ include\((.*?)\)\s*%>'
+                               , '<%@\s*include\((.*?)\)\s*%>'
                                , 1
                                , 1
                                , 'n'
@@ -542,12 +538,12 @@ AS
          IF LENGTH (l_template_name) > 0
          THEN
             --get included template
-            l_tmp       := include (l_template_name);
+            l_tmp       := include (l_template_name, p_appid);
 
             --Start and End of the expression
             l_start     :=
                REGEXP_INSTR (p_template
-                           , '<%@ include\((.*?)\)\s*%>'
+                           , '<%@\s*include\((.*?)\)\s*%>'
                            , 1
                            , 1
                            , 0
@@ -555,7 +551,7 @@ AS
 
             l_end       :=
                REGEXP_INSTR (p_template
-                           , '<%@ include\((.*?)\)\s*%>'
+                           , '<%@\s*include\((.*?)\)\s*%>'
                            , 1
                            , 1
                            , 1
@@ -634,7 +630,7 @@ AS
          IF LENGTH (l_template_name) > 0
          THEN
             --get included template
-            l_tmp       := include (l_template_name);
+            l_tmp       := include (l_template_name, p_appid);
 
             --Start and End of the expression
             l_start     :=
@@ -777,20 +773,22 @@ AS
       HTP.prn (TO_CHAR (p_data));
    END p;
 
-   FUNCTION compile (p_template_name IN VARCHAR2 DEFAULT NULL , p_error_template OUT NOCOPY CLOB)
+   FUNCTION compile (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
       RETURN CLOB
    AS
       l_template   CLOB;
       v_cur_hdl    INTEGER;
    BEGIN
       --Get template
-      l_template  := include (p_template_name);
+      l_template  := include (p_template_name, p_appid);
 
+      dbax_log.trace ('Compile Function. p_template_name:' || p_template_name);
+      dbax_log.trace ('Compile Function. l_template:' || l_template);
       --Parse <% %> tags
       parse (l_template);
 
       --Get Includes
-      get_includes (l_template);
+      get_includes (p_template => l_template, p_appid => p_appid);
 
       --Interpret the template
       interpret (l_template);
@@ -812,6 +810,15 @@ AS
                        , 0
                        , 'n');
 
+      --Delete all null code blocks
+      l_template  :=
+         REGEXP_REPLACE (l_template
+                       , q'@DBAX_tePLSQL.p\(q\'\~\~\'\)\;@'
+                       , ''
+                       , 1
+                       , 0
+                       , 'n');
+
       --Avoid PLS-00172: string literal too long
       string_literal_too_long (l_template);
 
@@ -824,49 +831,60 @@ AS
       WHEN OTHERS
       THEN
          --Return error
-         p_error_template := p_error_template || ('### tePLSQL Render Error ###');
+         p_error_template := p_error_template || ('### tePLSQL Compile Error ###');
          p_error_template := p_error_template || (CHR (10));
          p_error_template := p_error_template || (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          p_error_template := p_error_template || (CHR (10));
-         p_error_template := p_error_template || ('### Processed template ###');
+         p_error_template :=
+            p_error_template
+            || ('### Processing template ' || p_template_name || ' from ' || p_appid || ' application ###');
          p_error_template := p_error_template || (CHR (10));
          p_error_template := p_error_template || (l_template);
-
+         dbax_log.error (p_error_template);
          RAISE;
    END compile;
 
-   PROCEDURE compile (p_template_name IN VARCHAR2 DEFAULT NULL , p_error_template OUT CLOB)
+   PROCEDURE compile (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
    AS
       l_compiled_view   CLOB;
       l_view_rt         tapi_wdx_views.wdx_views_rt;
    BEGIN
-      l_compiled_view := dbax_teplsql.compile (p_template_name, p_error_template);
+      dbax_log.trace ('Compile Procedure. p_template_name:' || p_template_name);
+      l_compiled_view := dbax_teplsql.compile (p_template_name, p_appid, p_error_template);
 
-      l_view_rt.appid := dbax_core.g$appid;
+      l_view_rt.appid := p_appid;
       l_view_rt.name := p_template_name;
       l_view_rt.compiled_source := l_compiled_view;
       l_view_rt.modified_date := SYSDATE;
       tapi_wdx_views.upd (l_view_rt, TRUE);
    END compile;
 
-   PROCEDURE compile_all (p_error_template OUT CLOB)
+   PROCEDURE compile_all (p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
    AS
-      l_compiled_view   CLOB;
-      l_view_rt         tapi_wdx_views.wdx_views_rt;
+      l_compiled_view    CLOB;
+      l_error_template   CLOB;
+      l_view_rt          tapi_wdx_views.wdx_views_rt;
    BEGIN
-      FOR c1 IN (SELECT   * FROM table (tapi_wdx_views.tt))
+      FOR c1 IN (SELECT   * FROM table (tapi_wdx_views.tt (p_appid)))
       LOOP
          dbax_core.g$appid := c1.appid;
-         l_compiled_view := dbax_teplsql.compile (c1.name, p_error_template);
+         DBMS_OUTPUT.put_line ('c1.name = ' || c1.name);
+         l_compiled_view := dbax_teplsql.compile (c1.name, p_appid, l_error_template);
 
          l_view_rt   := c1;
          l_view_rt.compiled_source := l_compiled_view;
          l_view_rt.modified_date := SYSDATE;
          tapi_wdx_views.upd (l_view_rt);
       END LOOP;
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         p_error_template := l_error_template;
+         dbax_log.error (p_error_template);
+         RAISE;
    END compile_all;
 
-   PROCEDURE comile_dependencies (p_template_name IN VARCHAR2 DEFAULT NULL , p_error_template OUT NOCOPY CLOB)
+   PROCEDURE comile_dependencies (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
    AS
       l_compiled_view   CLOB;
       l_view_rt         tapi_wdx_views.wdx_views_rt;
@@ -874,7 +892,7 @@ AS
       FOR c1 IN (SELECT   *
                    FROM   wdx_views
                   WHERE   (REGEXP_INSTR (source
-                                       , '<%@ include\(\s*' || p_template_name || '\s*\)\s*%>'
+                                       , '<%@\s*include\(\s*' || p_template_name || '\s*\)\s*%>'
                                        , 1
                                        , 1
                                        , 0
@@ -887,9 +905,9 @@ AS
                                           , 1
                                           , 0
                                           , 'i') <> 0)
-                          AND appid = dbax_core.g$appid)
+                          AND appid = p_appid)
       LOOP
-         l_compiled_view := dbax_teplsql.compile (c1.name, p_error_template);
+         l_compiled_view := dbax_teplsql.compile (c1.name, p_appid, p_error_template);
 
          l_view_rt.appid := c1.appid;
          l_view_rt.name := c1.name;
@@ -944,6 +962,7 @@ AS
    END execute;*/
 
    PROCEDURE execute (p_template_name   IN VARCHAR2 DEFAULT NULL
+                    , p_appid           IN VARCHAR2 DEFAULT NULL
                     , p_vars            IN t_assoc_array DEFAULT null_assoc_array
                     , p_template        IN CLOB DEFAULT NULL )
    AS
@@ -957,7 +976,7 @@ AS
       --Get template
       IF p_template IS NULL
       THEN
-         l_template  := include_compiled (p_template_name);
+         l_template  := include_compiled (p_template_name, p_appid);
       ELSE
          l_template  := p_template;
       END IF;

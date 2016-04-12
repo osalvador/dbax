@@ -81,7 +81,6 @@ AS
          THEN
             dbax_log.debug ('Route Matched:' || c1.route_name || ' URL_PATTERN:' || c1.url_pattern);
 
-
             --Ejecutamos el enrutado y salimos
             l_tab       := dbax_utils.tokenizer (NVL (c1.controller_method, c1.view_name));
 
@@ -239,7 +238,7 @@ AS
       dbax_log.info ('g$appid=' || g$appid);
 
       --Check active application
-      l_application_rt := tapi_wdx_applications.rt (p_appid);
+      l_application_rt := tapi_wdx_applications.rt_simple (p_appid);
 
       IF l_application_rt.active = 'N'
       THEN
@@ -447,7 +446,7 @@ AS
         INTO   dbax_core.g$view ('title'), g$view_name
         FROM   wdx_views
        WHERE   UPPER (name) = UPPER (p_name) AND appid = NVL (p_appid, g$appid) AND visible = 'Y';
-   --dbax_core.g$view ('view_loaded') := LOWER (p_name);
+   
    EXCEPTION
       WHEN NO_DATA_FOUND
       THEN
@@ -582,7 +581,6 @@ AS
          END LOOP;
       END IF;
    END print_http_header;
-
 
    PROCEDURE PRINT (p_data IN CLOB)
    AS

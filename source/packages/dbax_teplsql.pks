@@ -1,4 +1,3 @@
-/* Formatted on 07/04/2016 15:27:31 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE dbax_teplsql
 AS
    /**
@@ -52,55 +51,60 @@ AS
    *  Return returns the source code view or template
    *
    *  @param   p_temaplte_name     the name of the view
+   *  @param   p_appid             the appid of the view, optional default is dbax_core.g$appid
    *  @return  view source code
    */
-   FUNCTION include (p_template_name IN VARCHAR2)
+   FUNCTION include (p_template_name IN VARCHAR2, p_appid IN VARCHAR2 DEFAULT NULL )
       RETURN CLOB;
 
    /**
    *  Returns the compiled source code of the view
    *
    *  @param   p_temaplte_name     the name of the view
+   *  @param   p_appid             the appid of the view
    *  @return  p_error_template    the compiled source code with error
    *  @return  compiled source code
    */
-   FUNCTION compile (p_template_name IN VARCHAR2 DEFAULT NULL , p_error_template OUT NOCOPY CLOB)
+   FUNCTION compile (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
       RETURN CLOB;
 
    /**
    *  Compile view and store it in wdx_views.compiled_source
    *
    *  @param   p_temaplte_name     the name of the view
+   *  @param   p_appid             the appid of the view
    *  @return  p_error_template    the compiled source code with error
    */
-   PROCEDURE compile (p_template_name IN VARCHAR2 DEFAULT NULL , p_error_template OUT NOCOPY CLOB);
+   PROCEDURE compile (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB);
 
    /**
    *  Compile all views and store it in wdx_views.compiled_source
    *
    *  @return  p_error_template    the compiled source code with error
    */
-   PROCEDURE compile_all (p_error_template OUT CLOB);
+   PROCEDURE compile_all (p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB);
 
    /**
    *  Compile dependencies of all views and store it in wdx_views.compiled_source
    *
    *  @param   p_temaplte_name     the name of the view
+   *  @param   p_appid             the appid of the view
    *  @return  p_error_template    the compiled source code with error
    */
-   PROCEDURE comile_dependencies (p_template_name IN VARCHAR2 DEFAULT NULL , p_error_template OUT NOCOPY CLOB);
-
+   PROCEDURE comile_dependencies (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB);
 
    /**
-   *  This procedure bind view variables and Execute template. 
+   *  This procedure bind view variables and Execute template.
    *  If p_template is null then get template source from wdx_views.
-   *  If p_vars is null then get view variables from dbax_core.g$view 
+   *  If p_vars is null then get view variables from dbax_core.g$view
    *
    *  @param   p_temaplte_name     the name of the view
+   *  @param   p_appid             the appid of the view
    *  @param   p_vars              the variables to be binded
    *  @param   p_template          the template to be executed
    */
    PROCEDURE execute (p_template_name   IN VARCHAR2 DEFAULT NULL
+                    , p_appid           IN VARCHAR2 DEFAULT NULL
                     , p_vars            IN t_assoc_array DEFAULT null_assoc_array
                     , p_template        IN CLOB DEFAULT NULL );
 END dbax_teplsql;

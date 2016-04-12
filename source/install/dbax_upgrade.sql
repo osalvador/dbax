@@ -1,5 +1,5 @@
 Rem    NAME
-Rem      dbax_install.sql
+Rem      dbax_upgrade.sql
 Rem
 Rem    DESCRIPTION
 Rem 	 DBAX installation script.
@@ -8,10 +8,10 @@ Rem    REQUIREMENTS
 Rem      - Oracle Database 11g or later
 Rem
 Rem    Example:
-Rem      sqlplus "user/userpasss" @dbax_install
+Rem      sqlplus "user/userpasss"@SID @dbax_upgrade
 Rem
 Rem    MODIFIED   (MM/DD/YYYY)
-Rem    osalvador  11/12/2015 - Created
+Rem    osalvador  08/04/2016 - Created
 
 whenever sqlerror exit
 
@@ -68,28 +68,6 @@ PROMPT ------------------------------------------;
 PROMPT -- Installing PL/JSON --;
 PROMPT ------------------------------------------;
 @@../types/json_v1_0_4/install.sql;
-
-PROMPT ------------------------------------------;
-PROMPT -- Creating Tables --;
-PROMPT ------------------------------------------;
-@@../tables/wdx_log_seq.sql;
-@@../tables/te_templates.sql;
-@@../tables/wdx_applications.sql;
-@@../tables/wdx_auth_schemes.sql;
-@@../tables/wdx_documents.sql;
-@@../tables/wdx_ldap.sql;
-@@../tables/wdx_log.sql;
-@@../tables/wdx_map_routes.sql;
-@@../tables/wdx_permissions.sql;
-@@../tables/wdx_properties.sql;
-@@../tables/wdx_request_valid_function.sql;
-@@../tables/wdx_users.sql;
-@@../tables/wdx_roles.sql;
-@@../tables/wdx_roles_pmsn.sql;
-@@../tables/wdx_sessions.sql;
-@@../tables/wdx_user_options.sql;
-@@../tables/wdx_users_roles.sql;
-@@../tables/wdx_views.sql;
 
 PROMPT ------------------------------------------;
 PROMPT -- Installing Packages Specs --;

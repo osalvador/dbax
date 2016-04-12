@@ -110,6 +110,12 @@ IS
                )
     RETURN wdx_applications_rt RESULT_CACHE;
 
+
+   FUNCTION rt_simple (
+                p_appid IN wdx_applications.appid%TYPE
+               )
+    RETURN wdx_applications_rt RESULT_CACHE;
+
    /**
     --## Function Name: RT_FOR_UPDATE
     --### Description:

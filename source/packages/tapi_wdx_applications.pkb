@@ -157,6 +157,27 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
 
       RETURN l_wdx_applications_rec;
    END rt;
+   
+   FUNCTION rt_simple (
+               p_appid IN wdx_applications.appid%TYPE
+               )
+      RETURN wdx_applications_rt RESULT_CACHE
+   IS
+      l_wdx_applications_rec wdx_applications_rt;
+   BEGIN
+
+      SELECT a.*,
+             '',
+             rowid
+      INTO l_wdx_applications_rec
+      FROM wdx_applications a
+      WHERE
+           appid = UPPER(rt_simple.p_appid)
+           ;
+
+      RETURN l_wdx_applications_rec;
+   END rt_simple;
+   
 
    FUNCTION rt_for_update (
                           p_appid IN wdx_applications.appid%TYPE

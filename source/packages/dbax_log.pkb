@@ -1,16 +1,9 @@
 --
 -- DBAX_LOG  (Package Body) 
 --
-CREATE OR REPLACE PACKAGE BODY      dbax_log
+CREATE OR REPLACE PACKAGE BODY dbax_log
 AS
-   /**
-     -- PK_ITF_QUERY2WEB <br/>
-     -- Nombre del Paquete: WEBDBAX_API <br/>
-     -- Versión: 0.1. <br/>
-     -- Descripcion: Generacion automatica de codigo HTML
-     -- @headcom
-    */
-
+   
    --Default Log level is ERROR
    g_log_level   NUMBER := k_log_level_error;
    g_log         CLOB;
@@ -33,8 +26,6 @@ AS
       cnt                NUMBER := 0;
       v_whois            VARCHAR2 (32767);
    BEGIN
-      --
-      --dbax_log.log('debug', 'who',call_stack);
       LOOP
          n           := INSTR (call_stack, nl_char);
          EXIT WHEN (cnt = 3 OR n IS NULL OR n = 0);
@@ -92,18 +83,18 @@ AS
                   n           := LENGTH ('anonymous block ');
                END IF;
 
-               caller_t    := LTRIM (RTRIM (UPPER (SUBSTR (line, 1, n - 1))));
+               /*caller_t    := LTRIM (RTRIM (UPPER (SUBSTR (line, 1, n - 1))));
                line        := SUBSTR (line, n);
                n           := INSTR (line, '.');
                owner       := LTRIM (RTRIM (SUBSTR (line, 1, n - 1)));
-               name        := LTRIM (RTRIM (SUBSTR (line, n + 1)));
+               name        := LTRIM (RTRIM (SUBSTR (line, n + 1)));*/
+               
+               v_whois := LTRIM(line) || ':' || lineno ;
             END IF;
          END IF;
       END LOOP;
 
-      v_whois     := SUBSTR (owner || '.' || name || ':' || lineno, 1, 32767);
-      RETURN v_whois;
-   --RETURN call_stack;
+      RETURN v_whois;       
 
    END who_called_me;
 
