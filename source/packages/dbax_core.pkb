@@ -182,21 +182,21 @@ AS
       g$view ('appid') := g$appid;
    END;
 
-   PROCEDURE log_view_variables
+   PROCEDURE log_array (p_array in g_assoc_array )
    AS
       l_key   VARCHAR2 (256);
    BEGIN
-      IF g$view.COUNT () <> 0
+      IF p_array.COUNT () <> 0
       THEN
-         l_key       := g$view.FIRST;
+         l_key       := p_array.FIRST;
 
          LOOP
             EXIT WHEN l_key IS NULL;
-            dbax_log.debug ('Global View Variable g$view (' || l_key || ') = ' || g$view (l_key));
-            l_key       := g$view.NEXT (l_key);
+            dbax_log.debug (l_key||'='|| p_array (l_key));
+            l_key       := p_array.NEXT (l_key);
          END LOOP;
       END IF;
-   END log_view_variables;
+   END log_array;
 
 
    PROCEDURE dispatcher (p_appid       IN VARCHAR2
@@ -500,11 +500,11 @@ AS
 
       IF g$server ('REQUEST_METHOD') = 'GET'
       THEN
+         --Get QueryString params
+         g$get       := dbax_utils.query_string_to_array (g$server ('QUERY_STRING'));
+
          IF name_array.EXISTS (1) AND name_array (1) IS NOT NULL
          THEN
-            --Get QueryString params
-            g$get       := dbax_utils.query_string_to_array (g$server ('QUERY_STRING'));
-
             FOR i IN name_array.FIRST .. name_array.LAST
             LOOP
                --if the parameter ends with [ ] it is an array
@@ -532,11 +532,11 @@ AS
          END IF;
       ELSIF g$server ('REQUEST_METHOD') = 'POST'
       THEN
+         --Get QueryString params
+         g$post      := dbax_utils.query_string_to_array (g$server ('QUERY_STRING'));
+
          IF name_array.EXISTS (1) AND name_array (1) IS NOT NULL
          THEN
-            --Get QueryString params
-            g$post      := dbax_utils.query_string_to_array (g$server ('QUERY_STRING'));
-
             FOR i IN name_array.FIRST .. name_array.LAST
             LOOP
                --if the parameter ends with [ ] it is an array

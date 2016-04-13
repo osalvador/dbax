@@ -1,3 +1,4 @@
+/* Formatted on 13/04/2016 16:09:56 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
@@ -135,7 +136,17 @@ AS
    PROCEDURE upload
    AS
       l_real_file_name   VARCHAR2 (200);
+      l_file             BLOB;
+      l_clob             CLOB;
+      l_error_template   CLOB;
+      l_file_view_name   VARCHAR2 (256);
+      l_file_appid       VARCHAR2 (256);
+      l_view_rt          tapi_wdx_views.wdx_views_rt;
    BEGIN
+      --Default return status
+      dbax_core.g$status_line := 200;
+      dbax_core.g$content_type := 'text/plain';
+
       --Post parameter name is file.
       IF dbax_utils.get (dbax_core.g$post, 'file') IS NOT NULL
       THEN
@@ -143,14 +154,107 @@ AS
             dbax_document.upload (dbax_core.g$post ('file')
                                 , dbax_core.g$appid
                                 , dbax_security.get_username (dbax_core.g$appid));
+
+         l_file      := dbax_document.get_file_content (l_real_file_name);
+         l_clob      := dbax_document.blob2clob (l_file);
+         
+         --TODO dbax_document.delete
+         DELETE   wdx_documents
+          WHERE   name = l_real_file_name;
+
+         l_file_appid := SUBSTR (l_real_file_name, 1, INSTR (l_real_file_name, '_') - 1);
+         l_file_view_name :=
+            SUBSTR (l_real_file_name
+                  , INSTR (l_real_file_name, '_') + 1
+                  , INSTR (l_real_file_name, '.') - 1 - INSTR (l_real_file_name, '_'));
+
+         l_view_rt.appid := 'CONSOLE';
+
+         /*--Get appId parameter
+         IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
+         THEN
+            dbax_core.g$status_line := 500;
+            p( 'Parameter APPID was not found');
+            ROLLBACK;
+            RETURN;
+         ELSE
+            l_views_rt.appid := 'CONSOLE'; --dbax_core.g$parameter (1);
+         END IF;*/
+
+         IF l_view_rt.appid <> l_file_appid
+         THEN
+            dbax_core.g$status_line := 500;
+            p(   'Unable to load views of other application than '
+              || l_view_rt.appid
+              || ' your file APPID: '
+              || NVL (l_file_appid, 'NULL')
+              || '. Remember file pattern: '
+              || l_view_rt.appid
+              || '_[ViewName].html');
+            ROLLBACK;
+            RETURN;
+         END IF;
+
+         --Upsert view
+         BEGIN
+            l_view_rt.appid := l_file_appid;
+            l_view_rt.name := l_file_view_name;
+            l_view_rt.source := l_clob;
+            tapi_wdx_views.ins (l_view_rt);
+         EXCEPTION
+            WHEN DUP_VAL_ON_INDEX
+            THEN
+               tapi_wdx_views.upd (l_view_rt, TRUE);
+         END;
+
+         IF dbax_utils.get (dbax_core.g$post, 'compile') = 'true'
+         THEN
+            --Compile
+            BEGIN
+               dbax_teplsql.compile (l_view_rt.name, l_view_rt.appid, l_error_template);
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  dbax_core.g$status_line := 500;
+                  p ('Error compiling view ' || SQLERRM);
+                  dbax_log.error(   'Error compiling view :'
+                                 || l_error_template
+                                 || SQLERRM
+                                 || ' '
+                                 || DBMS_UTILITY.format_error_backtrace ());
+                  RETURN;
+            END;
+
+            --Compile dependencies
+            BEGIN
+               dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  dbax_core.g$status_line := 500;
+                  p ('Error compiling dependencies ' || SQLERRM);
+                  dbax_log.error(   'Error compiling dependencies:'
+                                 || l_error_template
+                                 || SQLERRM
+                                 || ' '
+                                 || DBMS_UTILITY.format_error_backtrace ());
+                  RETURN;
+            END;
+         
+            p ('View: ' || l_file_view_name || ' successfully saved and compile.');
+         ELSE
+            p ('View: ' || l_file_view_name || ' successfully saved.');
+         END IF;
+
       END IF;
 
-      --Redirect to documents
-      dbax_core.g$http_header ('Location') := dbax_core.get_path ('/documents');
+      
    EXCEPTION
       WHEN OTHERS
       THEN
-         dbax_exception.raise (SQLCODE, SQLERRM);
+         dbax_core.g$status_line := 500;
+         p ('Something went wrong: ' || SQLCODE || ' ' || SQLERRM);
+         dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END upload;
 
    PROCEDURE download
@@ -1332,7 +1436,7 @@ AS
 
       --Compile dependencies
       BEGIN
-         dbax_teplsql.comile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
+         dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
       EXCEPTION
          WHEN OTHERS
          THEN

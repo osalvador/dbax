@@ -91,7 +91,7 @@ AS
    *  @param   p_appid             the appid of the view
    *  @return  p_error_template    the compiled source code with error
    */
-   PROCEDURE comile_dependencies (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB);
+   PROCEDURE compile_dependencies (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB);
 
    /**
    *  This procedure bind view variables and Execute template.

@@ -253,11 +253,11 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_views IS
         l_rowtype.source := ins.p_wdx_views_rec.source;
         l_rowtype.compiled_source := ins.p_wdx_views_rec.compiled_source;
         l_rowtype.description := ins.p_wdx_views_rec.description;
-        l_rowtype.visible := ins.p_wdx_views_rec.visible;
-        l_rowtype.created_by := ins.p_wdx_views_rec.created_by;
-        l_rowtype.created_date := ins.p_wdx_views_rec.created_date;
-        l_rowtype.modified_by := ins.p_wdx_views_rec.modified_by;
-        l_rowtype.modified_date := ins.p_wdx_views_rec.modified_date;
+        l_rowtype.visible := NVL(ins.p_wdx_views_rec.visible,'Y');
+        l_rowtype.created_by := NVL(ins.p_wdx_views_rec.created_by,dbax_core.g$username);
+        l_rowtype.created_date := NVL(ins.p_wdx_views_rec.created_date, sysdate);
+        l_rowtype.modified_by := NVL(ins.p_wdx_views_rec.modified_by, dbax_core.g$username);
+        l_rowtype.modified_date := NVL(ins.p_wdx_views_rec.modified_date, sysdate);
 
        INSERT INTO wdx_views
          VALUES   l_rowtype;

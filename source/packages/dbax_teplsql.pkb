@@ -884,7 +884,7 @@ AS
          RAISE;
    END compile_all;
 
-   PROCEDURE comile_dependencies (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
+   PROCEDURE compile_dependencies (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
    AS
       l_compiled_view   CLOB;
       l_view_rt         tapi_wdx_views.wdx_views_rt;
@@ -915,7 +915,7 @@ AS
          l_view_rt.modified_date := SYSDATE;
          tapi_wdx_views.upd (l_view_rt, TRUE);
       END LOOP;
-   END comile_dependencies;
+   END compile_dependencies;
 
    /*FUNCTION execute (p_template_name   IN VARCHAR2 DEFAULT NULL
                    , p_vars            IN t_assoc_array DEFAULT null_assoc_array
