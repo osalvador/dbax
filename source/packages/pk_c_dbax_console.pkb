@@ -1,4 +1,4 @@
-/* Formatted on 13/04/2016 16:09:56 (QP5 v5.115.810.9015) */
+/* Formatted on 14/04/2016 16:12:58 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
@@ -132,130 +132,6 @@ AS
       dbax_core.g$content_type := 'text/xml';
       dbax_core.p (l_return);
    END;
-
-   PROCEDURE upload
-   AS
-      l_real_file_name   VARCHAR2 (200);
-      l_file             BLOB;
-      l_clob             CLOB;
-      l_error_template   CLOB;
-      l_file_view_name   VARCHAR2 (256);
-      l_file_appid       VARCHAR2 (256);
-      l_view_rt          tapi_wdx_views.wdx_views_rt;
-   BEGIN
-      --Default return status
-      dbax_core.g$status_line := 200;
-      dbax_core.g$content_type := 'text/plain';
-
-      --Post parameter name is file.
-      IF dbax_utils.get (dbax_core.g$post, 'file') IS NOT NULL
-      THEN
-         l_real_file_name :=
-            dbax_document.upload (dbax_core.g$post ('file')
-                                , dbax_core.g$appid
-                                , dbax_security.get_username (dbax_core.g$appid));
-
-         l_file      := dbax_document.get_file_content (l_real_file_name);
-         l_clob      := dbax_document.blob2clob (l_file);
-         
-         --TODO dbax_document.delete
-         DELETE   wdx_documents
-          WHERE   name = l_real_file_name;
-
-         l_file_appid := SUBSTR (l_real_file_name, 1, INSTR (l_real_file_name, '_') - 1);
-         l_file_view_name :=
-            SUBSTR (l_real_file_name
-                  , INSTR (l_real_file_name, '_') + 1
-                  , INSTR (l_real_file_name, '.') - 1 - INSTR (l_real_file_name, '_'));
-
-         l_view_rt.appid := 'CONSOLE';
-
-         /*--Get appId parameter
-         IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
-         THEN
-            dbax_core.g$status_line := 500;
-            p( 'Parameter APPID was not found');
-            ROLLBACK;
-            RETURN;
-         ELSE
-            l_views_rt.appid := 'CONSOLE'; --dbax_core.g$parameter (1);
-         END IF;*/
-
-         IF l_view_rt.appid <> l_file_appid
-         THEN
-            dbax_core.g$status_line := 500;
-            p(   'Unable to load views of other application than '
-              || l_view_rt.appid
-              || ' your file APPID: '
-              || NVL (l_file_appid, 'NULL')
-              || '. Remember file pattern: '
-              || l_view_rt.appid
-              || '_[ViewName].html');
-            ROLLBACK;
-            RETURN;
-         END IF;
-
-         --Upsert view
-         BEGIN
-            l_view_rt.appid := l_file_appid;
-            l_view_rt.name := l_file_view_name;
-            l_view_rt.source := l_clob;
-            tapi_wdx_views.ins (l_view_rt);
-         EXCEPTION
-            WHEN DUP_VAL_ON_INDEX
-            THEN
-               tapi_wdx_views.upd (l_view_rt, TRUE);
-         END;
-
-         IF dbax_utils.get (dbax_core.g$post, 'compile') = 'true'
-         THEN
-            --Compile
-            BEGIN
-               dbax_teplsql.compile (l_view_rt.name, l_view_rt.appid, l_error_template);
-            EXCEPTION
-               WHEN OTHERS
-               THEN
-                  dbax_core.g$status_line := 500;
-                  p ('Error compiling view ' || SQLERRM);
-                  dbax_log.error(   'Error compiling view :'
-                                 || l_error_template
-                                 || SQLERRM
-                                 || ' '
-                                 || DBMS_UTILITY.format_error_backtrace ());
-                  RETURN;
-            END;
-
-            --Compile dependencies
-            BEGIN
-               dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
-            EXCEPTION
-               WHEN OTHERS
-               THEN
-                  dbax_core.g$status_line := 500;
-                  p ('Error compiling dependencies ' || SQLERRM);
-                  dbax_log.error(   'Error compiling dependencies:'
-                                 || l_error_template
-                                 || SQLERRM
-                                 || ' '
-                                 || DBMS_UTILITY.format_error_backtrace ());
-                  RETURN;
-            END;
-         
-            p ('View: ' || l_file_view_name || ' successfully saved and compile.');
-         ELSE
-            p ('View: ' || l_file_view_name || ' successfully saved.');
-         END IF;
-
-      END IF;
-
-      
-   EXCEPTION
-      WHEN OTHERS
-      THEN
-         dbax_core.g$status_line := 500;
-         p ('Something went wrong: ' || SQLCODE || ' ' || SQLERRM);
-         dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-   END upload;
 
    PROCEDURE download
    AS
@@ -1531,8 +1407,7 @@ AS
       --The data are a serialized array
       l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
 
-      --Delete selected Properties
-
+      --Delete selected Views
       FOR i IN 1 .. l_data_values.COUNT ()
       LOOP
          --Key is escaped
@@ -1554,10 +1429,210 @@ AS
          dbax_core.p (l_json.TO_CHAR);
    END delete_view;
 
+   PROCEDURE import_view
+   AS
+   BEGIN
+      /**
+      * The user must be an Admin
+      **/
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      /**
+      * Check APPID Parameter
+      **/
+      IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
+      THEN
+         dbax_core.g$status_line := 500;
+         dbax_core.p ('APPID Must be not null');
+         RETURN;
+      ELSE
+         dbax_core.g$view ('current_app_id') := UPPER (dbax_core.g$parameter (1));
+      END IF;
+
+      dbax_core.load_view ('importViewFiles');
+   END import_view;
+
+   PROCEDURE upload_view
+   AS
+      l_real_file_name   VARCHAR2 (200);
+      l_file             BLOB;
+      l_clob             CLOB;
+      l_error_template   CLOB;
+      l_file_view_name   VARCHAR2 (256);
+      l_file_appid       VARCHAR2 (256);
+      l_view_rt          tapi_wdx_views.wdx_views_rt;
+   BEGIN
+      --Default return status
+      dbax_core.g$status_line := 200;
+      dbax_core.g$content_type := 'text/plain';
+
+      --Post parameter name is file.
+      IF dbax_utils.get (dbax_core.g$post, 'file') IS NOT NULL
+      THEN
+         l_real_file_name :=
+            dbax_document.upload (dbax_core.g$post ('file')
+                                , dbax_core.g$appid
+                                , dbax_security.get_username (dbax_core.g$appid));
+
+         l_file      := dbax_document.get_file_content (l_real_file_name);
+         l_clob      := dbax_document.blob2clob (l_file);
+
+         --Delete file
+         dbax_document.del (l_real_file_name, dbax_core.g$appid);
+
+         --Get parameters from file name
+         l_file_appid := SUBSTR (l_real_file_name, 1, INSTR (l_real_file_name, '_') - 1);
+         l_file_view_name :=
+            SUBSTR (l_real_file_name
+                  , INSTR (l_real_file_name, '_') + 1
+                  , INSTR (l_real_file_name, '.') - 1 - INSTR (l_real_file_name, '_'));
+
+         --Get appId parameter
+         IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
+         THEN
+            dbax_core.g$status_line := 500;
+            p ('Parameter APPID was not found');
+            ROLLBACK;
+            RETURN;
+         ELSE
+            l_view_rt.appid := dbax_core.g$parameter (1);
+         END IF;
+
+         IF l_view_rt.appid <> l_file_appid
+         THEN
+            dbax_core.g$status_line := 500;
+            p(   'Unable to load views of other application than '
+              || l_view_rt.appid
+              || ' your file APPID: '
+              || NVL (l_file_appid, 'NULL')
+              || '. Remember file pattern: '
+              || l_view_rt.appid
+              || '_[ViewName].html');
+            ROLLBACK;
+            RETURN;
+         END IF;
+
+         --Upsert view
+         BEGIN
+            l_view_rt.appid := l_file_appid;
+            l_view_rt.name := l_file_view_name;
+            l_view_rt.source := l_clob;
+            tapi_wdx_views.ins (l_view_rt);
+         EXCEPTION
+            WHEN DUP_VAL_ON_INDEX
+            THEN
+               tapi_wdx_views.upd (l_view_rt, TRUE);
+         END;
+
+         --If compile is true
+         IF dbax_utils.get (dbax_core.g$post, 'compile') = 'true'
+         THEN
+            --Compile
+            BEGIN
+               dbax_teplsql.compile (l_view_rt.name, l_view_rt.appid, l_error_template);
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  dbax_core.g$status_line := 500;
+                  p ('Error compiling view ' || SQLERRM);
+                  dbax_log.error(   'Error compiling view :'
+                                 || l_error_template
+                                 || SQLERRM
+                                 || ' '
+                                 || DBMS_UTILITY.format_error_backtrace ());
+                  RETURN;
+            END;
+
+            --Compile dependencies
+            BEGIN
+               dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  dbax_core.g$status_line := 500;
+                  p ('Error compiling dependencies ' || SQLERRM);
+                  dbax_log.error(   'Error compiling dependencies:'
+                                 || l_error_template
+                                 || SQLERRM
+                                 || ' '
+                                 || DBMS_UTILITY.format_error_backtrace ());
+                  RETURN;
+            END;
+
+            p ('View: ' || l_file_view_name || ' successfully saved and compile.');
+         ELSE
+            p ('View: ' || l_file_view_name || ' successfully saved.');
+         END IF;
+      ELSE
+         dbax_core.g$status_line := 500;
+         p ('Any file has been sent');
+      END IF;
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         dbax_core.g$status_line := 500;
+         p ('Something went wrong: ' || SQLCODE || ' ' || SQLERRM);
+         dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+   END upload_view;
+
+   PROCEDURE export_all_view
+   AS
+      l_appid          tapi_wdx_views.appid;
+      l_blob_content   BLOB;
+   BEGIN
+      /**
+      * The user must be an Admin
+      **/
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      /**
+      * Check APPID Parameter
+      **/
+      IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
+      THEN
+         dbax_core.g$status_line := 500;
+         dbax_core.p ('APPID Must be not null');
+         RETURN;
+      ELSE
+         l_appid     := UPPER (dbax_core.g$parameter (1));
+      END IF;
+
+      FOR c1 IN (SELECT   *
+                   FROM   wdx_views
+                  WHERE   appid = l_appid)
+      LOOP
+         as_zip.add1file (l_blob_content, c1.appid || '_' || c1.name || '.html', as_zip.clob_to_blob (c1.source));
+      END LOOP;
+
+      as_zip.finish_zip (l_blob_content);
+
+      -- TODO dbax_document.download_this
+      HTP.init;
+      OWA_UTIL.mime_header ('application/zip', FALSE);
+      HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
+      HTP.p ('Content-Disposition: attachment; filename="dbax_' || l_appid || '_views.zip"');
+      OWA_UTIL.http_header_close;
+
+      WPG_DOCLOAD.download_file (l_blob_content);
+
+      DBMS_LOB.freetemporary (l_blob_content);
+
+      --Stop process and return
+      dbax_core.g_stop_process := TRUE;
+      return;
+   END export_all_view;
+
    /*
    * Request Validation Function controllers
    */
-
    PROCEDURE reqvalidation
    AS
    BEGIN

@@ -9,10 +9,8 @@
     <link rel="stylesheet" href="${resources_url}/plugins/codemirror/addon/display/fullscreen.css">
     <link rel="stylesheet" href="${resources_url}/plugins/codemirror/theme/monokai.css">
     ';
-?>
-
+?>!\n
 <?dbax dbax_core.include('header'); ?>
-
 <!-- SideBar -->
 <?dbax dbax_core.include('sidebar');?> 
 
@@ -26,7 +24,7 @@
           </h1>
           
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}/views"><i class="fa fa-eye"></i> Views</a></li>            
@@ -216,7 +214,7 @@
         </div>
       </div>
     </div>
- 	<!-- Modal Info-->
+     <!-- Modal Info-->
     <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -224,7 +222,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">Keyboard shortcuts</h4>
           </div>
-          <div class="modal-body">            			
+          <div class="modal-body">                        
            <ul>                         
               <li><code>Ctrl-S / Cmd-S </code> Save</li>
               <li><code>F11 / ESC </code> Enter and Exit Full screen</li>              
@@ -234,7 +232,7 @@
               <li><code>Shift-Ctrl-F / Cmd-Option-F </code> Replace</li>
               <li><code>Shift-Ctrl-R / Shift-Cmd-Option-F </code> Replace all</li>
               <li><code>Alt-F </code> Persistent search (dialog doesn't autoclose, enter to find next, shift-enter to find previous)    </li>
-         	</ul>       
+             </ul>       
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal" id="closeImp">Ok</button>            

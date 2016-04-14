@@ -33,7 +33,9 @@ AS
 
    FUNCTION blob2clob (v_blob_in IN BLOB)
       RETURN CLOB;
---PROCEDURE download_cebi (psecuencia IN NUMBER);
+
+   procedure del (p_file_name IN VARCHAR2, p_appid IN VARCHAR2);
+
 --FUNCTION clob2blob (p_clob IN CLOB)
 --   RETURN BLOB;
 END dbax_document;

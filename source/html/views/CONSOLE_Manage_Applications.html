@@ -1,4 +1,4 @@
-<?dbax  
+<%
     dbax_core.g$var('page_head') := '        
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
@@ -13,8 +13,7 @@
 		.bottom-buffer { margin-bottom: 3px; }	    
     </style>        
     ';
-?>
-
+%>!\n
 <?dbax dbax_core.include('header'); ?>
 
 <!-- SideBar -->
@@ -425,6 +424,16 @@
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-warning btn-xs" onclick="Export('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-download"></i> Export</button>                              
+                            </div>							
+                   	        <div class="btn-group pull-right" role="group">  
+                               <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/edit/${current_app_id}/views/import"> <i class="fa fa-upload"></i> Import View Files</a>
+                            </div>
+                            <div class="btn-group pull-right" role="group">
+                               <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/edit/${current_app_id}/views/export-all"> <i class="fa fa-download"></i> Export all</a>
+                            </div>
+                           
                         </div> <!-- /.btn-toolbar -->                      
                      </div>
                       
@@ -438,9 +447,10 @@
                               <tr>
                                  <th data-sort-ignore="true"><input type="checkbox" id="selectAllViews" onclick="checkAll(this.id, 'ViewsTable');" name="all"></th>
                                  <th data-sort-initial="true">Name</th>
-                                 <th >Title</th>                                 
-                                 <th >Description</th>
-                                 <th >Visible</th>
+                                 <th>Title</th>                                 
+                                 <th>Description</th>
+                                 <th data-type="date">Modified Date</th>
+                                 <th>Visible</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -448,7 +458,7 @@
                               DECLARE
                                 l_link VARCHAR2(1000);
                               BEGIN
-                                  FOR c1 IN (SELECT name, title, description, visible 
+                                  FOR c1 IN (SELECT name, title, description, visible, modified_date
                                              FROM TABLE (tapi_wdx_views.tt('${current_app_id}')))
                                   LOOP
                                     l_link := '<a href="${base_path}/applications/edit/${current_app_id}/views/edit/'|| utl_url.escape (c1.name, true) ||'">' || c1.name || '</a>';
@@ -458,13 +468,13 @@
                                         p('<td>'|| l_link ||'</td>');
                                         p('<td>'|| c1.title ||'</td>');                                    
                                         p('<td>'|| c1.description ||'</td>');
+										p('<td>'|| to_char(c1.modified_date, 'yyyy-mm-dd hh24:mi:ss') ||'</td>');
                                         IF c1.visible = 'Y'
                                         THEN
                                             p('<td><span class="label label-success">Visible</span></td>');
                                         ELSE
                                             p('<td><span class="label label-danger">Hidden</span></td>');
-                                        END IF;
-                                        --p('<td>'|| c1.visible ||'</td>');
+                                        END IF;                                        
                                     p('</tr>');                      
                                   END LOOP;
                                END;
@@ -486,7 +496,10 @@
                       </div>
                       <div class="btn-group">
                           <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-trash"></i> Delete</button>
-                      </div>                                
+                      </div>
+                      <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-warning btn-xs" onclick="Export('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-download"></i> Export</button>                              
+                      </div>
                  </div> <!-- /.btn-toolbar -->
                 </div><!-- /.box-body -->                  
 

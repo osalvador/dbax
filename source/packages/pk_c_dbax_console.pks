@@ -29,8 +29,6 @@ AS
 
    PROCEDURE get_log;
 
-   PROCEDURE upload;
-
    PROCEDURE download;
 
    /*
@@ -93,6 +91,12 @@ AS
    PROCEDURE get_source_view;
 
    PROCEDURE save_source_view;
+   
+   PROCEDURE import_view;
+   
+   PROCEDURE upload_view;
+   
+   PROCEDURE export_all_view;  
 
    /*
    * Request Validation Function controllers

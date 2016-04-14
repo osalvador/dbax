@@ -394,5 +394,29 @@ is
     utl_file.fclose( t_fh );
   end;
 --
+  function clob_to_blob (p_clob clob) return blob
+  as
+   l_blob          blob;
+   l_dest_offset   integer := 1;
+   l_source_offset integer := 1;
+   l_lang_context  integer := dbms_lob.default_lang_ctx;
+   l_warning       integer := dbms_lob.warn_inconvertible_char;
+  begin
+  
+    dbms_lob.createtemporary(l_blob, true);
+    dbms_lob.converttoblob
+    (
+     dest_lob    =>l_blob,
+     src_clob    =>p_clob,
+     amount      =>dbms_lob.lobmaxsize,
+     dest_offset =>l_dest_offset,
+     src_offset  =>l_source_offset,
+     blob_csid   =>dbms_lob.default_csid,
+     lang_context=>l_lang_context,
+     warning     =>l_warning
+    );
+    return l_blob;
+  end;
+
 end;
 /

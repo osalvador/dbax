@@ -1,6 +1,8 @@
+/* Formatted on 14/04/2016 15:42:19 (QP5 v5.115.810.9015) */
 --
--- DBAX_DOCUMENT  (Package Body) 
+-- DBAX_DOCUMENT  (Package Body)
 --
+
 CREATE OR REPLACE PACKAGE BODY dbax_document
 AS
    FUNCTION clob2blob (p_clob IN CLOB)
@@ -48,102 +50,10 @@ AS
          SET   appid = p_appid, name = l_real_name, username = NVL (p_username, username)
        WHERE   name = p_file_name;
 
-      --TODO trabajar con XDB_RESOURCES guardando los ficheros como recuersos para que sean accedidos desde FTP y WEBDAV
       RETURN l_real_name;
    END upload;
 
-   -- ----------------------------------------------------------------------------
-
-
-   -- ----------------------------------------------------------------------------
-
-   /* PROCEDURE download (file IN VARCHAR2)
-
-    AS
-       -- ----------------------------------------------------------------------------
-       l_blob_content   documents.blob_content%TYPE;
-       l_mime_type      documents.mime_type%TYPE;
-    BEGIN
-       SELECT   blob_content, mime_type
-         INTO   l_blob_content, l_mime_type
-         FROM   documents
-        WHERE   name = file;
-
-       OWA_UTIL.mime_header (l_mime_type, FALSE);
-       HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
-       OWA_UTIL.http_header_close;
-
-
-       WPG_DOCLOAD.download_file (l_blob_content);
-    EXCEPTION
-       WHEN OTHERS
-       THEN
-          HTP.htmlopen;
-          HTP.headopen;
-          HTP.title ('File Download');
-          HTP.headclose;
-          HTP.bodyopen;
-          HTP.header (1, 'Download Status');
-          HTP.PRINT (SQLERRM);
-          HTP.bodyclose;
-
-          HTP.htmlclose;
-    END download;*/
-
-   -- ----------------------------------------------------------------------------
-
-   -- ----------------------------------------------------------------------------
-   /* PROCEDURE download_cebi (psecuencia IN NUMBER)
-      AS
-         -- ----------------------------------------------------------------------------
-         l_blob_content   documents.blob_content%TYPE;
-         l_mime_type      documents.mime_type%TYPE;
-         v_sid            VARCHAR2 (40);
-      BEGIN
-
-         SELECT   zip_contenido
-         INTO     l_blob_content
-         FROM     com_outbox_hist
-         WHERE    secuencia = psecuencia;
-
-         SELECT   instance_name INTO v_sid FROM v$instance;
-
-
-         l_mime_type   := 'application/gzip';
-
-         OWA_UTIL.mime_header (l_mime_type, FALSE);
-         HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
-         -- The filename will be used by the browser if the users does a "Save as"
-
-         HTP.p ('Content-Disposition: filename="cebi_outbox_hist_ ' || v_sid || '_' || psecuencia || '.gz"');
-
-         OWA_UTIL.http_header_close;
-
-         WPG_DOCLOAD.download_file (l_blob_content);
-      EXCEPTION
-         WHEN OTHERS
-         THEN
-            HTP.htmlopen;
-            HTP.headopen;
-            HTP.title ('File Downloaded');
-            HTP.headclose;
-            HTP.bodyopen;
-
-            HTP.header (1, 'Download Status');
-            HTP.PRINT (SQLERRM);
-            HTP.bodyclose;
-            HTP.htmlclose;
-      END download_cebi;
-  */
-
-
-
-
-
-
    --Bind variables from cursor passing Json
-
-
    PROCEDURE bind_json (l_cur NUMBER, bindvar json)
    AS
       keylist   json_list := bindvar.get_keys ();
@@ -530,7 +440,23 @@ AS
 
       RETURN v_clob;
    END blob2clob;
+
+   PROCEDURE del (p_file_name IN VARCHAR2, p_appid IN VARCHAR2)
+   AS
+      e_del_failed exception;
+   BEGIN
+      DELETE FROM   wdx_documents
+            WHERE   name = del.p_file_name AND appid = del.p_appid;
+
+
+      IF sql%ROWCOUNT != 1
+      THEN
+         RAISE e_del_failed;
+      END IF;
+   EXCEPTION
+      WHEN e_del_failed
+      THEN
+         raise_application_error (-20000, 'No rows were deleted. The delete failed.');
+   END del;
 END dbax_document;
 /
-
-
