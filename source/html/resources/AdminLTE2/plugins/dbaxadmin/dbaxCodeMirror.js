@@ -45,6 +45,7 @@ function dbaxCodeMirror(textareaId,formId){
 $('.nav-tabs a').on('shown.bs.tab', function (e) {
     window.location.hash = e.target.hash;
         editor.refresh();
+        compiledEditor.refresh();
 })
 
 
