@@ -75,6 +75,68 @@ function Delete(tableId, postURL){
     
 }
 
+/****************/
+//Export checked Items, Post Ajax and reload page.
+function Export(tableId, postURL){
+   //Get selected Data
+   var postData = [];
+    $('#' + tableId).find('td input:checkbox').each(function() {
+        if ($(this).is(":checked")){
+            postData.push(encodeURIComponent($(this).val())); //Data is encoded
+        }
+        
+    });    
+    
+    if (postData.length === 0)
+    {
+        swal({  title: "No items are selected"
+              , text: "You must select at least one item"
+              , type: "warning"});
+    }else{
+        //User confirmation
+        swal({   title: 'Are you sure?',
+                 text: 'Are you sure you want to export '+ postData.length +' items?',
+                 type: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Yes',
+                 closeOnConfirm: true }
+                 , function() {
+                       //Non-Ajax post form to download file
+                        $('<form action="'+postURL+'" method="POST">' + 
+    						'<input type="hidden" name="data" value="' + encodeURIComponent(postData) + '">' +
+    						'</form>').submit();
+                        return;
+                       /* $.ajax(
+                        {
+                            url : postURL,
+                            type: "POST",
+                            data : {data: encodeURIComponent(postData)}, //Data is encoded
+                            success:function(data, textStatus, jqXHR) 
+                            {
+                                //Parse JSON
+                                //var obj = $.parseJSON(data);
+                                //Sweet Alert
+                                swal({  title: "Successfully deleted", text: data.text, type: "success"}
+                                        , function(){
+                                            location.reload();
+                                        });
+                               location.reload();
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) 
+                            {   
+                                swal({  title: "Error deleting items" 
+                                       ,html: "There is a problem deleting your data, please try again later or contact with the Adminstrator." + '<br/><br/><pre><code class="prettyprint">' + jqXHR.responseText + '</code></pre>' 
+                                       ,type: "error"
+                                     });                                    
+                            }
+                        });*/
+            });            
+     } //end if
+    
+}
+
 /**********/
 //Submit Ajax Form with validation
  function dbaxSubmitForm(formId){

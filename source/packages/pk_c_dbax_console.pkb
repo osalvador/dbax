@@ -1381,7 +1381,6 @@ AS
       --The response is json
       dbax_core.g$content_type := 'application/json';
 
-
       /**
       * The user must be an Admin
       **/
@@ -1578,6 +1577,70 @@ AS
          p ('Something went wrong: ' || SQLCODE || ' ' || SQLERRM);
          dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END upload_view;
+
+   PROCEDURE export_view
+      AS      
+      l_appid         tapi_wdx_views.appid;
+      l_view_name     tapi_wdx_views.name;
+      l_view_rt       tapi_wdx_views.wdx_views_rt;
+      l_data_values   DBMS_UTILITY.maxname_array;
+      l_blob_content   BLOB;
+   BEGIN
+      /**
+      * The user must be an Admin
+      **/
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      /**
+      * Check APPID Parameter
+      **/
+      IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
+      THEN
+         dbax_core.g$status_line := 500;
+         dbax_core.p ('APPID Must be not null');
+         RETURN;
+      ELSE
+         l_appid     := UPPER (dbax_core.g$parameter (1));         
+      END IF;
+
+      --The data are a serialized array
+      l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
+
+      --Download selected views
+      FOR i IN 1 .. l_data_values.COUNT ()
+      LOOP
+         --Key is escaped
+         l_view_name := utl_url.unescape (l_data_values (i));
+         l_view_rt := tapi_wdx_views.rt (l_appid, l_view_name);
+         as_zip.add1file (l_blob_content, l_view_rt.appid || '_' || l_view_rt.name || '.html', as_zip.clob_to_blob (l_view_rt.source));
+      END LOOP;
+
+       as_zip.finish_zip (l_blob_content);
+
+      -- TODO dbax_document.download_this
+      HTP.init;
+      OWA_UTIL.mime_header ('application/zip', FALSE);
+      HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
+      HTP.p ('Content-Disposition: attachment; filename="dbax_' || l_appid || '_views.zip"');
+      OWA_UTIL.http_header_close;
+
+      WPG_DOCLOAD.download_file (l_blob_content);
+
+      DBMS_LOB.freetemporary (l_blob_content);
+
+      --Stop process and return
+      dbax_core.g_stop_process := TRUE;      
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.p(SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());                     
+   end export_view;
+
 
    PROCEDURE export_all_view
    AS

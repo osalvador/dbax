@@ -92,11 +92,14 @@ AS
 
    PROCEDURE save_source_view;
    
-   PROCEDURE import_view;
+   PROCEDURE import_view;   
    
    PROCEDURE upload_view;
    
-   PROCEDURE export_all_view;  
+   --Export selected views
+   PROCEDURE export_view;
+   
+   PROCEDURE export_all_view;     
 
    /*
    * Request Validation Function controllers
