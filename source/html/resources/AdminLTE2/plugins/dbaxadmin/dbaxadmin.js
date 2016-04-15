@@ -225,7 +225,7 @@ function formTextareaToClob(formId, textareaId) {
 /**********/
 //Submit jQuery Ajax Form with Textarea Clob
 function SubmitClobForm(formId,extraURLParam){
-  $('.fa-save').toggleClass( "fa-spin");
+  $('.fa-save').addClass( "fa-spin");
   
   //Saving CLOB data greater than 32K 
   //Split textarea into hidden parameters
@@ -241,7 +241,7 @@ function SubmitClobForm(formId,extraURLParam){
             $('#hash').val(data.hash)
             $('#modified_by').val(data.modified_by)
             $('#modified_date').val(data.modified_date)
-            $('.fa-save').toggleClass( "fa-spin");
+            $('.fa-save').removeClass( "fa-spin");
         }
     });
     
