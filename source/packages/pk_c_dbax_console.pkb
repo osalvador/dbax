@@ -1,4 +1,3 @@
-/* Formatted on 14/04/2016 16:12:58 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
@@ -1203,8 +1202,7 @@ AS
       l_source    CLOB;
       l_json      json := json ();
    BEGIN
-      --The response is text/plain
-      --dbax_core.g$content_type := 'application/json';
+      --The response is text/plain      
       dbax_core.g$content_type := 'text/plain';
 
       /**
@@ -1216,11 +1214,9 @@ AS
          RETURN;
       END IF;
 
-
       --Get appId parameter if not exists return to applications
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
-      THEN
-         --TODO Redireccionar a Aplicaciones? mejor indicar en la vista que Propiedad no encontrada y listo
+      THEN         
          dbax_core.g$http_header ('Location') := dbax_core.get_path ('/applications');
          RETURN;
       ELSE
@@ -1229,8 +1225,7 @@ AS
 
       --Get name parameter if not exists return to applications
       IF NOT dbax_core.g$parameter.EXISTS (2) OR dbax_core.g$parameter (2) IS NULL
-      THEN
-         --TODO Redireccionar a Aplicaciones? mejor indicar en la vista que Propiedad no encontrada y listo
+      THEN         
          dbax_core.g$http_header ('Location') := dbax_core.get_path ('/applications');
          RETURN;
       ELSE
@@ -1240,13 +1235,17 @@ AS
       --Get view
       l_view_rt   := tapi_wdx_views.rt (l_appid, l_name);
 
-      --l_json.put ('source', l_view_rt.source);
-
       --Return values
-
-      --Source code is a CLOB type, json.to_CLOB fails so I return plain text.
-      --l_json.TO_CLOB(dbax_core.g$h_view);
-      dbax_core.p (l_view_rt.source);
+      --Source code is a CLOB type, json.to_CLOB fails so I return plain text.            
+      IF NOT dbax_core.g$parameter.EXISTS (3) OR dbax_core.g$parameter (3) IS NULL
+      THEN
+         dbax_core.p (l_view_rt.source);
+      ELSE
+         IF dbax_core.g$parameter (3) = 'compiled'
+         THEN
+            dbax_core.p (l_view_rt.compiled_source);
+         END IF;
+      END IF;
    EXCEPTION
       WHEN OTHERS
       THEN
@@ -1256,8 +1255,6 @@ AS
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          dbax_core.p (l_json.TO_CHAR);
    END get_source_view;
-
-
 
    PROCEDURE save_source_view
    AS
@@ -1296,42 +1293,46 @@ AS
       --Update view
       tapi_wdx_views.web_upd (p_wdx_views_rec => l_view_rt, p_ignore_nulls => TRUE);
 
-      --Compile
-      BEGIN
-         dbax_teplsql.compile (l_view_rt.name, l_view_rt.appid, l_error_template);
-      EXCEPTION
-         WHEN OTHERS
-         THEN
-            dbax_log.error(   'Error compiling view :'
-                           || l_error_template
-                           || SQLERRM
-                           || ' '
-                           || DBMS_UTILITY.format_error_backtrace ());
-            RAISE;
-      END;
+      IF dbax_core.g$parameter.EXISTS (2) AND dbax_core.g$parameter (2) IS NOT NULL AND dbax_core.g$parameter (2) = 'compiled'
+      THEN 
+          --Compile
+          BEGIN
+             dbax_teplsql.compile (l_view_rt.name, l_view_rt.appid, l_error_template);
+          EXCEPTION
+             WHEN OTHERS
+             THEN
+                dbax_log.error(   'Error compiling view :'
+                               || l_error_template
+                               || SQLERRM
+                               || ' '
+                               || DBMS_UTILITY.format_error_backtrace ());
+                RAISE;
+          END;
 
-      --Compile dependencies
-      BEGIN
-         dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
-      EXCEPTION
-         WHEN OTHERS
-         THEN
-            dbax_log.error(   'Error compiling dependencies:'
-                           || l_error_template
-                           || SQLERRM
-                           || ' '
-                           || DBMS_UTILITY.format_error_backtrace ());
-            RAISE;
-      END;
+          --Compile dependencies
+          BEGIN
+             dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
+          EXCEPTION
+             WHEN OTHERS
+             THEN
+                dbax_log.error(   'Error compiling dependencies:'
+                               || l_error_template
+                               || SQLERRM
+                               || ' '
+                               || DBMS_UTILITY.format_error_backtrace ());
+                RAISE;
+          END;
+        l_json.put ('text', 'Saved and Compiled');
+      else
+        l_json.put ('text', 'Only Saved');
+      END IF;
 
       l_view_rt   := tapi_wdx_views.rt (l_view_rt.appid, l_view_rt.name);
 
       --Return JSON
       l_json.put ('hash', l_view_rt.hash);
       l_json.put ('modified_by', l_view_rt.modified_by);
-
-      l_json.put ('modified_date', TO_CHAR (l_view_rt.modified_date, 'YYYY/MM/DD hh24:mi:ss'));
-      l_json.put ('text', '');
+      l_json.put ('modified_date', TO_CHAR (l_view_rt.modified_date, 'YYYY/MM/DD hh24:mi:ss'));      
 
       --Return values
       dbax_core.p (l_json.TO_CHAR);
@@ -1501,7 +1502,7 @@ AS
             l_view_rt.appid := dbax_core.g$parameter (1);
          END IF;
 
-         IF l_view_rt.appid <> l_file_appid
+         IF l_view_rt.appid <> l_file_appid OR l_file_appid IS NULL
          THEN
             dbax_core.g$status_line := 500;
             p(   'Unable to load views of other application than '
@@ -1514,6 +1515,16 @@ AS
             ROLLBACK;
             RETURN;
          END IF;
+
+
+         IF l_file_view_name IS NULL
+         THEN
+            dbax_core.g$status_line := 500;
+            p ('View name can not be NULL. ' || '. Remember file pattern: ' || l_view_rt.appid || '_[ViewName].html');
+            ROLLBACK;
+            RETURN;
+         END IF;
+
 
          --Upsert view
          BEGIN
@@ -1579,11 +1590,11 @@ AS
    END upload_view;
 
    PROCEDURE export_view
-      AS      
-      l_appid         tapi_wdx_views.appid;
-      l_view_name     tapi_wdx_views.name;
-      l_view_rt       tapi_wdx_views.wdx_views_rt;
-      l_data_values   DBMS_UTILITY.maxname_array;
+   AS
+      l_appid          tapi_wdx_views.appid;
+      l_view_name      tapi_wdx_views.name;
+      l_view_rt        tapi_wdx_views.wdx_views_rt;
+      l_data_values    DBMS_UTILITY.maxname_array;
       l_blob_content   BLOB;
    BEGIN
       /**
@@ -1604,7 +1615,7 @@ AS
          dbax_core.p ('APPID Must be not null');
          RETURN;
       ELSE
-         l_appid     := UPPER (dbax_core.g$parameter (1));         
+         l_appid     := UPPER (dbax_core.g$parameter (1));
       END IF;
 
       --The data are a serialized array
@@ -1615,11 +1626,13 @@ AS
       LOOP
          --Key is escaped
          l_view_name := utl_url.unescape (l_data_values (i));
-         l_view_rt := tapi_wdx_views.rt (l_appid, l_view_name);
-         as_zip.add1file (l_blob_content, l_view_rt.appid || '_' || l_view_rt.name || '.html', as_zip.clob_to_blob (l_view_rt.source));
+         l_view_rt   := tapi_wdx_views.rt (l_appid, l_view_name);
+         as_zip.add1file (l_blob_content
+                        , l_view_rt.appid || '_' || l_view_rt.name || '.html'
+                        , as_zip.clob_to_blob (l_view_rt.source));
       END LOOP;
 
-       as_zip.finish_zip (l_blob_content);
+      as_zip.finish_zip (l_blob_content);
 
       -- TODO dbax_document.download_this
       HTP.init;
@@ -1633,13 +1646,13 @@ AS
       DBMS_LOB.freetemporary (l_blob_content);
 
       --Stop process and return
-      dbax_core.g_stop_process := TRUE;      
+      dbax_core.g_stop_process := TRUE;
    EXCEPTION
       WHEN OTHERS
       THEN
          ROLLBACK;
-         dbax_core.p(SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());                     
-   end export_view;
+         dbax_core.p (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+   END export_view;
 
 
    PROCEDURE export_all_view
@@ -1690,7 +1703,7 @@ AS
 
       --Stop process and return
       dbax_core.g_stop_process := TRUE;
-      return;
+      RETURN;
    END export_all_view;
 
    /*

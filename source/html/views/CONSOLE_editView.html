@@ -1,8 +1,7 @@
 <?dbax
     dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2 -->
-    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
-    
+    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />    
     <!-- CodeMirror -->
     <link rel="stylesheet" href="${resources_url}/plugins/codemirror/lib/codemirror.css" />
     <link rel="stylesheet" href="${resources_url}/plugins/codemirror/addon/dialog/dialog.css">
@@ -36,13 +35,14 @@
         <section class="content">        
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#Edit" data-toggle="tab">Edit</a></li>
-                    <li><a href="#Source" data-toggle="tab">Source Code of the View</a></li>                                 
+                <ul class="nav nav-tabs">                    
+                    <li class="active"><a href="#Source" data-toggle="tab">Source code</a></li>
+                    <li><a href="#CompiledSource" data-toggle="tab">Compiled source code</a></li>
+                    <li><a href="#Edit" data-toggle="tab">Properties</a></li>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active" id="Edit">
+                    <div class="tab-pane" id="Edit">
         
                         <div class="box">
                             <div class="box-header with-border">
@@ -130,24 +130,26 @@
                         </div> <!-- /.box -->              
                 </div><!-- /.tab-pane -->              
 
-                <div class="tab-pane" id="Source">
+                <div class="tab-pane active" id="Source">
                     
                     <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Source Code of the View</h3>
+                        <h3 class="box-title">Source code</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">          
 
-                      <div class="btn-group" role="group" aria-label="...">
+                      <!--<div class="btn-group" role="group" aria-label="...">-->
                         <button id="viewCodeBtn" class="btn btn-info" onclick="editor.save(); SubmitClobForm('viewCodeForm'); changes=false;"><i class="fa fa-save"></i> Save</button>
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalExport"><i class="fa fa-download"></i> Export</button>
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImport"><i class="fa fa-upload"></i> Import</button>
+                        <button id="viewCodeCompiledBtn" class="btn btn-warning" onclick="editor.save(); SubmitClobForm('viewCodeForm','compiled'); changes=false;"><i class="fa fa-save"></i> Save and compile</button>
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalInfo"><i class="fa fa-info"></i> Keyboard shortcuts</button>
-                      </div>
+                        <div class="pull-right">
+                        	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalExport"><i class="fa fa-download"></i> Export</button>
+                        	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImport"><i class="fa fa-upload"></i> Import</button>                        	
+                        </div>
+                      <!--</div>-->
                       <br><br>
                       
-                        <form name="viewCodeForm" id="viewCodeForm" action="${base_path}/applications/edit/${current_app_id}/views/save-source" method="POST">
-                        
+                        <form name="viewCodeForm" id="viewCodeForm" action="${base_path}/applications/edit/${current_app_id}/views/save-source" method="POST">                        
                             <textarea id="code"  name="code"></textarea>
                             <input type="hidden" name="current_app_id" value="${current_app_id}">
                             <input type="hidden" name="name" value="${name}" >
@@ -158,6 +160,7 @@
                       
                     <div class="box-footer">                      
                       <button id="viewCodeBtn" class="btn btn-info" onclick="editor.save(); SubmitClobForm('viewCodeForm'); changes=false;"><i class="fa fa-save"></i> Save</button>
+                      <button id="viewCodeCompiledBtn" class="btn btn-warning" onclick="editor.save(); SubmitClobForm('viewCodeForm','compiled'); changes=false;"><i class="fa fa-save"></i> Save and compile</button>
                       <div class="pull-right">
                         <a href="${base_path}/applications/edit/${current_app_id}#Views" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
                       </div>                      
@@ -165,6 +168,41 @@
                 </div> <!-- /.box -->
                   
               </div><!-- /.tab-pane -->
+                  
+			  <div class="tab-pane" id="CompiledSource">
+                    
+                    <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Compiled source code</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">          
+
+                      <div class="btn-group" role="group">                        
+                        <button type="button" class="btn btn-default btn-lrg ajax" onclick="reloadCompiledCode();" title="Reload compiled code">
+            				<i id="reloadIcon" class="fa fa-refresh"></i> Reload
+          				</button>
+                      </div>
+                      <br><br>
+                        
+                        <!--action="${base_path}/applications/edit/${current_app_id}/views/save-source"--> 
+                        <form name="viewCompiledCodeForm" id="viewCompiledCodeForm" method="POST">                        
+                            <textarea id="compiledCode" name="compiledCode"></textarea>
+                            <input type="hidden" name="current_app_id" value="${current_app_id}">
+                            <input type="hidden" name="name" value="${name}" >
+                            <input type="hidden" name="hash" id="hash" value="${hash}">
+                        </form>
+                        
+                    </div><!-- /.box-body -->
+                      
+                    <div class="box-footer">                      
+                      <!--<button id="viewCodeBtn" class="btn btn-info" onclick="editor.save(); SubmitClobForm('viewCodeForm'); changes=false;"><i class="fa fa-save"></i> Save</button>-->
+                      <div class="pull-right">
+                        <a href="${base_path}/applications/edit/${current_app_id}#Views" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                      </div>                      
+                    </div><!-- /.box-footer -->
+                </div> <!-- /.box -->
+                  
+              </div><!-- /.tab-pane -->                  
             </div><!-- /.tab-content -->
           </div><!-- nav-tabs-custom -->
         </section><!-- /.content -->
@@ -255,6 +293,7 @@
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/javascript/javascript.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/css/css.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script> 
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/sql/sql.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/display/fullscreen.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/dialog/dialog.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/search/search.js"></script>
@@ -271,13 +310,13 @@
       dbaxCodeMirror('code','viewCodeForm');
       
         //Submit jQuery Ajax Form 
-        function SubmitForm(formId){        
+        function SubmitForm(formId){          
             dbaxSubmitForm(formId).done(function(data) {
               if (data.cod_error === undefined){
                   //Update Values
                   $('#hash').val(data.hash)
                   $('#modified_by').val(data.modified_by)
-                  $('#modified_date').val(data.modified_date)
+                  $('#modified_date').val(data.modified_date)                  
               }
             });
         }       
@@ -295,9 +334,49 @@
             } catch (e) {
                   //data are plain/text
                   editor.setValue(data);
-                  editor.setSize("100%",500);                                   
+                  editor.setSize("100%",500);
             }            
          });
+      
+      
+	compiledEditor = CodeMirror.fromTextArea(document.getElementById("compiledCode"), {                  
+          lineNumbers: true,
+          mode: "text/x-plsql",
+          matchBrackets: true,
+          theme: "monokai",
+          extraKeys: {
+            "F11": function(cm) {
+              cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": function(cm) {
+              //if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+              cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            }
+          }
+        });      
+    
+   reloadCompiledCode();
+      
+   function reloadCompiledCode(){ 
+     $('#reloadIcon').toggleClass( "fa-spin");
+      //Get jQuery Ajax View Compiled Source      
+       $.get( '${base_path}/applications/edit/${current_app_id}/views/get-source/${name}/compiled', function( data ) {
+            try {
+                  //parse Data into JSON   
+                  json = $.parseJSON(data);
+                if (json.cod_error !== undefined){
+                      swal({  title: "Error getting view source code"
+                            ,html: "There is a problem getting your data" + '<br/><br/><pre><code class="prettyprint">' + json.msg_error + '</code></pre>'
+                            ,type: "error"}); 
+                }
+            } catch (e) {
+                  //data are plain/text
+                  compiledEditor.setValue(data);
+                  compiledEditor.setSize("100%",500);
+              	  $('#reloadIcon').toggleClass( "fa-spin");
+            }            
+         });     
+   }
       
      </script> 
 

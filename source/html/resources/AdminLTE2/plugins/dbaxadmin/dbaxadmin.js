@@ -107,31 +107,6 @@ function Export(tableId, postURL){
                         $('<form action="'+postURL+'" method="POST">' + 
     						'<input type="hidden" name="data" value="' + encodeURIComponent(postData) + '">' +
     						'</form>').submit();
-                        return;
-                       /* $.ajax(
-                        {
-                            url : postURL,
-                            type: "POST",
-                            data : {data: encodeURIComponent(postData)}, //Data is encoded
-                            success:function(data, textStatus, jqXHR) 
-                            {
-                                //Parse JSON
-                                //var obj = $.parseJSON(data);
-                                //Sweet Alert
-                                swal({  title: "Successfully deleted", text: data.text, type: "success"}
-                                        , function(){
-                                            location.reload();
-                                        });
-                               location.reload();
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) 
-                            {   
-                                swal({  title: "Error deleting items" 
-                                       ,html: "There is a problem deleting your data, please try again later or contact with the Adminstrator." + '<br/><br/><pre><code class="prettyprint">' + jqXHR.responseText + '</code></pre>' 
-                                       ,type: "error"
-                                     });                                    
-                            }
-                        });*/
             });            
      } //end if
     
@@ -249,17 +224,24 @@ function formTextareaToClob(formId, textareaId) {
 
 /**********/
 //Submit jQuery Ajax Form with Textarea Clob
-function SubmitClobForm(formId){
+function SubmitClobForm(formId,extraURLParam){
+  $('.fa-save').toggleClass( "fa-spin");
+  
   //Saving CLOB data greater than 32K 
   //Split textarea into hidden parameters
   var newFormId = formTextareaToClob(formId, "code");
-  
+
+  if (extraURLParam !== undefined){
+    $('#'+newFormId).attr('action',$('#'+newFormId).attr('action')+'/'+extraURLParam);  
+  }
+
   dbaxSubmitForm(newFormId).done(function(data) {
         if (data.cod_error === undefined){
             //Update Values
             $('#hash').val(data.hash)
             $('#modified_by').val(data.modified_by)
             $('#modified_date').val(data.modified_date)
+            $('.fa-save').toggleClass( "fa-spin");
         }
     });
     
