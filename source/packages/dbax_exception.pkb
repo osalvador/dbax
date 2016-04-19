@@ -1,4 +1,3 @@
-/* Formatted on 07/04/2016 12:58:37 (QP5 v5.115.810.9015) */
 --
 -- DBAX_EXCEPTION  (Package Body)
 --
@@ -96,7 +95,7 @@ AS
       dbax_log.error ('raise: ' || g$error ('errorBacktrace'));
 
       HTP.init;
-      OWA_UTIL.mime_header ('text/html', FALSE, dbax_core.get_propertie ('ENCODING'));
+      OWA_UTIL.mime_header ('text/html', FALSE, dbax_core.get_property ('ENCODING'));
       OWA_UTIL.status_line (500);
       OWA_UTIL.http_header_close;
 

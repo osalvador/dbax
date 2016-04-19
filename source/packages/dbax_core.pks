@@ -1,9 +1,9 @@
-CREATE OR REPLACE PACKAGE DBAX.dbax_core
+CREATE OR REPLACE PACKAGE dbax_core
 AS
    /**
-   -- # DBAX_CORE
-   -- Version: 0.1. <br/>
-   -- Description: HTML interpreter for embedded PL/SQL
+   * DBAX_CORE
+   * The core of dbax. Contains the dispatcher that controls the entire flow of a request.
+   * It also contains the superglobal variables.
    */
 
    --Global Variables
@@ -12,35 +12,41 @@ AS
       TABLE OF VARCHAR2 (32767)
          INDEX BY VARCHAR2 (255);
 
-   --G$VAR User session global variables
+   --G$VAR An associative array of variables to be used where you want
    g$var            g_assoc_array;
 
-   --G$VIEW View variables (constants) to be replaced
+   --G$VIEW An associative array of variables (constants) to be replaced in the views referenced by ${name}
    g$view           g_assoc_array;
 
-   --G$GET HTTP GET QUERY_STRING params for GET request
+   --G$GET An associative array of variables passed via the URL parameters.
    g$get            g_assoc_array;
 
-   --G$POST HTTP POST params for POST request
+   --G$POST An associative array of variables passed via the HTTP POST
    g$post           g_assoc_array;
 
-   --G$SERVER OWA CGI Environment
+   /**
+   * G$SERVER An associative array of variables passed via OWA CGI Environment and
+   * containing information such as headers, paths, and script locations created by the web server
+   */
    g$server         g_assoc_array;
 
-   --G$HEADERS Response HTTP Headers
+   --G$HEADERS HTTP response headers
    g$http_header    g_assoc_array;
 
-   --G$STATUS_LINE HTTP CODE Header status line (200,404,500...)
+   --G$STATUS_LINE  HTTP response status code.
    g$status_line    PLS_INTEGER := 200;
 
-   --G_STOP_PROCESS Boolean that indicates stop dbax ngine
+   --Mime Type for response
+   g$content_type   VARCHAR2 (100) := 'text/html';
+
+   --G_STOP_PROCESS Boolean that indicates stop dbax engine
    g_stop_process   BOOLEAN := FALSE;
 
    --MVC
-   --G$CONTROLLER MVC controller to execute
+   --G$CONTROLLER MVC controller to be executed
    g$controller     VARCHAR2 (100);
 
-   --G$VIEW_NAME page to loaded by view, not by controller
+   --G$VIEW_NAME MVC view to be exeqcuted
    g$view_name      VARCHAR2 (300);
 
    --G$PARAMETER MVC URL parameters ../<pramamter1>/<pramamter2>/<pramamterN>
@@ -51,57 +57,58 @@ AS
    --G$APPID Current Application ID
    g$appid          VARCHAR2 (50);
 
-   --G$H_VIEW Loaded Views for HTTP buffer
-   --g$h_view         CLOB;
+   --Username if user is logged
+   g$username       VARCHAR2 (255);
 
    --Empty array for dynamic parameter
    empty_vc_arr     OWA_UTIL.vc_arr;
 
-   --Mime Type for response
-   g$content_type   VARCHAR2 (100) := 'text/html';
-
-   --Username if user is logged
-   g$username       VARCHAR2 (255);
-
    /**
-   --## Function Name: DISPATCHER
-   --### Description:
-   --       DBAX Dispatcher. All request will be dispatch by DBAX dispatcher.
-   --
-   --### IN Paramters
-   --    | Name | Type | Description
-   --    | -- | -- | --
-   --   | p_path | VARCHAR2 | HTTP URL request
-   --### Return
-   --    | Name | Type | Description
-   --    | -- | -- | --
-   --   |  HTTP PAGE | BUFFER | HTML response
-   --### Amendments
-   --| When         | Who                      | What
-   --|--------------|--------------------------|------------------
-   --|02/02/2015    | Oscar Salvador Magallanes | Creacion del procedimiento
+   * Central procedure that dispatches requests to controllers. AKA front controller.
+   *
+   * @param  p_appid        the application id of the request
+   * @param  name_array     vc_arr with the name of the arguments
+   * @param  value_array    vc_arr with the values of the arguments
    */
    PROCEDURE dispatcher (p_appid       IN VARCHAR2
                        , name_array    IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr
                        , value_array   IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr );
 
-   FUNCTION get_propertie (p_key IN wdx_properties.key%TYPE)
+   /**
+   * Gets property value of the current application.
+   *
+   * @param  p_key        the key name of the propertie
+   */
+   FUNCTION get_property (p_key IN wdx_properties.key%TYPE)
       RETURN VARCHAR2;
 
+   /**
+   * Load the view to be executed.
+   *
+   * @param  p_name        the name of the view
+   * @param  p_appid       the application id of the view. If null, dbax uses g$appid
+   */
    PROCEDURE load_view (p_name IN VARCHAR2, p_appid IN VARCHAR2 DEFAULT NULL );
 
+   /**
+   * Returns application URL as specified in the application property BASE_PATH.
+   * Also you can supply segments to be concatenated to the url.
+   *
+   * @param  p_local_path     the uri(string)
+   */
    FUNCTION get_path (p_local_path IN VARCHAR2 DEFAULT NULL )
       RETURN VARCHAR2;
 
-   --Establece los parametros globales g$get y g$set en funcion de la request realizada
-   PROCEDURE set_request (name_array    IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr
-                        , value_array   IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr );
 
-
-   /*MOD PLSQL validation function. Solo los procedimientos que esta funcion devuelva true pueden ser invocados*/
+   /**
+   * For security. You can use the Validation Function to determine if the requested procedure in the URL should be allowed for processing.
+   * You can configure this function in your gateway (Oracle ORDS, mod_plsql, DBMS_EPG...)
+   *
+   * @param  procedure_name     the procedure to be executed
+   */
    FUNCTION request_validation_function (procedure_name IN VARCHAR2)
       RETURN BOOLEAN;
-      
+
    /**
    * Prints received data into the buffer
    *
@@ -118,13 +125,5 @@ AS
    PROCEDURE PRINT (p_data IN NUMBER);
 
    PROCEDURE p (p_data IN NUMBER);
-   
-/*
-*
-*  HTTP Header
-*
-*/
---PROCEDURE print_http_header;
-END dbax_core; 
+END dbax_core;
 /
-

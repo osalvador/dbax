@@ -1,6 +1,9 @@
-CREATE OR REPLACE PACKAGE BODY      dbax_core
+CREATE OR REPLACE PACKAGE BODY dbax_core
 AS
    PROCEDURE print_http_header;
+   
+   PROCEDURE set_request (name_array    IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr
+                        , value_array   IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr );
 
    PROCEDURE print_owa_page (p_thepage IN HTP.htbuf_arr, p_lines IN NUMBER)
    AS
@@ -27,7 +30,7 @@ AS
       END LOOP;
    END print_owa_page;
 
-   FUNCTION get_propertie (p_key IN wdx_properties.key%TYPE)
+   FUNCTION get_property (p_key IN wdx_properties.key%TYPE)
       RETURN VARCHAR2
    AS
       v_value   wdx_properties.VALUE%TYPE;
@@ -36,14 +39,14 @@ AS
             VALUE
         INTO   v_value
         FROM   wdx_properties
-       WHERE   key = LOWER (get_propertie.p_key) AND appid = g$appid;
+       WHERE   key = LOWER (get_property.p_key) AND appid = g$appid;
 
       RETURN v_value;
    EXCEPTION
       WHEN OTHERS
       THEN
          RETURN NULL;
-   END get_propertie;
+   END get_property;
 
    PROCEDURE routing (p_path                IN     VARCHAR2
                     , p_controller_method      OUT VARCHAR2
@@ -232,8 +235,8 @@ AS
       HTP.prn ('<!--DBAX-->');
       g$appid     := p_appid;
 
-      --Definimos el log
-      dbax_log.set_log_context (get_propertie ('LOG_LEVEL'));
+      --Defining log level
+      dbax_log.set_log_context (get_property ('LOG_LEVEL'));
       dbax_log.info ('Start Dispatcher');
       dbax_log.info ('g$appid=' || g$appid);
 
@@ -390,14 +393,14 @@ AS
       ***************/
 
       OWA.get_page (l_http_output, l_lines);
-      
+
       /***************
       *  8. Print Page
-      ***************/      
+      ***************/
       IF NOT g_stop_process
       THEN
          HTP.init;
-         OWA_UTIL.mime_header (g$content_type, FALSE, get_propertie ('ENCODING'));
+         OWA_UTIL.mime_header (g$content_type, FALSE, get_property ('ENCODING'));
          OWA_UTIL.status_line (nstatus => g$status_line, creason => NULL, bclose_header => FALSE);
          HTP.prn (dbax_cookie.generate_cookie_header);
          dbax_log.debug ('Print HTTP Header');
@@ -431,8 +434,9 @@ AS
       THEN
          dbax_log.error (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          dbax_session.save_sesison_variable;
-         dbax_exception.raise (SQLCODE, SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+         --dbax_exception.raise (SQLCODE, SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          dbax_log.close_log;
+         raise;
    END dispatcher;
 
    PROCEDURE load_view (p_name IN VARCHAR2, p_appid IN VARCHAR2 DEFAULT NULL )
@@ -446,7 +450,7 @@ AS
         INTO   dbax_core.g$view ('title'), g$view_name
         FROM   wdx_views
        WHERE   UPPER (name) = UPPER (p_name) AND appid = NVL (p_appid, g$appid) AND visible = 'Y';
-   
+
    EXCEPTION
       WHEN NO_DATA_FOUND
       THEN
@@ -458,7 +462,7 @@ AS
       RETURN VARCHAR2
    AS
    BEGIN
-      RETURN get_propertie ('BASE_PATH') || p_local_path;
+      RETURN get_property ('BASE_PATH') || p_local_path;
    END get_path;
 
 
@@ -498,11 +502,11 @@ AS
 
       dbax_log.info ('REQUEST_METOD=' || g$server ('REQUEST_METHOD'));
 
+      --Get QueryString params
+      g$get      := dbax_utils.query_string_to_array (dbax_utils.get(g$server, 'QUERY_STRING'));
+
       IF g$server ('REQUEST_METHOD') = 'GET'
       THEN
-         --Get QueryString params
-         g$get       := dbax_utils.query_string_to_array (g$server ('QUERY_STRING'));
-
          IF name_array.EXISTS (1) AND name_array (1) IS NOT NULL
          THEN
             FOR i IN name_array.FIRST .. name_array.LAST
@@ -516,7 +520,7 @@ AS
                   l_name_array := SUBSTR (name_array (i), 1, INSTR (name_array (i), '[]') - 1) || '[' || j || ']';
 
                   --Generate Array index
-                  WHILE g$post.EXISTS (l_name_array)
+                  WHILE g$get.EXISTS (l_name_array)
                   LOOP
                      j           := j + 1;
                      l_name_array := SUBSTR (name_array (i), 1, INSTR (name_array (i), '[]') - 1) || '[' || j || ']';
@@ -532,8 +536,6 @@ AS
          END IF;
       ELSIF g$server ('REQUEST_METHOD') = 'POST'
       THEN
-         --Get QueryString params
-         g$post      := dbax_utils.query_string_to_array (g$server ('QUERY_STRING'));
 
          IF name_array.EXISTS (1) AND name_array (1) IS NOT NULL
          THEN
@@ -619,4 +621,3 @@ AS
    END;
 END dbax_core;
 /
-

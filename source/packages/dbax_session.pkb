@@ -32,19 +32,6 @@ AS
          RETURN TRUE;
       END LOOP;
 
-      --If the application is PROTECTED it is sufficient that the user has a session unexpired
-      l_applications_rt := tapi_wdx_applications.rt (dbax_core.g$appid);
-
-      IF l_applications_rt.access_control = 'PROTECTED'
-      THEN
-         FOR c1 IN (SELECT   1
-                      FROM   wdx_sessions s, wdx_applications
-                     WHERE   session_id = p_session_id AND expired = '0')
-         LOOP
-            RETURN TRUE;
-         END LOOP;
-      END IF;
-
       RETURN FALSE;
    END valid_session;
 
@@ -122,7 +109,7 @@ AS
       v_caller_t               VARCHAR2 (32767);
       v_whois                  VARCHAR2 (32767);
    BEGIN
-      l_cookie_name := dbax_core.get_propertie ('session_cookie_name');
+      l_cookie_name := dbax_core.get_property ('session_cookie_name');
       dbax_log.trace('GET_SESSION l_cookie_name=' || l_cookie_name);
 
       IF p_cookies IS NOT NULL
@@ -132,7 +119,7 @@ AS
       END IF;
 
       IF dbax_utils.get (g$session, 'session_id') IS NULL
-      THEN
+      THEN        
          IF dbax_utils.get (dbax_cookie.g$req_cookies, l_cookie_name) IS NULL
          THEN
             --No cookie session
@@ -171,7 +158,7 @@ AS
       l_session_id    VARCHAR2 (50);
       l_cookie_name   VARCHAR2 (255);
    BEGIN
-      l_cookie_name := dbax_core.get_propertie ('session_cookie_name');
+      l_cookie_name := dbax_core.get_property ('session_cookie_name');
       
       -- If the session not exists
       -- IF dbax_utils.get (g$session, 'session_id') IS NULL
@@ -200,7 +187,7 @@ AS
    AS
       PRAGMA AUTONOMOUS_TRANSACTION;
       l_session_id    VARCHAR2 (50);
-      l_cookie_name   VARCHAR2 (255) := dbax_core.get_propertie ('session_cookie_name');
+      l_cookie_name   VARCHAR2 (255) := dbax_core.get_property ('session_cookie_name');
    BEGIN
       l_session_id := get_session ();
 
