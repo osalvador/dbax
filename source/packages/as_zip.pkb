@@ -394,6 +394,7 @@ is
     utl_file.fclose( t_fh );
   end;
 --
+
   function clob_to_blob (p_clob clob) return blob
   as
    l_blob          blob;
