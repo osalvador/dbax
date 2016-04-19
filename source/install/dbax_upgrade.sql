@@ -108,6 +108,7 @@ PROMPT ------------------------------------------;
 @@../packages/dbax_htmltable.pks;
 @@../packages/dbax_google_recaptcha.pks;
 @@../packages/dbax_mail.pks;
+@@../packages/as_zip.pks;
 
 PROMPT ------------------------------------------;
 PROMPT -- Installing Packages Bodies --;
@@ -146,10 +147,11 @@ PROMPT ------------------------------------------;
 @@../packages/tapi_wdx_users_roles.pkb;
 @@../packages/pk_m_dbax_console.pkb;
 @@../packages/console.prc;
-@@../packages/json_util_pkg.pkb
-@@../packages/dbax_htmltable.pkb
-@@../packages/dbax_google_recaptcha.pkb
-@@../packages/dbax_mail.pkb
+@@../packages/json_util_pkg.pkb;
+@@../packages/dbax_htmltable.pkb;
+@@../packages/dbax_google_recaptcha.pkb;
+@@../packages/dbax_mail.pkb;
+@@../packages/as_zip.pkb;
 
 quit;
 /
