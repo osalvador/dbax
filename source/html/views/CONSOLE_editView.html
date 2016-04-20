@@ -182,20 +182,11 @@
             				<i id="reloadIcon" class="fa fa-refresh"></i> Reload
           				</button>
                       </div>
-                      <br><br>
-                        
-                        <!--action="${base_path}/applications/edit/${current_app_id}/views/save-source"--> 
-                        <form name="viewCompiledCodeForm" id="viewCompiledCodeForm" method="POST">                        
-                            <textarea id="compiledCode" name="compiledCode"></textarea>
-                            <input type="hidden" name="current_app_id" value="${current_app_id}">
-                            <input type="hidden" name="name" value="${name}" >
-                            <input type="hidden" name="hash" id="hash" value="${hash}">
-                        </form>
-                        
+                      <br><br>                                                                    
+                            <textarea id="compiledCode" name="compiledCode"></textarea>                        
                     </div><!-- /.box-body -->
                       
                     <div class="box-footer">                      
-                      <!--<button id="viewCodeBtn" class="btn btn-info" onclick="editor.save(); SubmitClobForm('viewCodeForm'); changes=false;"><i class="fa fa-save"></i> Save</button>-->
                       <div class="pull-right">
                         <a href="${base_path}/applications/edit/${current_app_id}#Views" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
                       </div>                      
