@@ -1,7 +1,7 @@
 CREATE OR REPLACE PACKAGE BODY dbax_core
 AS
    PROCEDURE print_http_header;
-   
+
    PROCEDURE set_request (name_array    IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr
                         , value_array   IN OWA_UTIL.vc_arr DEFAULT empty_vc_arr );
 
@@ -55,19 +55,68 @@ AS
    AS
       l_retval            PLS_INTEGER := 0;
       l_return            VARCHAR2 (1000);
-      l_tab               DBMS_UTILITY.maxname_array;
-
       l_replace_string    VARCHAR2 (1000);
-      l_position          VARCHAR2 (1000);
-      l_occurrence        VARCHAR2 (1000);
-      l_match_parameter   VARCHAR2 (1000);
+      l_position          PLS_INTEGER;
+      l_occurrence        PLS_INTEGER;
+      l_match_parameter   VARCHAR2 (100);
+
+      /**
+      * Gets the regex variables from the string
+      */
+      PROCEDURE advanced_regex (p_string            IN     VARCHAR2
+                              , p_pattern              OUT VARCHAR2
+                              , p_postion              OUT PLS_INTEGER
+                              , p_occurrence           OUT PLS_INTEGER
+                              , p_match_parameter      OUT VARCHAR2)
+      AS
+         l_regex_pos   PLS_INTEGER;
+         l_param_tab   DBMS_UTILITY.maxname_array;
+      BEGIN
+         l_regex_pos := INSTR (p_string, '@', -1);
+
+         IF l_regex_pos <> 0
+         THEN
+            p_pattern   := SUBSTR (p_string, 1, l_regex_pos - 1);
+
+            l_param_tab := dbax_utils.tokenizer (SUBSTR (p_string, l_regex_pos + 1));
+
+            IF l_param_tab.EXISTS (1) AND l_param_tab (1) IS NOT NULL
+            THEN
+               p_postion   := l_param_tab (1);
+            ELSE
+               p_postion   := 1;
+            END IF;
+
+            IF l_param_tab.EXISTS (2)
+            THEN
+               p_occurrence := l_param_tab (2);
+            ELSE
+               p_occurrence := 0;
+            END IF;
+
+            IF l_param_tab.EXISTS (3)
+            THEN
+               p_match_parameter := l_param_tab (3);
+            END IF;
+         ELSE
+            --Default values
+            p_pattern   := p_string;
+            p_postion   := 1;
+            p_occurrence := NULL; --The default value of REGEX_INSTR is 1, but default value for REGEX_REPLACE is 0.
+            p_match_parameter := NULL;
+         END IF;
+      END;
    BEGIN
       /**
-      *   Esta funcion se encarga de buscar una mapeo de rutas que valide con el path
-      *   en caso de encontrar un mapeo, se ejecuta y se devuelve la ruta mepada
+      * Regex URL pattern
+      * regex_patren@position,occurrence,match_parameter
+      *
+      * Regex Controller replace
+      * replace_string@position,occurrence,match_parameter
       */
 
-      FOR c1 IN (  SELECT   route_name
+      FOR c1 IN (  SELECT /*+ result_cache */
+                         route_name
                           , url_pattern
                           , controller_method
                           , view_name
@@ -75,54 +124,101 @@ AS
                     WHERE   appid = g$appid AND active = 'Y'
                  ORDER BY   priority)
       LOOP
+         advanced_regex (c1.url_pattern
+                       , c1.url_pattern
+                       , l_position
+                       , l_occurrence
+                       , l_match_parameter);
+
          c1.url_pattern := '^' || c1.url_pattern || '(/|$)';
 
-         l_retval    := REGEXP_INSTR (p_path, c1.url_pattern);
+         /*dbax_log.trace(   'Parameters for REGEXP_INSTR: '
+                        || CHR (10)
+                        || 'source_char='
+                        || p_path
+                        || CHR (10)
+                        || 'pattern='
+                        || c1.url_pattern
+                        || CHR (10)
+                        || 'position='
+                        || l_position
+                        || CHR (10)
+                        || 'occurrence='
+                        || NVL (l_occurrence, 1)
+                        || CHR (10)
+                        || 'match_parameter='
+                        || l_match_parameter);*/
+
+         BEGIN
+            l_retval    :=
+               REGEXP_INSTR (p_path
+                           , c1.url_pattern
+                           , l_position
+                           , NVL (l_occurrence, 1)
+                           , '0'
+                           , l_match_parameter);
+         EXCEPTION
+            WHEN OTHERS
+            THEN
+               l_retval    := 0;
+               dbax_log.error(   'Routing error with '
+                              || c1.route_name
+                              || ' route. Check the advanced parameters to REGEXP_INSTR in the URL Pattern. '
+                              || SQLERRM);
+         END;
 
 
          IF l_retval > 0
          THEN
             dbax_log.debug ('Route Matched:' || c1.route_name || ' URL_PATTERN:' || c1.url_pattern);
 
-            --Ejecutamos el enrutado y salimos
-            l_tab       := dbax_utils.tokenizer (NVL (c1.controller_method, c1.view_name));
+            l_replace_string := NVL (c1.controller_method, c1.view_name);
 
-            IF l_tab.EXISTS (1)
-            THEN
-               l_replace_string := l_tab (1);
-            ELSE
-               l_replace_string := NVL (c1.controller_method, c1.view_name);
-            END IF;
+            advanced_regex (l_replace_string
+                          , l_replace_string
+                          , l_position
+                          , l_occurrence
+                          , l_match_parameter);
 
-            IF l_tab.EXISTS (2) AND NVL (l_tab (2), 0) <> 0
-            THEN
-               l_position  := l_tab (2);
-            ELSE
-               l_position  := '1';
-            END IF;
+            /*dbax_log.trace(   'Parameters for REGEXP_REPLACE: '
+                        || CHR (10)
+                        || 'source_char='
+                        || p_path
+                        || CHR (10)
+                        || 'pattern='
+                        || c1.url_pattern
+                        || CHR (10)
+                        || 'replace_string='
+                        || l_replace_string
+                        || CHR (10)
+                        || 'position='
+                        || l_position
+                        || CHR (10)
+                        || 'occurrence='
+                        || NVL (l_occurrence, 0)
+                        || CHR (10)
+                        || 'match_parameter='
+                        || l_match_parameter);*/
 
-            IF l_tab.EXISTS (3)
-            THEN
-               l_occurrence := l_tab (3);
-            ELSE
-               l_occurrence := '0';
-            END IF;
-
-            IF l_tab.EXISTS (4)
-            THEN
-               l_match_parameter := l_tab (4);
-            END IF;
-
-            l_return    :=
-               REGEXP_REPLACE (p_path
-                             , c1.url_pattern
-                             , l_replace_string || '/'
-                             , l_position
-                             , l_occurrence
-                             , l_match_parameter);
+            BEGIN
+               l_return    :=
+                  REGEXP_REPLACE (p_path
+                                , c1.url_pattern
+                                , l_replace_string || '/'
+                                , l_position
+                                , NVL (l_occurrence, 0)
+                                , l_match_parameter);
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  l_return    := NULL;
+                  dbax_log.error(   'Routing error with '
+                                 || c1.route_name
+                                 || ' route. Check the advanced parameters to REGEXP_REPLACE in Controller or Method. '
+                                 || SQLERRM);
+            END;
 
             p_return_path := l_return;
-
 
             --Split the l_return path
             IF INSTR (l_return, '/', 1) > 0
@@ -130,7 +226,7 @@ AS
                l_return    := SUBSTR (l_return, 1, INSTR (l_return, '/', 1) - 1);
             END IF;
 
-            --Return Valuesz
+            --Return Values
             IF c1.controller_method IS NOT NULL
             THEN
                p_controller_method := l_return;
@@ -165,7 +261,7 @@ AS
 
                NULL;
             ELSE
-               --TODO Delegate this exception to DBAX_EXCEPTION
+               --TODO Log and Raise this exception
                dbax_exception.raise (SQLCODE, SQLERRM || ' <b>Executing: ' || p_controller || ' </b>');
             END IF;
       END;
@@ -185,7 +281,7 @@ AS
       g$view ('appid') := g$appid;
    END;
 
-   PROCEDURE log_array (p_array in g_assoc_array )
+   PROCEDURE log_array (p_array IN g_assoc_array)
    AS
       l_key   VARCHAR2 (256);
    BEGIN
@@ -195,7 +291,7 @@ AS
 
          LOOP
             EXIT WHEN l_key IS NULL;
-            dbax_log.debug (l_key||'='|| p_array (l_key));
+            dbax_log.debug (l_key || '=' || p_array (l_key));
             l_key       := p_array.NEXT (l_key);
          END LOOP;
       END IF;
@@ -436,7 +532,7 @@ AS
          dbax_session.save_sesison_variable;
          --dbax_exception.raise (SQLCODE, SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          dbax_log.close_log;
-         raise;
+         RAISE;
    END dispatcher;
 
    PROCEDURE load_view (p_name IN VARCHAR2, p_appid IN VARCHAR2 DEFAULT NULL )
@@ -450,7 +546,6 @@ AS
         INTO   dbax_core.g$view ('title'), g$view_name
         FROM   wdx_views
        WHERE   UPPER (name) = UPPER (p_name) AND appid = NVL (p_appid, g$appid) AND visible = 'Y';
-
    EXCEPTION
       WHEN NO_DATA_FOUND
       THEN
@@ -503,7 +598,7 @@ AS
       dbax_log.info ('REQUEST_METOD=' || g$server ('REQUEST_METHOD'));
 
       --Get QueryString params
-      g$get      := dbax_utils.query_string_to_array (dbax_utils.get(g$server, 'QUERY_STRING'));
+      g$get       := dbax_utils.query_string_to_array (dbax_utils.get (g$server, 'QUERY_STRING'));
 
       IF g$server ('REQUEST_METHOD') = 'GET'
       THEN
@@ -536,7 +631,6 @@ AS
          END IF;
       ELSIF g$server ('REQUEST_METHOD') = 'POST'
       THEN
-
          IF name_array.EXISTS (1) AND name_array (1) IS NOT NULL
          THEN
             FOR i IN name_array.FIRST .. name_array.LAST
