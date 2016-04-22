@@ -8,7 +8,7 @@ function dbaxCodeMirror(textareaId,formId){
         //load CodeMirror
     editor = CodeMirror.fromTextArea(document.getElementById(textareaId), {                  
           lineNumbers: true,
-          mode: "htmlmixed",//"text/html",
+          mode: "application/x-jsp",//"htmlmixed",//"text/html",
           matchBrackets: true,
           theme: "monokai",
           extraKeys: {
@@ -24,6 +24,13 @@ function dbaxCodeMirror(textareaId,formId){
               editor.save();
               //Save Source Code
               SubmitClobForm(formId);
+              changes = false;
+            },
+            "Shift-Ctrl-S": function(cm) {
+              //Save editor
+              editor.save();
+              //Save Source Code
+              SubmitClobForm(formId,'compiled');
               changes = false;
             }
           }
