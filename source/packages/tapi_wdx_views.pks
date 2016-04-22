@@ -334,5 +334,24 @@ IS
     */
     PROCEDURE web_del_rowid (p_rowid IN varchar2,p_hash IN varchar2);
 
+    /**
+    * Return the xml of application record in /ROWSET/ROW format
+    *
+    * @param    p_appid     the application id, must be not null
+    * @return   xmltype     the xml objetc with data
+    */
+    FUNCTION get_xml (p_appid IN wdx_views.appid%TYPE)
+       RETURN XMLTYPE;
+
+    /**    
+    * Processes the p_xml paramter, and returns a record table as PIPELINED Function
+    * 
+    * @param    p_xml     the xml data object
+    * @return  wdx_views Table Record Type 
+    */
+    FUNCTION get_tt (p_xml IN XMLTYPE)
+       RETURN wdx_views_tt
+       PIPELINED;
+
 END tapi_wdx_views;
 /

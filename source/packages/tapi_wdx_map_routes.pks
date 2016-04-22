@@ -1,7 +1,7 @@
 --
--- TAPI_WDX_MAP_ROUTES  (Package) 
+-- TAPI_WDX_MAP_ROUTES  (Package)
 --
---  Dependencies: 
+--  Dependencies:
 --   STANDARD (Package)
 --   WDX_MAP_ROUTES (Table)
 --
@@ -35,17 +35,17 @@ IS
    IS
       RECORD (
         appid   wdx_map_routes.appid%TYPE,
-  route_name   wdx_map_routes.route_name%TYPE,
-  priority   wdx_map_routes.priority%TYPE,
-  url_pattern   wdx_map_routes.url_pattern%TYPE,
-  controller_method   wdx_map_routes.controller_method%TYPE,
-  view_name   wdx_map_routes.view_name%TYPE,
-  description   wdx_map_routes.description%TYPE,
-  active   wdx_map_routes.active%TYPE,
-  created_by   wdx_map_routes.created_by%TYPE,
-  created_date   wdx_map_routes.created_date%TYPE,
-  modified_by   wdx_map_routes.modified_by%TYPE,
-  modified_date   wdx_map_routes.modified_date%TYPE,
+      route_name   wdx_map_routes.route_name%TYPE,
+      priority   wdx_map_routes.priority%TYPE,
+      url_pattern   wdx_map_routes.url_pattern%TYPE,
+      controller_method   wdx_map_routes.controller_method%TYPE,
+      view_name   wdx_map_routes.view_name%TYPE,
+      description   wdx_map_routes.description%TYPE,
+      active   wdx_map_routes.active%TYPE,
+      created_by   wdx_map_routes.created_by%TYPE,
+      created_date   wdx_map_routes.created_date%TYPE,
+      modified_by   wdx_map_routes.modified_by%TYPE,
+      modified_date   wdx_map_routes.modified_date%TYPE,
         hash               hash_t,
         row_id            varchar2(64)
       );
@@ -59,7 +59,7 @@ IS
    e_upd_failed      exception; --The update operation failed
    e_del_failed      exception; --The delete operation failed
 
-   FUNCTION num_rows RETURN PLS_INTEGER;
+   FUNCTION num_rows RETURN pls_integer;
 
     /**
     --## Function Name: HASH
@@ -173,7 +173,7 @@ IS
     */
    FUNCTION tt (
         p_appid     IN      wdx_map_routes.appid%TYPE DEFAULT NULL,
-  p_route_name     IN      wdx_map_routes.route_name%TYPE DEFAULT NULL)
+        p_route_name     IN      wdx_map_routes.route_name%TYPE DEFAULT NULL)
    RETURN wdx_map_routes_tt
    PIPELINED;
 
@@ -280,7 +280,7 @@ IS
     */
    PROCEDURE del (
         p_appid     IN      wdx_map_routes.appid%TYPE,
-  p_route_name     IN      wdx_map_routes.route_name%TYPE
+        p_route_name     IN      wdx_map_routes.route_name%TYPE
           );
 
     /**
@@ -318,7 +318,7 @@ IS
     */
    PROCEDURE web_del (
         p_appid     IN      wdx_map_routes.appid%TYPE,
-  p_route_name     IN      wdx_map_routes.route_name%TYPE
+        p_route_name     IN      wdx_map_routes.route_name%TYPE
       , p_hash IN varchar2);
 
     /**
@@ -339,10 +339,27 @@ IS
     PROCEDURE web_del_rowid (p_rowid IN varchar2,p_hash IN varchar2);
 
 
-    FUNCTION max_priority(p_appid  IN      wdx_map_routes.appid%TYPE )
+    FUNCTION max_priority(p_appid  IN wdx_map_routes.appid%TYPE )
     RETURN number;
+
+    /**
+    * Return the xml of application record in /ROWSET/ROW format
+    *
+    * @param    p_appid     the application id, must be not null
+    * @return   xmltype     the xml objetc with data
+    */
+    FUNCTION get_xml (p_appid IN wdx_map_routes.appid%TYPE)
+       RETURN xmltype;
+
+    /**    
+    * Processes the p_xml paramter, and returns a record table as PIPELINED Function
+    * 
+    * @param    p_xml     the xml data object
+    * @return  wdx_map_routes     Table Record Type 
+    */
+    FUNCTION get_tt (p_xml IN xmltype)
+       RETURN wdx_map_routes_tt
+       PIPELINED;
 
 END tapi_wdx_map_routes;
 /
-
-

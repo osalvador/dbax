@@ -1,4 +1,5 @@
-CREATE OR REPLACE PACKAGE BODY DBAX.pk_m_dbax_console
+/* Formatted on 21/04/2016 15:46:12 (QP5 v5.115.810.9015) */
+CREATE OR REPLACE PACKAGE BODY dbax.pk_m_dbax_console
 AS
    PROCEDURE properties_ins (p_wdx_properties_rec IN OUT tapi_wdx_properties.wdx_properties_rt)
    AS
@@ -16,8 +17,8 @@ AS
       l_application_rt   tapi_wdx_applications.wdx_applications_rt;
       l_properties_rt    tapi_wdx_properties.wdx_properties_rt;
       l_req_valid        tapi_wdx_reqvalidation.wdx_request_valid_function_rt;
-      l_view_rt          tapi_wdx_views.wdx_views_rt;
-      l_route_rt         tapi_wdx_map_routes.wdx_map_routes_rt;
+      l_views_rt          tapi_wdx_views.wdx_views_rt;
+      l_routes_rt         tapi_wdx_map_routes.wdx_map_routes_rt;
       l_roles_rt         tapi_wdx_roles.wdx_roles_rt;
       l_permissions_rt   tapi_wdx_permissions.wdx_permissions_rt;
       l_roles_pmsn_rt    tapi_wdx_roles_pmsn.wdx_roles_pmsn_rt;
@@ -59,11 +60,6 @@ AS
       l_properties_rt.description := 'The base URL path of the Application.';
       properties_ins (l_properties_rt);
       --
-      l_properties_rt.key := 'content-encoding';
-      l_properties_rt.VALUE := 'gzip';
-      l_properties_rt.description := 'Default HTTP content-encoding: text/html, gzip...';
-      properties_ins (l_properties_rt);
-      --
       l_properties_rt.key := 'encoding';
       l_properties_rt.VALUE := 'UTF8';
       l_properties_rt.description := 'Database Encoding. Indicates the charset encoding HTTP header.';
@@ -98,44 +94,44 @@ AS
       /*
       * Create Views
       */
-      l_view_rt.appid := l_application_rt.appid;
-      l_view_rt.created_by := dbax_core.g$username;
-      l_view_rt.created_date := SYSDATE;
-      l_view_rt.modified_by := dbax_core.g$username;
-      l_view_rt.modified_date := SYSDATE;
+      l_views_rt.appid := l_application_rt.appid;
+      l_views_rt.created_by := dbax_core.g$username;
+      l_views_rt.created_date := SYSDATE;
+      l_views_rt.modified_by := dbax_core.g$username;
+      l_views_rt.modified_date := SYSDATE;
 
       --Create template views
       FOR c1 IN (SELECT   * FROM table (tapi_wdx_views.tt (p_appid_template)))
       LOOP
-         l_view_rt.name := c1.name;
-         l_view_rt.title := c1.title;
-         l_view_rt.source := c1.source;
-         l_view_rt.description := c1.description;
-         l_view_rt.visible := c1.visible;
-         tapi_wdx_views.ins (l_view_rt);
+         l_views_rt.name := c1.name;
+         l_views_rt.title := c1.title;
+         l_views_rt.source := c1.source;
+         l_views_rt.description := c1.description;
+         l_views_rt.visible := c1.visible;
+         tapi_wdx_views.ins (l_views_rt);
       END LOOP;
 
       /*
       * Create Routes
       */
-      l_route_rt.appid := l_application_rt.appid;
-      l_route_rt.created_by := dbax_core.g$username;
-      l_route_rt.created_date := SYSDATE;
-      l_route_rt.modified_by := dbax_core.g$username;
-      l_route_rt.modified_date := SYSDATE;
+      l_routes_rt.appid := l_application_rt.appid;
+      l_routes_rt.created_by := dbax_core.g$username;
+      l_routes_rt.created_date := SYSDATE;
+      l_routes_rt.modified_by := dbax_core.g$username;
+      l_routes_rt.modified_date := SYSDATE;
 
       FOR c1 IN (  SELECT   *
                      FROM   table (tapi_wdx_map_routes.tt (p_appid_template))
                  ORDER BY   priority)
       LOOP
-         l_route_rt.route_name := REPLACE (c1.route_name, '${appid}', l_application_rt.appid);
-         l_route_rt.priority := c1.priority;
-         l_route_rt.url_pattern := REPLACE (c1.url_pattern, '${appid}', l_application_rt.appid);
-         l_route_rt.controller_method := REPLACE (c1.controller_method, '${appid}', l_application_rt.appid);
-         l_route_rt.view_name := REPLACE (c1.view_name, '${appid}', l_application_rt.appid);
-         l_route_rt.description := REPLACE (c1.description, '${appid}', l_application_rt.appid);
-         l_route_rt.active := c1.active;
-         tapi_wdx_map_routes.ins (l_route_rt);
+         l_routes_rt.route_name := REPLACE (c1.route_name, '${appid}', l_application_rt.appid);
+         l_routes_rt.priority := c1.priority;
+         l_routes_rt.url_pattern := REPLACE (c1.url_pattern, '${appid}', l_application_rt.appid);
+         l_routes_rt.controller_method := REPLACE (c1.controller_method, '${appid}', l_application_rt.appid);
+         l_routes_rt.view_name := REPLACE (c1.view_name, '${appid}', l_application_rt.appid);
+         l_routes_rt.description := REPLACE (c1.description, '${appid}', l_application_rt.appid);
+         l_routes_rt.active := c1.active;
+         tapi_wdx_map_routes.ins (l_routes_rt);
       END LOOP;
 
       /*
@@ -195,7 +191,10 @@ AS
 AS
    l_appid CONSTANT   VARCHAR2 (100) := '${appid}';
 BEGIN
-   --Just call to Dispatcher
+   /**
+   * YOU SHOULD NOT MODIFY THIS FILE, BECAUSE IT WILL BE
+   * OVERWRITTEN WHEN YOU DELETE,IMPORT OR RE-CRATE THE APPLICATION.
+   */   
    dbax_core.dispatcher (l_appid, name_array, value_array);
 EXCEPTION
    WHEN OTHERS
@@ -564,14 +563,14 @@ END pk_c_dbax_${appid};]';
          SELECT   SUM (regexp_count (log_text, 'Chrome/[0-9]')) chrome
            FROM   wdx_log a
           WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
-          UNION ALL
+         UNION ALL
          SELECT   SUM (regexp_count (log_text, 'MSIE\+[0-9]|rv:11|IE\+11')) ie
            FROM   wdx_log a
           WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
-         UNION ALL          
+         UNION ALL
          SELECT   SUM (regexp_count (log_text, 'Firefox/[0-9]')) firefox
            FROM   wdx_log a
-          WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)         
+          WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60)
          UNION ALL
          SELECT   SUM (regexp_count (log_text, 'Version/[0-9].*Safari/[0-9]')) safari
            FROM   wdx_log a
@@ -581,18 +580,337 @@ END pk_c_dbax_${appid};]';
            FROM   wdx_log a
           WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60);
 
-/*
-           SELECT   SUM (regexp_count (log_text, 'Firefox/[0-9]')) firefox
-                         , SUM (regexp_count (log_text, 'Chrome/[0-9]')) chrome
-                         , SUM (regexp_count (log_text, 'Version/[0-9].*Safari/[0-9]')) safari
-                         , SUM (regexp_count (log_text, 'MSIE\+[0-9]|rv:11|IE\+11')) ie
-                         , COUNT ( * ) total
-                    FROM   wdx_log a
-                   WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60);
-*/
+      /*
+                 SELECT   SUM (regexp_count (log_text, 'Firefox/[0-9]')) firefox
+                               , SUM (regexp_count (log_text, 'Chrome/[0-9]')) chrome
+                               , SUM (regexp_count (log_text, 'Version/[0-9].*Safari/[0-9]')) safari
+                               , SUM (regexp_count (log_text, 'MSIE\+[0-9]|rv:11|IE\+11')) ie
+                               , COUNT ( * ) total
+                          FROM   wdx_log a
+                         WHERE   created_date >= SYSDATE - (p_minutes_since / 24 / 60);
+      */
 
       RETURN l_return_cursor;
    END get_browser_usage_chart_data;
-END pk_m_dbax_console; 
-/
 
+   FUNCTION export_app (p_appid IN tapi_wdx_applications.appid)
+      RETURN BLOB
+   AS
+      l_refcursor     sys_refcursor;
+      l_xml_data      CLOB;
+      l_zipped_blob   BLOB;
+   BEGIN
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+
+      /* Settings */
+      BEGIN
+         l_xml_data  := tapi_wdx_applications.get_xml(p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'settings.xml', as_zip.clob_to_blob (l_xml_data));         
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            raise_application_error (-20001, 'Application ' || p_appid || ' not found.' || SQLERRM);
+      END;
+
+      /* Properties */
+      BEGIN
+         l_xml_data  := tapi_wdx_properties.get_xml(p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'properties.xml', as_zip.clob_to_blob (l_xml_data));         
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            NULL;
+      END;      
+
+      /* Routes */
+      BEGIN
+         l_xml_data  := tapi_wdx_map_routes.get_xml(p_appid).getclobval ();         
+         as_zip.add1file (l_zipped_blob, 'routes.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            NULL;
+      END;
+
+      /* Views */
+      BEGIN         
+         l_xml_data  := tapi_wdx_views.get_xml(p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'views/views.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN            
+            NULL;
+      END;
+      
+      FOR c1 IN (SELECT   appid, name, source
+                   FROM   table(tapi_wdx_views.tt(p_appid)))
+      LOOP
+         as_zip.add1file (l_zipped_blob
+                        , 'views/' || c1.appid || '_' || c1.name || '.html'
+                        , as_zip.clob_to_blob (c1.source));
+      END LOOP;
+
+      /* ReqValidationFunction */
+      BEGIN
+         l_xml_data  := tapi_wdx_reqvalidation.get_xml(p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'reqValidationFunction.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN            
+            NULL;
+      END;
+
+      /* Roles */
+      BEGIN
+         l_xml_data  := tapi_wdx_roles.get_xml(p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'roles.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN            
+            NULL;
+      END;
+
+      /* Permissions */
+      BEGIN
+         l_xml_data  := tapi_wdx_permissions.get_xml(p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'permissions.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN            
+            NULL;
+      END;
+
+      /* Roles x Permissions */
+      BEGIN
+         l_xml_data  := tapi_wdx_roles_pmsn.get_xml(p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'rolesPermissions.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN            
+            NULL;
+      END;     
+
+      as_zip.finish_zip (l_zipped_blob);
+
+      RETURN l_zipped_blob;
+   END export_app;
+
+   PROCEDURE import_app (p_zipped_blob IN BLOB, p_new_appid IN tapi_wdx_applications.appid DEFAULT NULL )
+   AS
+      l_application_rt   tapi_wdx_applications.wdx_applications_rt;
+      l_properties_rt    tapi_wdx_properties.wdx_properties_rt;
+      l_req_valid        tapi_wdx_reqvalidation.wdx_request_valid_function_rt;
+      l_views_rt         tapi_wdx_views.wdx_views_rt;
+      l_routes_rt        tapi_wdx_map_routes.wdx_map_routes_rt;
+      l_roles_rt         tapi_wdx_roles.wdx_roles_rt;
+      l_permissions_rt   tapi_wdx_permissions.wdx_permissions_rt;
+      l_roles_pmsn_rt    tapi_wdx_roles_pmsn.wdx_roles_pmsn_rt;
+      --
+      l_old_appid        tapi_wdx_applications.appid;
+      --
+      l_vars             teplsql.t_assoc_array;
+      l_source           VARCHAR2 (32767);
+      --
+      l_tmp_blob         BLOB;
+      l_xml_data         XMLTYPE;
+      l_error_template   CLOB;   
+   BEGIN
+      /*
+      * Aplication Settings
+      */
+      l_xml_data  := xmltype (as_zip.blob_to_clob (as_zip.get_file (p_zipped_blob, 'settings.xml')));
+
+      FOR c1 IN (select * from table(tapi_wdx_applications.get_tt(l_xml_data)))
+      LOOP
+         l_application_rt := c1;
+         --only one application per file
+         exit;
+      END LOOP;
+
+
+      IF p_new_appid IS NOT NULL
+      THEN
+         l_application_rt.appid := p_new_appid;
+         l_old_appid := l_application_rt.appid;
+      END IF;
+
+      --Insert application
+      tapi_wdx_applications.ins (l_application_rt);
+
+      /**
+      * Properties
+      */
+      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'properties.xml');
+      
+      IF l_tmp_blob IS NOT NULL
+      THEN      
+        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+      
+        FOR c1 IN (select * from table(tapi_wdx_properties.get_tt(l_xml_data)))
+        LOOP          
+          l_properties_rt :=   c1;
+          l_properties_rt.appid := l_application_rt.appid ;
+          
+          --Insert Propertie
+          tapi_wdx_properties.ins (l_properties_rt);
+        END LOOP;
+        
+      END IF;
+
+      /**
+      * Routes
+      */
+      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'routes.xml');
+      
+      IF l_tmp_blob IS NOT NULL
+      THEN      
+        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+      
+        FOR c1 IN (select * from table(tapi_wdx_map_routes.get_tt(l_xml_data)))
+        LOOP          
+          l_routes_rt := c1;
+          l_routes_rt.appid :=             l_application_rt.appid ;
+          --Insert route
+          tapi_wdx_map_routes.ins (l_routes_rt);
+        END LOOP;
+        
+      END IF;
+
+      /**
+      * Views
+      */
+      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'views/views.xml');
+      
+      IF l_tmp_blob IS NOT NULL
+      THEN      
+        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+      
+        FOR c1 IN (select * from table(tapi_wdx_views.get_tt(l_xml_data)))
+        LOOP          
+          l_views_rt         := c1;
+          l_views_rt.appid   := l_application_rt.appid;          
+          
+          --get view source
+          l_views_rt.source := as_zip.blob_to_clob (as_zip.get_file (p_zipped_blob, 'views/'||c1.appid ||'_' || c1.name ||'.html'));
+          
+          --Insert view
+          tapi_wdx_views.ins (l_views_rt);
+        END LOOP;
+        
+      END IF;
+      
+      --Compile all views
+      dbax_teplsql.compile_all (l_application_rt.appid, l_error_template);
+
+      /**
+      * ReqValidationFunction
+      */
+      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'reqValidationFunction.xml');
+      
+      IF l_tmp_blob IS NOT NULL
+      THEN      
+        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+      
+        FOR c1 IN (select * from table(tapi_wdx_reqvalidation.get_tt(l_xml_data)))
+        LOOP          
+            l_req_valid       := c1;
+            l_req_valid.appid := l_application_rt.appid ;
+                      
+            --Insert reqValidFunction
+            tapi_wdx_reqvalidation.ins (l_req_valid);
+        END LOOP;
+        
+      END IF;
+
+     
+      /**
+      * Roles
+      */
+      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'roles.xml');
+      
+      IF l_tmp_blob IS NOT NULL
+      THEN      
+        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+      
+        FOR c1 IN (select * from table(tapi_wdx_roles.get_tt(l_xml_data)))
+        LOOP          
+            l_roles_rt       := c1;
+            l_roles_rt.appid := l_application_rt.appid ;
+            --Insert role
+            tapi_wdx_roles.ins (l_roles_rt);
+        END LOOP;
+        
+      END IF;
+   
+      /**
+      * Permissions
+      */
+      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'permissions.xml');
+      
+      IF l_tmp_blob IS NOT NULL
+      THEN      
+        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+      
+        FOR c1 IN (select * from table(tapi_wdx_permissions.get_tt(l_xml_data)))
+        LOOP          
+            l_permissions_rt       := c1;
+            l_permissions_rt.appid := l_application_rt.appid ;
+            --Insert role
+            tapi_wdx_permissions.ins (l_permissions_rt);
+        END LOOP;
+        
+      END IF;
+     
+     /**
+     * Roles x Permissions
+     */     
+      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'rolesPermissions.xml');
+      
+      IF l_tmp_blob IS NOT NULL
+      THEN      
+        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+      
+        FOR c1 IN (select * from table(tapi_wdx_roles_pmsn.get_tt(l_xml_data)))
+        LOOP          
+            l_roles_pmsn_rt       := c1;
+            l_roles_pmsn_rt.appid := l_application_rt.appid ;
+            --Insert role
+            tapi_wdx_roles_pmsn.ins (l_roles_pmsn_rt);
+        END LOOP;
+        
+      END IF;
+
+      /**
+      * Create application procedure
+      */
+      l_source    :=
+         q'[CREATE OR REPLACE PROCEDURE ${appid} (name_array    IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr
+                                  , value_array   IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr )
+AS
+   l_appid CONSTANT   VARCHAR2 (100) := '${appid}';
+BEGIN
+   /**
+   * YOU SHOULD NOT MODIFY THIS FILE, BECAUSE IT WILL BE
+   * OVERWRITTEN WHEN YOU DELETE,IMPORT OR RE-CRATE THE APPLICATION.
+   */   
+   dbax_core.dispatcher (l_appid, name_array, value_array);
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      dbax_log.set_log_context ('error');
+      dbax_core.g$appid := l_appid;
+      dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+      dbax_log.close_log;
+      RAISE;
+END;]';
+      --Render source code
+      l_vars ('appid') := l_application_rt.appid;
+      l_source    := teplsql.render (l_vars, l_source);
+      
+      --Compile procedure
+      EXECUTE IMMEDIATE l_source;
+      
+   END import_app;
+END pk_m_dbax_console;
+/

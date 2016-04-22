@@ -574,6 +574,56 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_reqvalidation IS
        
    END web_del_rowid;
 
+   FUNCTION get_xml (p_appid IN wdx_request_valid_function.appid%TYPE)
+      RETURN XMLTYPE
+   AS
+      l_refcursor   sys_refcursor;
+      l_dummy       VARCHAR2 (1);      
+   BEGIN
+      --If record not exists raise NO_DATA_FOUND
+      SELECT   NULL
+        INTO   l_dummy
+        FROM   wdx_request_valid_function
+       WHERE   appid = UPPER (p_appid) AND ROWNUM = 1;
+    
+      OPEN l_refcursor FOR
+         SELECT   *
+           FROM   wdx_request_valid_function
+          WHERE   appid = UPPER (p_appid);
+
+      RETURN xmltype (l_refcursor);
+   END get_xml;
+   
+   FUNCTION get_tt (p_xml IN XMLTYPE)
+      RETURN wdx_request_valid_function_tt
+      PIPELINED
+   IS
+      l_wdx_reqvalidation_rec   wdx_request_valid_function_rt;
+   BEGIN
+      FOR c1 IN (SELECT   xt.*
+                   FROM   XMLTABLE ('/ROWSET/ROW'
+                                    PASSING get_tt.p_xml
+                                    COLUMNS 
+                                      "APPID"              VARCHAR2(50)   PATH 'APPID',
+                                      "PROCEDURE_NAME"     VARCHAR2(255)  PATH 'PROCEDURE_NAME',                                      
+                                      "CREATED_BY"         VARCHAR2(100)  PATH 'CREATED_BY',
+                                      "CREATED_DATE"       VARCHAR2(20)   PATH 'CREATED_DATE',
+                                      "MODIFIED_BY"        VARCHAR2(100)  PATH 'MODIFIED_BY',
+                                      "MODIFIED_DATE"      VARCHAR2(20)   PATH 'MODIFIED_DATE'
+                                    ) xt)
+      LOOP
+          l_wdx_reqvalidation_rec.appid := c1.appid;
+          l_wdx_reqvalidation_rec.procedure_name := c1.procedure_name;
+          l_wdx_reqvalidation_rec.created_by := c1.created_by;
+          l_wdx_reqvalidation_rec.created_date := c1.created_date;
+          l_wdx_reqvalidation_rec.modified_by := c1.modified_by;
+          l_wdx_reqvalidation_rec.modified_date := c1.modified_date;
+          PIPE ROW (l_wdx_reqvalidation_rec);
+      END LOOP;
+
+      RETURN;
+   END get_tt;
+
 END tapi_wdx_reqvalidation;
 /
 

@@ -1,4 +1,5 @@
-CREATE OR REPLACE PACKAGE DBAX.pk_m_dbax_console
+/* Formatted on 21/04/2016 14:51:55 (QP5 v5.115.810.9015) */
+CREATE OR REPLACE PACKAGE dbax.pk_m_dbax_console
 AS
    /**
    -- # PK_M_DBAX_CONSOLE
@@ -39,8 +40,23 @@ AS
                                    , p_minutes_section   IN PLS_INTEGER DEFAULT 15 )
       RETURN sys_refcursor;
 
-   FUNCTION get_browser_usage_chart_data (p_minutes_since     IN PLS_INTEGER DEFAULT 480)
+   FUNCTION get_browser_usage_chart_data (p_minutes_since IN PLS_INTEGER DEFAULT 480 )
       RETURN sys_refcursor;
-END pk_m_dbax_console; 
-/
 
+   /**
+   * Returns a zipped blob with all metadata files from one application
+   *
+   * @param  p_appid    the application id to be extracted
+   */
+   FUNCTION export_app (p_appid IN tapi_wdx_applications.appid)
+      RETURN BLOB;
+
+   /**
+   * Import metadata files from one application
+   *
+   * @param  p_zipped_blob  the zipped blob with metadata files
+   */
+   PROCEDURE import_app (p_zipped_blob IN BLOB, p_new_appid IN tapi_wdx_applications.appid DEFAULT NULL );
+      
+END pk_m_dbax_console;
+/

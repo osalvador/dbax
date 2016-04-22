@@ -540,6 +540,60 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
         raise_application_error (-20000 , 'Delete operation failed because the row is no longer in the database.');
    END web_del_rowid;
 
+   FUNCTION get_xml (p_appid IN wdx_properties.appid%TYPE)
+      RETURN XMLTYPE
+   AS
+      l_refcursor   sys_refcursor;
+      l_dummy       VARCHAR2 (1);      
+   BEGIN
+      --If record not exists raise NO_DATA_FOUND
+      SELECT   NULL
+        INTO   l_dummy
+        FROM   wdx_properties
+       WHERE   appid = UPPER (p_appid) AND ROWNUM = 1;
+
+      OPEN l_refcursor FOR
+         SELECT   *
+           FROM   wdx_properties
+          WHERE   appid = UPPER (p_appid);
+
+      RETURN xmltype (l_refcursor);
+   END get_xml;
+   
+   FUNCTION get_tt (p_xml IN XMLTYPE)
+      RETURN wdx_properties_tt
+      PIPELINED
+   IS
+      l_wdx_properties_rec   wdx_properties_rt;
+   BEGIN
+      FOR c1 IN (SELECT   xt.*
+                   FROM   XMLTABLE ('/ROWSET/ROW'
+                                    PASSING get_tt.p_xml
+                                    COLUMNS 
+                                      "APPID"          VARCHAR2(50)    PATH 'APPID',
+                                      "KEY"            VARCHAR2(30)    PATH 'KEY',
+                                      "VALUE"          VARCHAR2(4000)  PATH 'VALUE',
+                                      "DESCRIPTION"    VARCHAR2(2000)  PATH 'DESCRIPTION',
+                                      "CREATED_BY"      VARCHAR2(100)  PATH 'CREATED_BY',
+                                      "CREATED_DATE"    VARCHAR2(20)   PATH 'CREATED_DATE',
+                                      "MODIFIED_BY"     VARCHAR2(100)  PATH 'MODIFIED_BY',
+                                      "MODIFIED_DATE"   VARCHAR2(20)   PATH 'MODIFIED_DATE'
+                                    ) xt)
+      LOOP
+          l_wdx_properties_rec.appid := c1.appid;
+          l_wdx_properties_rec.key := c1.key;
+          l_wdx_properties_rec.value := c1.value;
+          l_wdx_properties_rec.description := c1.description;
+          l_wdx_properties_rec.created_by := c1.created_by;
+          l_wdx_properties_rec.created_date := c1.created_date;
+          l_wdx_properties_rec.modified_by := c1.modified_by;
+          l_wdx_properties_rec.modified_date := c1.modified_date;          
+          PIPE ROW (l_wdx_properties_rec);
+      END LOOP;
+
+      RETURN;
+   END get_tt;
+
 END tapi_wdx_properties;
 /
 

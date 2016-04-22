@@ -242,10 +242,16 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_views IS
 
     PROCEDURE ins (p_wdx_views_rec IN OUT wdx_views_rt)
     IS
-        l_rowtype     wdx_views%ROWTYPE;
+        l_rowtype     wdx_views%ROWTYPE;        
+        l_user_name   wdx_views.created_by%TYPE := NVL(dbax_core.g$username,USER);
+        l_date        wdx_views.created_date%TYPE := SYSDATE;
 
     BEGIN
 
+        p_wdx_views_rec.created_by := l_user_name;
+        p_wdx_views_rec.created_date := l_date;
+        p_wdx_views_rec.modified_by := l_user_name;
+        p_wdx_views_rec.modified_date := l_date;    
 
         l_rowtype.appid := ins.p_wdx_views_rec.appid;
         l_rowtype.name := ins.p_wdx_views_rec.name;
@@ -254,10 +260,10 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_views IS
         l_rowtype.compiled_source := ins.p_wdx_views_rec.compiled_source;
         l_rowtype.description := ins.p_wdx_views_rec.description;
         l_rowtype.visible := NVL(ins.p_wdx_views_rec.visible,'Y');
-        l_rowtype.created_by := NVL(ins.p_wdx_views_rec.created_by,dbax_core.g$username);
-        l_rowtype.created_date := NVL(ins.p_wdx_views_rec.created_date, sysdate);
-        l_rowtype.modified_by := NVL(ins.p_wdx_views_rec.modified_by, dbax_core.g$username);
-        l_rowtype.modified_date := NVL(ins.p_wdx_views_rec.modified_date, sysdate);
+        l_rowtype.created_by := ins.p_wdx_views_rec.created_by;
+        l_rowtype.created_date := ins.p_wdx_views_rec.created_date;
+        l_rowtype.modified_by := ins.p_wdx_views_rec.modified_by;
+        l_rowtype.modified_date := ins.p_wdx_views_rec.modified_date;
 
        INSERT INTO wdx_views
          VALUES   l_rowtype;
@@ -619,7 +625,69 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_views IS
         raise_application_error (-20000 , 'Delete operation failed because the row is no longer in the database.');
    END web_del_rowid;
 
+   FUNCTION get_xml (p_appid IN wdx_views.appid%TYPE)
+      RETURN XMLTYPE
+   AS
+      l_refcursor   sys_refcursor;
+      l_dummy       VARCHAR2 (1);      
+   BEGIN
+      --If record not exists raise NO_DATA_FOUND
+      SELECT   NULL
+        INTO   l_dummy
+        FROM   wdx_views
+       WHERE   appid = UPPER (p_appid) AND ROWNUM = 1;
+       
+      OPEN l_refcursor FOR
+        SELECT   appid
+               , name
+               , title
+               , description
+               , visible
+               , created_by
+               , created_date
+               , modified_by
+               , modified_date
+          FROM   wdx_views
+         WHERE   appid = UPPER (p_appid);
+
+      RETURN xmltype (l_refcursor);
+   END get_xml;
+   
+   FUNCTION get_tt (p_xml IN XMLTYPE)
+      RETURN wdx_views_tt
+      PIPELINED
+   IS
+      l_wdx_views_rec   wdx_views_rt;
+   BEGIN
+      FOR c1 IN (SELECT   xt.*
+                   FROM   XMLTABLE ('/ROWSET/ROW'
+                                    PASSING get_tt.p_xml
+                                    COLUMNS 
+                                      "APPID"            VARCHAR2(50)   PATH 'APPID',
+                                      "NAME"             VARCHAR2(300)  PATH 'NAME',
+                                      "TITLE"            VARCHAR2(300)  PATH 'TITLE',
+                                      "DESCRIPTION"      VARCHAR2(300)  PATH 'DESCRIPTION',
+                                      "VISIBLE"          VARCHAR2(1)    PATH 'VISIBLE',
+                                      "CREATED_BY"       VARCHAR2(100)  PATH 'CREATED_BY',
+                                      "CREATED_DATE"     VARCHAR2(20)   PATH 'CREATED_DATE',
+                                      "MODIFIED_BY"      VARCHAR2(100)  PATH 'MODIFIED_BY',
+                                      "MODIFIED_DATE"    VARCHAR2(20)   PATH 'MODIFIED_DATE'
+                                    ) xt)
+      LOOP
+          l_wdx_views_rec.appid := c1.appid;
+          l_wdx_views_rec.name := c1.name;
+          l_wdx_views_rec.title := c1.title;
+          l_wdx_views_rec.description := c1.description;
+          l_wdx_views_rec.visible := c1.visible;
+          l_wdx_views_rec.created_by := c1.created_by;
+          l_wdx_views_rec.created_date := c1.created_date;
+          l_wdx_views_rec.modified_by := c1.modified_by;
+          l_wdx_views_rec.modified_date := c1.modified_date;
+          PIPE ROW (l_wdx_views_rec);
+      END LOOP;
+
+      RETURN;
+   END get_tt;
+
 END tapi_wdx_views;
 /
-
-

@@ -93,8 +93,9 @@ THE SOFTWARE.
     , p_filename varchar2 := 'my.zip'
     );
 --
-  function clob_to_blob (p_clob clob) return blob;        
-    
+  function clob_to_blob (p_clob clob) return blob;
+--
+  function blob_to_clob (p_blob blob) return clob;
 --
 /*
 declare

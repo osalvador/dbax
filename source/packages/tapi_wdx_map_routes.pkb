@@ -725,6 +725,69 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
         return 0;
     END max_priority;
 
+   FUNCTION get_xml (p_appid IN wdx_map_routes.appid%TYPE)
+      RETURN XMLTYPE
+   AS
+      l_refcursor   sys_refcursor;
+      l_dummy       VARCHAR2 (1);      
+   BEGIN
+      --If record not exists raise NO_DATA_FOUND
+      SELECT   NULL
+        INTO   l_dummy
+        FROM   wdx_map_routes
+       WHERE   appid = UPPER (p_appid) AND ROWNUM = 1;
+
+      OPEN l_refcursor FOR
+         SELECT   *
+           FROM   wdx_map_routes
+          WHERE   appid = UPPER (p_appid) ORDER BY PRIORITY;
+
+      RETURN xmltype (l_refcursor);
+   END get_xml;
+   
+   FUNCTION get_tt (p_xml IN XMLTYPE)
+      RETURN wdx_map_routes_tt
+      PIPELINED
+   IS
+      l_wdx_map_routes_rec   wdx_map_routes_rt;
+   BEGIN
+      FOR c1 IN (SELECT   xt.*
+                   FROM   XMLTABLE ('/ROWSET/ROW'
+                                    PASSING get_tt.p_xml
+                                    COLUMNS 
+                                      "APPID"              VARCHAR2(50)   PATH 'APPID',
+                                      "ROUTE_NAME"         VARCHAR2(50)   PATH 'ROUTE_NAME',
+                                      "PRIORITY"           NUMBER(5)      PATH 'PRIORITY',
+                                      "URL_PATTERN"        VARCHAR2(1000) PATH 'URL_PATTERN',
+                                      "CONTROLLER_METHOD"  VARCHAR2(100)  PATH 'CONTROLLER_METHOD',
+                                      "VIEW_NAME"          VARCHAR2(300)  PATH 'VIEW_NAME',
+                                      "DESCRIPTION"        VARCHAR2(4000) PATH 'DESCRIPTION',
+                                      "ACTIVE"             VARCHAR2(1)    PATH 'ACTIVE',
+                                      "CREATED_BY"         VARCHAR2(100)  PATH 'CREATED_BY',
+                                      "CREATED_DATE"       VARCHAR2(20)   PATH 'CREATED_DATE',
+                                      "MODIFIED_BY"        VARCHAR2(100)  PATH 'MODIFIED_BY',
+                                      "MODIFIED_DATE"      VARCHAR2(20)   PATH 'MODIFIED_DATE'
+                                    ) xt)
+      LOOP
+          l_wdx_map_routes_rec.appid := c1.appid;
+          l_wdx_map_routes_rec.route_name := c1.route_name;
+          l_wdx_map_routes_rec.priority := c1.priority;
+          l_wdx_map_routes_rec.url_pattern := c1.url_pattern;
+          l_wdx_map_routes_rec.controller_method := c1.controller_method;
+          l_wdx_map_routes_rec.view_name := c1.view_name;
+          l_wdx_map_routes_rec.description := c1.description;
+          l_wdx_map_routes_rec.active := c1.active;
+          l_wdx_map_routes_rec.created_by := c1.created_by;
+          l_wdx_map_routes_rec.created_date := c1.created_date;
+          l_wdx_map_routes_rec.modified_by := c1.modified_by;
+          l_wdx_map_routes_rec.modified_date := c1.modified_date;
+         PIPE ROW (l_wdx_map_routes_rec);
+      END LOOP;
+
+      RETURN;
+   END get_tt;
+
+
 END tapi_wdx_map_routes;
 /
 

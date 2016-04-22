@@ -404,6 +404,10 @@ is
    l_warning       integer := dbms_lob.warn_inconvertible_char;
   begin
   
+    if p_clob is null then
+       return null;
+    end if;  
+  
     dbms_lob.createtemporary(l_blob, true);
     dbms_lob.converttoblob
     (
@@ -417,6 +421,36 @@ is
      warning     =>l_warning
     );
     return l_blob;
+  end;
+
+
+  function blob_to_clob (p_blob blob) return clob
+  as
+  
+   l_clob          clob;
+   l_dest_offset   integer := 1;
+   l_source_offset integer := 1;
+   l_lang_context  integer := dbms_lob.default_lang_ctx;
+   l_warning       integer := dbms_lob.warn_inconvertible_char;
+  begin
+
+    if p_blob is null then
+       return null;
+    end if;
+
+    dbms_lob.createTemporary(l_clob, true);
+    dbms_lob.converttoclob
+    (
+     dest_lob    =>l_clob,
+     src_blob    =>p_blob,
+     amount      =>dbms_lob.lobmaxsize,
+     dest_offset =>l_dest_offset,
+     src_offset  =>l_source_offset,
+     blob_csid   =>dbms_lob.default_csid,
+     lang_context=>l_lang_context,
+     warning     =>l_warning
+    );
+    return l_clob;
   end;
 
 end;
