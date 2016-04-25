@@ -199,7 +199,7 @@ BEGIN
 EXCEPTION
    WHEN OTHERS
    THEN
-      dbax_log.set_log_context ('error');
+      dbax_log.open_log ('error');
       dbax_core.g$appid := l_appid;
       dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
       dbax_log.close_log;
@@ -898,7 +898,7 @@ BEGIN
 EXCEPTION
    WHEN OTHERS
    THEN
-      dbax_log.set_log_context ('error');
+      dbax_log.open_log ('error');
       dbax_core.g$appid := l_appid;
       dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
       dbax_log.close_log;

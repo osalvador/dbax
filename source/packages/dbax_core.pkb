@@ -332,7 +332,7 @@ AS
       g$appid     := p_appid;
 
       --Defining log level
-      dbax_log.set_log_context (get_property ('LOG_LEVEL'));
+      dbax_log.open_log (get_property ('LOG_LEVEL'));
       dbax_log.info ('Start Dispatcher');
       dbax_log.info ('g$appid=' || g$appid);
 

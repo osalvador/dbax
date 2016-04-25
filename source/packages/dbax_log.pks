@@ -1,22 +1,18 @@
---
--- DBAX_LOG  (Package) 
---
---  Dependencies: 
---   STANDARD (Package)
---
-CREATE OR REPLACE PACKAGE      dbax_log
+CREATE OR REPLACE PACKAGE dbax.dbax_log
 AS
    /**
-     -- DBAX_LOG <br/>
-    -- Nombre del Paquete: DBAX_LOG <br/>
-     -- Versión: 0.1. <br/>
-     -- Descripcion:
-   -- @headcom
-    */
+   * DBAX_LOG
+   * Inserting log statements into your code is a low-tech method for debugging it.
+   * With dbax_log is possible to enable logging at runtime without modifying the log_level.
+   *
+   * dbax_log stores all the information received since the log is open until it closes,
+   * that is, when it is stored in the WDX_LOG table.
+   *
+   * It aims to store in one row all information about a single HTTP request.
+   *
+   */
 
-   --Konstants
-   k_pk_name CONSTANT               VARCHAR2 (20) := 'DBAX_LOG.';
-
+   --Constants
    k_log_level_none CONSTANT        NUMBER := 0;
    k_log_level_error CONSTANT       NUMBER := 1;
    k_log_level_warn CONSTANT        NUMBER := 2;
@@ -32,12 +28,12 @@ AS
    k_log_level_trace_str CONSTANT   VARCHAR2 (10) := 'trace';
 
 
+   PROCEDURE open_log (p_log_level IN VARCHAR2);
+
+   PROCEDURE close_log;
 
    FUNCTION get_log_level_str (p_log_level IN NUMBER)
       RETURN VARCHAR2;
-
-   -- set log context
-   PROCEDURE set_log_context (p_log_level IN VARCHAR2);
 
    FUNCTION get_log_context
       RETURN VARCHAR2;
@@ -51,10 +47,5 @@ AS
    PROCEDURE warn (p_log_text IN CLOB);
 
    PROCEDURE error (p_log_text IN CLOB);
-
-   PROCEDURE close_log;
-
 END dbax_log;
 /
-
-
