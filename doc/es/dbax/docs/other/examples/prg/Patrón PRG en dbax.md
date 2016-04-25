@@ -66,7 +66,7 @@ La ruta `post_result` será la ruta a la que redireccionaremos tras el POST y do
 </html>
 ```
 
-##Coontrollers
+##Controllers
 
 ```sql
 CREATE OR REPLACE PACKAGE pk_c_dbax_prg

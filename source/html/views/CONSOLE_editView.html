@@ -182,11 +182,15 @@
             				<i id="reloadIcon" class="fa fa-refresh"></i> Reload
           				</button>
                       </div>
-                      <br><br>                                                                    
+                      <br><br>
+                        
+                        <!--action="${base_path}/applications/edit/${current_app_id}/views/save-source"-->                                            
                             <textarea id="compiledCode" name="compiledCode"></textarea>                        
+                        
                     </div><!-- /.box-body -->
                       
                     <div class="box-footer">                      
+                      <!--<button id="viewCodeBtn" class="btn btn-info" onclick="editor.save(); SubmitClobForm('viewCodeForm'); changes=false;"><i class="fa fa-save"></i> Save</button>-->
                       <div class="pull-right">
                         <a href="${base_path}/applications/edit/${current_app_id}#Views" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
                       </div>                      
@@ -285,15 +289,17 @@
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/css/css.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script> 
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/sql/sql.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/mode/htmlembedded/htmlembedded.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/display/fullscreen.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/dialog/dialog.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/search/search.js"></script>
    <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/search/searchcursor.js"></script>
+   <script type="text/javascript" charset="utf-8" src="${resources_url}/plugins/codemirror/addon/mode/multiplex.js"></script>
 
     <!-- dbaxAdmin -->
     <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
     <script src="${resources_url}/plugins/dbaxadmin/dbaxCodeMirror.js" type="text/javascript"></script>
-    
+
     <script>    
       //Confirm exit on before onluoad
       window.onbeforeunload = confirmExit;
