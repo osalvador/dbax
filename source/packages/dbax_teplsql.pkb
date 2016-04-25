@@ -864,11 +864,13 @@ AS
       l_compiled_view    CLOB;
       l_error_template   CLOB;
       l_view_rt          tapi_wdx_views.wdx_views_rt;
+      
+      l_actual_appid     VARCHAR2 (50) := dbax_core.g$appid;
    BEGIN
       FOR c1 IN (SELECT   * FROM table (tapi_wdx_views.tt (p_appid)))
       LOOP
          dbax_core.g$appid := c1.appid;
-         DBMS_OUTPUT.put_line ('c1.name = ' || c1.name);
+         
          l_compiled_view := dbax_teplsql.compile (c1.name, p_appid, l_error_template);
 
          l_view_rt   := c1;
@@ -876,9 +878,11 @@ AS
          l_view_rt.modified_date := SYSDATE;
          tapi_wdx_views.upd (l_view_rt);
       END LOOP;
+      dbax_core.g$appid := l_actual_appid;
    EXCEPTION
       WHEN OTHERS
       THEN
+         dbax_core.g$appid := l_actual_appid;
          p_error_template := l_error_template;
          dbax_log.error (p_error_template);
          RAISE;

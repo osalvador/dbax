@@ -3,18 +3,19 @@
 <?dbax dbax_core.include('header'); ?>
 <!-- SideBar -->
 <?dbax dbax_core.include('sidebar');?> 
+
    
  <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Import Application            
+            Export Application            
           </h1>
           <ol class="breadcrumb">
 			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
-            <li><i class="fa fa-upload"></i> Import</li>
+            <li><i class="fa fa-download"></i> Export</li>
           </ol>          
         </section>
 
@@ -22,7 +23,7 @@
         <section class="content">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-upload"></i> Import</h3>
+                    <h3 class="box-title"><i class="fa fa-download"></i> Export</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">    
                   <% if l_error_message is not null then %>  
@@ -34,34 +35,25 @@
                   <% end if;%>
                   
                       <!-- form start -->
-                      <form name="importForm" id="importForm" action="${base_path}/applications/import" class="form-horizontal" method="POST" enctype="multipart/form-data">
-                         
-                         <div class="form-group">
-                            <label for="new_app_id" class="col-sm-2 control-label">*New Application ID</label>
+                      <form name="exportForm" id="exportForm" action="${base_path}/applications/export" class="form-horizontal" method="POST">                       
+						<div class="form-group">
+                            <label for="new_auth_scheme" class="col-sm-2 control-label">*Application ID</label>
                             <div class="col-sm-10">
                               <div class="input-group">
-                              	<input type="text" class="form-control" name="new_app_id" id="new_app_id" required>
-                              	<div class="input-group-addon"><i class="fa fa-rocket"></i></div>							   
-                              </div>
-                              <p class="help-block">The application must not exist.</p>
-                           </div>                            
-                         </div>
-                          
-                        <div class="form-group">
-                            <label for="key" class="col-sm-2 control-label">*Zip File</label>
-                            <div class="col-sm-10">
-                              <div class="input-group">
-                              	<input type="file" class="form-control" name="file" id="file" accept="application/zip">
-                                <div class="input-group-addon"><i class="fa fa-file-zip-o"></i></div>
-                              </div>    
+                                <select class="form-control" id="appId" name="appid">                                  
+                                  <%  FOR c1 IN (SELECT appid from table (tapi_wdx_applications.tt)) LOOP %>
+                                      <option> <%= c1.appid%></option>										
+                                  <% END LOOP;%>                                
+                                </select>
+                              <div class="input-group-addon"><i class="fa fa-rocket"></i></div>
                             </div>
-                        </div>                          
-                        
+                      	   </div>
+                         </div>                        
                       </form>
                 </div><!-- /.box-body -->
                   
                 <div class="box-footer">
-                  <button  type="submit" form="importForm" id="importBtn" class="btn btn-info"><i class="fa fa-upload"></i> Start Import</button>
+                  <button  type="submit" form="exportForm" id="exportBtn" class="btn btn-info"><i class="fa fa-download"></i> Start Export</button>
                   <div class="pull-right">
                     <a href="${base_path}/applications" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
                   </div>

@@ -1,3 +1,4 @@
+/* Formatted on 25/04/2016 17:19:15 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
@@ -404,14 +405,11 @@ AS
    PROCEDURE import_app
    AS
       l_new_appid        tapi_wdx_applications.appid;
-      l_json             json := json ();
       l_real_file_name   VARCHAR2 (256);
       l_zipped_file      BLOB;
-
       e_null_param exception;
    BEGIN
-   
-      -- The user must be an Admin     
+      -- The user must be an Admin
       IF NOT f_admin_user
       THEN
          dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
@@ -439,9 +437,9 @@ AS
 
          dbax_log.debug ('l_real_file_name:' || l_real_file_name);
 
-         l_zipped_file      := dbax_document.get_file_content (l_real_file_name);
+         l_zipped_file := dbax_document.get_file_content (l_real_file_name);
 
-         pk_m_dbax_console.import_app(l_zipped_file,UPPER(l_new_appid));
+         pk_m_dbax_console.import_app (l_zipped_file, UPPER (l_new_appid));
 
          -- Everything well
          dbax_core.g$status_line := 303;
@@ -455,8 +453,9 @@ AS
          dbax_core.load_view ('importApplication');
       WHEN DUP_VAL_ON_INDEX
       THEN
-         ROLLBACK;         
-         dbax_core.g$view ('errorMessage') := 'Application "' || l_new_appid || '" that has entered already exists. Please choose another appId.';
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Application "' || l_new_appid || '" that has entered already exists. Please choose another appId.';
          dbax_core.load_view ('importApplication');
       WHEN OTHERS
       THEN
@@ -465,6 +464,66 @@ AS
             'Error importing application: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
          dbax_core.load_view ('importApplication');
    END import_app;
+
+
+   PROCEDURE export_app
+   AS
+      l_appid            tapi_wdx_applications.appid;
+      l_real_file_name   VARCHAR2 (256);
+      l_zipped_file      BLOB;
+      e_null_param exception;
+   BEGIN
+      -- The user must be an Admin
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
+      THEN
+         dbax_core.load_view ('exportApplication');
+         RETURN;
+      ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
+      THEN
+         --Post parameters
+         l_appid     := dbax_utils.get (dbax_core.g$post, 'appid');
+
+         IF l_appid IS NULL
+         THEN
+            RAISE e_null_param;
+         END IF;
+
+         l_zipped_file := pk_m_dbax_console.export_app (l_appid);
+
+         -- TODO dbax_document.download_this
+         HTP.init;
+         OWA_UTIL.mime_header ('application/zip', FALSE);
+         HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_zipped_file));
+         HTP.p ('Content-Disposition: attachment; filename="dbax_' || l_appid || '_app.zip"');
+         OWA_UTIL.http_header_close;
+
+         WPG_DOCLOAD.download_file (l_zipped_file);
+
+         DBMS_LOB.freetemporary (l_zipped_file);
+
+         --Stop process and return
+         dbax_core.g_stop_process := TRUE;
+      END IF;
+   EXCEPTION
+      WHEN e_null_param
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') := 'New application Id is required.';
+         dbax_core.load_view ('exportApplication');
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing application: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.load_view ('exportApplication');
+   END export_app;
+
 
 
    PROCEDURE properties
