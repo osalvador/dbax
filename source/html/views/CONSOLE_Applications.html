@@ -44,7 +44,13 @@
 	                    </div>
 	                    <div class="btn-group">
 	                        <button type="button" class="btn btn-danger btn-xs" onclick="Delete('app_table','${base_path}/applications/delete')"> <i class="fa fa-trash"></i> Delete</button>
-	                    </div>                                
+	                    </div>
+                        <div class="btn-group pull-right" role="group">  
+                           <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/import"> <i class="fa fa-upload"></i> Import</a>
+                        </div>
+                        <div class="btn-group pull-right" role="group">
+                           <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/export"> <i class="fa fa-download"></i> Export</a>
+                        </div>                      
 	                </div>
 	                <br>
 	                    <div class="table-responsive">                       
@@ -61,29 +67,22 @@
 	                              </tr>
 	                           </thead>      
 	                           <tbody>
-	                            <?dbax                                        
-	                                DECLARE
-	                                  l_link             VARCHAR2(1000);
-	                                BEGIN                  
-	                                  for c1 in (select * from table (tapi_wdx_applications.tt))
-	                                  loop
-	                                    l_link := '<a href="${base_path}/applications/edit/'|| c1.appid ||'">' || c1.appid || '</a>';
-	                                    p('<tr>');
-	                                        p('<td><input type="checkbox" value="'|| c1.appid||'"></td>');
-	                                        p('<td>'|| l_link ||'</td>');
-	                                        p('<td>'|| c1.Name ||'</td>');
-	                                        p('<td>'|| c1.Description ||'</td>');                                                
-	                                        IF c1.Active = 'Y'
-	                                        THEN
-	                                            p('<td><span class="label label-success">Active</span></td>');
-	                                        ELSE
-	                                            p('<td><span class="label label-danger">Inactive</span></td>');
-	                                        END IF;
-	                                        p('<td>'|| c1.access_control ||'</td>');
-	                                        p('<td>'|| c1.auth_scheme ||'</td>');                                        
-	                                    p('</tr>');                          
-	                                  END LOOP;
-	                                END; ?>
+	                            <%    for c1 in (select * from table (tapi_wdx_applications.tt))
+	                                  loop %>	                                    
+	                                    <tr>
+                                            <td><input type="checkbox" value="<%= c1.appid %>"></td>
+                                            <td><a href="${base_path}/applications/edit/<%= c1.appid %>"><%= c1.appid %></a></td>
+	                                        <td><%= c1.appid %></td>
+	                                        <td><%= c1.Description %></td>
+	                                        <% if c1.Active = 'Y' then %>
+	                                            <td><span class="label label-success">Active</span></td>
+	                                        <% else %> 
+	                                            <td><span class="label label-danger">Inactive</span></td>
+	                                        <% end if; %>
+	                                        <td><%= c1.access_control %></td>
+	                                        <td><%= c1.auth_scheme %></td>
+	                                    </tr>
+	                                  <% end loop; %>
 	                             </tbody>
 	                        <tfoot class="hide-if-no-paging">
 	                            <tr>

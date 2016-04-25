@@ -288,7 +288,7 @@ AS
          RETURN;
       END IF;
 
-      --The response is text/plain
+      --The response type
       dbax_core.g$content_type := 'application/json';
 
 
@@ -400,6 +400,71 @@ AS
          dbax_core.p (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_app;
+
+   PROCEDURE import_app
+   AS
+      l_new_appid        tapi_wdx_applications.appid;
+      l_json             json := json ();
+      l_real_file_name   VARCHAR2 (256);
+      l_zipped_file      BLOB;
+
+      e_null_param exception;
+   BEGIN
+   
+      -- The user must be an Admin     
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
+      THEN
+         dbax_core.load_view ('importApplication');
+         RETURN;
+      ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
+      THEN
+         --Post parameters
+         l_new_appid := dbax_utils.get (dbax_core.g$post, 'new_app_id');
+
+         IF l_new_appid IS NULL
+         THEN
+            RAISE e_null_param;
+         END IF;
+
+         l_real_file_name :=
+            dbax_document.upload (dbax_core.g$post ('file')
+                                , dbax_core.g$appid
+                                , dbax_security.get_username (dbax_core.g$appid));
+
+         dbax_log.debug ('l_real_file_name:' || l_real_file_name);
+
+         l_zipped_file      := dbax_document.get_file_content (l_real_file_name);
+
+         pk_m_dbax_console.import_app(l_zipped_file,UPPER(l_new_appid));
+
+         -- Everything well
+         dbax_core.g$status_line := 303;
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/applications');
+      END IF;
+   EXCEPTION
+      WHEN e_null_param
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') := 'New application Id is required.';
+         dbax_core.load_view ('importApplication');
+      WHEN DUP_VAL_ON_INDEX
+      THEN
+         ROLLBACK;         
+         dbax_core.g$view ('errorMessage') := 'Application "' || l_new_appid || '" that has entered already exists. Please choose another appId.';
+         dbax_core.load_view ('importApplication');
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing application: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.load_view ('importApplication');
+   END import_app;
 
 
    PROCEDURE properties
@@ -1202,7 +1267,7 @@ AS
       l_source    CLOB;
       l_json      json := json ();
    BEGIN
-      --The response is text/plain      
+      --The response is text/plain
       dbax_core.g$content_type := 'text/plain';
 
       /**
@@ -1216,7 +1281,7 @@ AS
 
       --Get appId parameter if not exists return to applications
       IF NOT dbax_core.g$parameter.EXISTS (1) OR dbax_core.g$parameter (1) IS NULL
-      THEN         
+      THEN
          dbax_core.g$http_header ('Location') := dbax_core.get_path ('/applications');
          RETURN;
       ELSE
@@ -1225,7 +1290,7 @@ AS
 
       --Get name parameter if not exists return to applications
       IF NOT dbax_core.g$parameter.EXISTS (2) OR dbax_core.g$parameter (2) IS NULL
-      THEN         
+      THEN
          dbax_core.g$http_header ('Location') := dbax_core.get_path ('/applications');
          RETURN;
       ELSE
@@ -1236,7 +1301,7 @@ AS
       l_view_rt   := tapi_wdx_views.rt (l_appid, l_name);
 
       --Return values
-      --Source code is a CLOB type, json.to_CLOB fails so I return plain text.            
+      --Source code is a CLOB type, json.to_CLOB fails so I return plain text.
       IF NOT dbax_core.g$parameter.EXISTS (3) OR dbax_core.g$parameter (3) IS NULL
       THEN
          dbax_core.p (l_view_rt.source);
@@ -1293,38 +1358,41 @@ AS
       --Update view
       tapi_wdx_views.web_upd (p_wdx_views_rec => l_view_rt, p_ignore_nulls => TRUE);
 
-      IF dbax_core.g$parameter.EXISTS (2) AND dbax_core.g$parameter (2) IS NOT NULL AND dbax_core.g$parameter (2) = 'compiled'
-      THEN 
-          --Compile
-          BEGIN
-             dbax_teplsql.compile (l_view_rt.name, l_view_rt.appid, l_error_template);
-          EXCEPTION
-             WHEN OTHERS
-             THEN
-                dbax_log.error(   'Error compiling view :'
-                               || l_error_template
-                               || SQLERRM
-                               || ' '
-                               || DBMS_UTILITY.format_error_backtrace ());
-                RAISE;
-          END;
+      IF     dbax_core.g$parameter.EXISTS (2)
+         AND dbax_core.g$parameter (2) IS NOT NULL
+         AND dbax_core.g$parameter (2) = 'compiled'
+      THEN
+         --Compile
+         BEGIN
+            dbax_teplsql.compile (l_view_rt.name, l_view_rt.appid, l_error_template);
+         EXCEPTION
+            WHEN OTHERS
+            THEN
+               dbax_log.error(   'Error compiling view :'
+                              || l_error_template
+                              || SQLERRM
+                              || ' '
+                              || DBMS_UTILITY.format_error_backtrace ());
+               RAISE;
+         END;
 
-          --Compile dependencies
-          BEGIN
-             dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
-          EXCEPTION
-             WHEN OTHERS
-             THEN
-                dbax_log.error(   'Error compiling dependencies:'
-                               || l_error_template
-                               || SQLERRM
-                               || ' '
-                               || DBMS_UTILITY.format_error_backtrace ());
-                RAISE;
-          END;
-        l_json.put ('text', 'Saved and Compiled');
-      else
-        l_json.put ('text', 'Only Saved');
+         --Compile dependencies
+         BEGIN
+            dbax_teplsql.compile_dependencies (l_view_rt.name, l_view_rt.appid, l_error_template);
+         EXCEPTION
+            WHEN OTHERS
+            THEN
+               dbax_log.error(   'Error compiling dependencies:'
+                              || l_error_template
+                              || SQLERRM
+                              || ' '
+                              || DBMS_UTILITY.format_error_backtrace ());
+               RAISE;
+         END;
+
+         l_json.put ('text', 'Saved and Compiled');
+      ELSE
+         l_json.put ('text', 'Only Saved');
       END IF;
 
       l_view_rt   := tapi_wdx_views.rt (l_view_rt.appid, l_view_rt.name);
@@ -1332,7 +1400,7 @@ AS
       --Return JSON
       l_json.put ('hash', l_view_rt.hash);
       l_json.put ('modified_by', l_view_rt.modified_by);
-      l_json.put ('modified_date', TO_CHAR (l_view_rt.modified_date, 'YYYY/MM/DD hh24:mi:ss'));      
+      l_json.put ('modified_date', TO_CHAR (l_view_rt.modified_date, 'YYYY/MM/DD hh24:mi:ss'));
 
       --Return values
       dbax_core.p (l_json.TO_CHAR);

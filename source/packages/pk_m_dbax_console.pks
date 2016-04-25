@@ -1,5 +1,4 @@
-/* Formatted on 21/04/2016 14:51:55 (QP5 v5.115.810.9015) */
-CREATE OR REPLACE PACKAGE dbax.pk_m_dbax_console
+CREATE OR REPLACE PACKAGE pk_m_dbax_console
 AS
    /**
    -- # PK_M_DBAX_CONSOLE

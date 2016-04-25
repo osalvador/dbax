@@ -43,6 +43,8 @@ AS
    PROCEDURE upsert_app;
 
    PROCEDURE delete_app;
+   
+   PROCEDURE import_app;
 
    /*
    * Properties controllers
@@ -91,15 +93,15 @@ AS
    PROCEDURE get_source_view;
 
    PROCEDURE save_source_view;
-   
-   PROCEDURE import_view;   
-   
+
+   PROCEDURE import_view;
+
    PROCEDURE upload_view;
-   
+
    --Export selected views
    PROCEDURE export_view;
-   
-   PROCEDURE export_all_view;     
+
+   PROCEDURE export_all_view;
 
    /*
    * Request Validation Function controllers
@@ -177,4 +179,3 @@ AS
 
 END pk_c_dbax_console;
 /
-

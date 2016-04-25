@@ -1,5 +1,4 @@
-/* Formatted on 21/04/2016 15:46:12 (QP5 v5.115.810.9015) */
-CREATE OR REPLACE PACKAGE BODY dbax.pk_m_dbax_console
+CREATE OR REPLACE PACKAGE BODY pk_m_dbax_console
 AS
    PROCEDURE properties_ins (p_wdx_properties_rec IN OUT tapi_wdx_properties.wdx_properties_rt)
    AS
@@ -716,6 +715,9 @@ END pk_c_dbax_${appid};]';
       l_xml_data         XMLTYPE;
       l_error_template   CLOB;   
    BEGIN
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+      
       /*
       * Aplication Settings
       */
