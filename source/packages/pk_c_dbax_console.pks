@@ -45,6 +45,8 @@ AS
    PROCEDURE delete_app;
    
    PROCEDURE import_app;
+   
+   PROCEDURE export_app;
 
    /*
    * Properties controllers
@@ -58,7 +60,10 @@ AS
    PROCEDURE delete_propertie;
 
    PROCEDURE upsert_propertie;
-
+   
+   PROCEDURE export_properties(p_appid in tapi_wdx_applications.appid);
+   
+   PROCEDURE import_properties(p_appid in tapi_wdx_applications.appid);
 
    /*
    * Map Routes controllers
@@ -76,6 +81,10 @@ AS
    PROCEDURE save_routes_order;
 
    PROCEDURE test_route;
+   
+   PROCEDURE import_routes;
+   
+   PROCEDURE export_routes;
 
    /*
    * Views controllers

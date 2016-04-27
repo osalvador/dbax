@@ -1,4 +1,4 @@
-/* Formatted on 25/04/2016 17:19:15 (QP5 v5.115.810.9015) */
+/* Formatted on 26/04/2016 16:28:07 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
@@ -377,7 +377,7 @@ AS
       l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
 
 
-      --Delete selected Properties
+      --Delete selected app
       FOR i IN 1 .. l_data_values.COUNT ()
       LOOP
          --l_appid is escaped
@@ -434,8 +434,6 @@ AS
             dbax_document.upload (dbax_core.g$post ('file')
                                 , dbax_core.g$appid
                                 , dbax_security.get_username (dbax_core.g$appid));
-
-         dbax_log.debug ('l_real_file_name:' || l_real_file_name);
 
          l_zipped_file := dbax_document.get_file_content (l_real_file_name);
 
@@ -766,6 +764,94 @@ AS
          dbax_core.p (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_propertie;
 
+   PROCEDURE export_properties (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_blob_content   BLOB;
+      l_xml_data       CLOB;
+   BEGIN
+      l_xml_data  := tapi_wdx_properties.get_xml (UPPER (p_appid)).getclobval ();
+      l_blob_content := as_zip.clob_to_blob (l_xml_data);
+
+      -- TODO dbax_document.download_this
+      HTP.init;
+      OWA_UTIL.mime_header ('application/zip', FALSE);
+      HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
+      HTP.p ('Content-Disposition: attachment; filename="dbax_' || UPPER (p_appid) || '_properties.xml"');
+      OWA_UTIL.http_header_close;
+
+      WPG_DOCLOAD.download_file (l_blob_content);
+
+      DBMS_LOB.freetemporary (l_blob_content);
+
+      --Stop process and return
+      dbax_core.g_stop_process := TRUE;
+   END export_properties;
+
+   PROCEDURE import_properties (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_real_file_name   VARCHAR2 (256);
+      l_tmp_blob         BLOB;
+      l_properties_rt    tapi_wdx_properties.wdx_properties_rt;
+      l_xml_data         XMLTYPE;
+      e_different_application exception;
+   BEGIN
+      dbax_core.g$view ('module') := 'Properties';
+      dbax_core.g$view ('current_app_id') := p_appid;
+      dbax_core.g$view ('module_icon') := 'fa fa-cog';
+
+      IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
+      THEN
+         dbax_core.load_view ('importApplicationFile');
+         RETURN;
+      ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
+      THEN
+         l_real_file_name :=
+            dbax_document.upload (dbax_core.g$post ('file')
+                                , dbax_core.g$appid
+                                , dbax_security.get_username (dbax_core.g$appid));
+
+         l_tmp_blob  := dbax_document.get_file_content (l_real_file_name);
+
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_properties.get_tt (l_xml_data)))
+         LOOP
+            l_properties_rt := c1;
+
+            IF l_properties_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert Propertie
+            BEGIN
+               tapi_wdx_properties.ins (l_properties_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_properties.upd (l_properties_rt);
+            END;
+         END LOOP;
+
+         -- Everything well
+         dbax_core.g$status_line := 303;
+         dbax_core.g$http_header ('Location') :=
+            dbax_core.get_path ('/applications/edit/' || UPPER (p_appid) || '#Properties');
+      END IF;
+   EXCEPTION
+      WHEN e_different_application
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing properties. You can not import properties from other applications';
+         dbax_core.load_view ('importApplicationFile');
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing properties: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.load_view ('importApplicationFile');
+   END import_properties;
 
    PROCEDURE routes
    AS
@@ -1148,6 +1234,95 @@ AS
          dbax_core.p (l_json.TO_CHAR);
    END test_route;
 
+   PROCEDURE export_routes (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_blob_content   BLOB;
+      l_xml_data       CLOB;
+   BEGIN
+      l_xml_data  := tapi_wdx_map_routes.get_xml (UPPER (p_appid)).getclobval ();
+      l_blob_content := as_zip.clob_to_blob (l_xml_data);
+
+      -- TODO dbax_document.download_this
+      HTP.init;
+      OWA_UTIL.mime_header ('application/zip', FALSE);
+      HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
+      HTP.p ('Content-Disposition: attachment; filename="dbax_' || UPPER (p_appid) || '_routes.xml"');
+      OWA_UTIL.http_header_close;
+
+      WPG_DOCLOAD.download_file (l_blob_content);
+
+      DBMS_LOB.freetemporary (l_blob_content);
+
+      --Stop process and return
+      dbax_core.g_stop_process := TRUE;
+   END export_routes;
+
+   PROCEDURE import_routes (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_real_file_name   VARCHAR2 (256);
+      l_tmp_blob         BLOB;
+      l_routes_rt        tapi_wdx_map_routes.wdx_map_routes_rt;
+      l_xml_data         XMLTYPE;
+      e_different_application exception;
+   BEGIN
+      dbax_core.g$view ('module') := 'Routes';
+      dbax_core.g$view ('current_app_id') := p_appid;
+      dbax_core.g$view ('module_icon') := 'fa fa-road';
+
+      IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
+      THEN
+         dbax_core.load_view ('importApplicationFile');
+         RETURN;
+      ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
+      THEN
+         l_real_file_name :=
+            dbax_document.upload (dbax_core.g$post ('file')
+                                , dbax_core.g$appid
+                                , dbax_security.get_username (dbax_core.g$appid));
+
+         l_tmp_blob  := dbax_document.get_file_content (l_real_file_name);
+
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_map_routes.get_tt (l_xml_data)))
+         LOOP
+            l_routes_rt := c1;
+
+            IF l_routes_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert Propertie
+            BEGIN
+               tapi_wdx_map_routes.ins (l_routes_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_map_routes.upd (l_routes_rt);
+            END;
+         END LOOP;
+
+         -- Everything well
+         dbax_core.g$status_line := 303;
+         dbax_core.g$http_header ('Location') :=
+            dbax_core.get_path ('/applications/edit/' || UPPER (p_appid) || '#Routes');
+      END IF;
+   EXCEPTION
+      WHEN e_different_application
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing routes. You can not import properties from other applications';
+         dbax_core.load_view ('importApplicationFile');
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing routes: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.load_view ('importApplicationFile');
+   END import_routes;
+
    PROCEDURE views_
    AS
    BEGIN
@@ -1412,7 +1587,8 @@ AS
       l_view_rt.source := REPLACE (l_view_rt.source, CHR (09), '@|;tab@|;');
       l_view_rt.source := REGEXP_REPLACE (l_view_rt.source, '[[:cntrl:]]', '');
       l_view_rt.source := REPLACE (l_view_rt.source, '@|;newline@|;', CHR (10));
-      l_view_rt.source := REPLACE (l_view_rt.source, '@|;tab@|;', CHR (09));
+      --Replace tabs to 4 spaces
+      l_view_rt.source := REPLACE (l_view_rt.source, '@|;tab@|;', '    ');
 
       --Update view
       tapi_wdx_views.web_upd (p_wdx_views_rec => l_view_rt, p_ignore_nulls => TRUE);
@@ -2041,7 +2217,7 @@ AS
       l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
 
 
-      --Delete selected Properties
+      --Delete selected values
       FOR i IN 1 .. l_data_values.COUNT ()
       LOOP
          --Key is escaped
@@ -2063,6 +2239,98 @@ AS
          dbax_core.g$status_line := 500;
          dbax_core.p (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
    END delete_reqvalidation;
+
+
+   PROCEDURE export_reqvalidation (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_blob_content   BLOB;
+      l_xml_data       CLOB;
+   BEGIN
+      l_xml_data  := tapi_wdx_reqvalidation.get_xml (UPPER (p_appid)).getclobval ();
+      l_blob_content := as_zip.clob_to_blob (l_xml_data);
+
+      -- TODO dbax_document.download_this
+      HTP.init;
+      OWA_UTIL.mime_header ('application/zip', FALSE);
+      HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
+      HTP.p ('Content-Disposition: attachment; filename="dbax_' || UPPER (p_appid) || '_reqValidationFunction.xml"');
+      OWA_UTIL.http_header_close;
+
+      WPG_DOCLOAD.download_file (l_blob_content);
+
+      DBMS_LOB.freetemporary (l_blob_content);
+
+      --Stop process and return
+      dbax_core.g_stop_process := TRUE;
+   END export_reqvalidation;
+
+   PROCEDURE import_reqvalidation (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_real_file_name   VARCHAR2 (256);
+      l_tmp_blob         BLOB;
+      l_reqvalidation_rt   tapi_wdx_reqvalidation.wdx_request_valid_function_rt;
+      l_xml_data         XMLTYPE;
+      e_different_application exception;
+   BEGIN
+      dbax_core.g$view ('module') := 'ReqValidation';
+      dbax_core.g$view ('current_app_id') := p_appid;
+      dbax_core.g$view ('module_icon') := 'fa fa-check';
+
+      IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
+      THEN
+         dbax_core.load_view ('importApplicationFile');
+         RETURN;
+      ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
+      THEN
+         l_real_file_name :=
+            dbax_document.upload (dbax_core.g$post ('file')
+                                , dbax_core.g$appid
+                                , dbax_security.get_username (dbax_core.g$appid));
+
+         l_tmp_blob  := dbax_document.get_file_content (l_real_file_name);
+
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_reqvalidation.get_tt (l_xml_data)))
+         LOOP
+            l_reqvalidation_rt := c1;
+
+            IF l_reqvalidation_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert Propertie
+            BEGIN
+               tapi_wdx_reqvalidation.ins (l_reqvalidation_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_reqvalidation.upd (l_reqvalidation_rt);
+            END;
+         END LOOP;
+
+         -- Everything well
+         dbax_core.g$status_line := 303;
+         dbax_core.g$http_header ('Location') :=
+            dbax_core.get_path ('/applications/edit/' || UPPER (p_appid) || '#RequestValidation');
+      END IF;
+   EXCEPTION
+      WHEN e_different_application
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing Request Validation Function. You can not import properties from other applications';
+         dbax_core.load_view ('importApplicationFile');
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing Request Validation Function: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.load_view ('importApplicationFile');
+   END import_reqvalidation;
+
+
 
    /*
    * Roles controllers
@@ -2262,7 +2530,7 @@ AS
       l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
 
 
-      --Delete selected Properties
+      --Delete selected role
       FOR i IN 1 .. l_data_values.COUNT ()
       LOOP
          --Key is escaped
@@ -2629,7 +2897,7 @@ AS
       l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
 
 
-      --Delete selected Properties
+      --Delete selected permission
       FOR i IN 1 .. l_data_values.COUNT ()
       LOOP
          --Key is escaped
@@ -3221,7 +3489,7 @@ AS
       --The data are a serialized array
       l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
 
-      --Delete selected Properties
+      --Delete selected user
       FOR i IN 1 .. l_data_values.COUNT ()
       LOOP
          --Key is escaped

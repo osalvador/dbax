@@ -1,5 +1,6 @@
+/* Formatted on 26/04/2016 14:54:19 (QP5 v5.115.810.9015) */
 --
--- TAPI_WDX_PROPERTIES  (Package Body) 
+-- TAPI_WDX_PROPERTIES  (Package Body)
 --
 CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
 
@@ -21,7 +22,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
       SELECT
             appid,
             key,
-            value,
+            VALUE,
             description,
             created_by,
             created_date,
@@ -31,17 +32,17 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
             ROWID
       FROM wdx_properties
       WHERE
-           appid = wdx_properties_cur.p_appid AND 
+           appid = wdx_properties_cur.p_appid AND
            key = wdx_properties_cur.p_key
       FOR UPDATE;
 
     --By Rowid
-    CURSOR wdx_properties_rowid_cur (p_rowid IN VARCHAR2)
+    CURSOR wdx_properties_rowid_cur (p_rowid IN varchar2)
     IS
       SELECT
              appid,
              key,
-             value,
+             VALUE,
              description,
              created_by,
              created_date,
@@ -62,7 +63,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
    IS
       l_retval hash_t;
       l_string CLOB;
-      l_date_format VARCHAR2(64);
+      l_date_format varchar2(64);
    BEGIN
 
      --Get actual NLS_DATE_FORMAT
@@ -77,7 +78,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
       SELECT
             appid||
             key||
-            value||
+            VALUE||
             description||
             created_by||
             created_date||
@@ -86,7 +87,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
       INTO l_string
       FROM wdx_properties
       WHERE
-           appid = hash.p_appid AND 
+           appid = hash.p_appid AND
            key = hash.p_key
            ;
 
@@ -114,7 +115,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
       SELECT
             appid||
             key||
-            value||
+            VALUE||
             description||
             created_by||
             created_date||
@@ -141,11 +142,11 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
 
       SELECT a.*,
              tapi_wdx_properties.hash(appid,key),
-             rowid
+             ROWID
       INTO l_wdx_properties_rec
       FROM wdx_properties a
       WHERE
-           appid = rt.p_appid AND 
+           appid = rt.p_appid AND
            key = LOWER(rt.p_key)
            ;
 
@@ -163,11 +164,11 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
 
       SELECT a.*,
              tapi_wdx_properties.hash(appid,key),
-             rowid
+             ROWID
       INTO l_wdx_properties_rec
       FROM wdx_properties a
       WHERE
-           appid = rt_for_update.p_appid AND 
+           appid = rt_for_update.p_appid AND
            key = rt_for_update.p_key
       FOR UPDATE;
 
@@ -187,13 +188,13 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
        FOR c1 IN (SELECT   a.*, ROWID
                     FROM   wdx_properties a
                    WHERE
-                        appid = NVL(tt.p_appid,appid) AND 
+                        appid = NVL(tt.p_appid,appid) AND
                         key = NVL(tt.p_key,key)
                         )
        LOOP
               l_wdx_properties_rec.appid := c1.appid;
               l_wdx_properties_rec.key := c1.key;
-              l_wdx_properties_rec.value := c1.value;
+              l_wdx_properties_rec.VALUE := c1.VALUE;
               l_wdx_properties_rec.description := c1.description;
               l_wdx_properties_rec.created_by := c1.created_by;
               l_wdx_properties_rec.created_date := c1.created_date;
@@ -223,7 +224,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
 
         l_rowtype.appid := ins.p_wdx_properties_rec.appid;
         l_rowtype.key := ins.p_wdx_properties_rec.key;
-        l_rowtype.value := ins.p_wdx_properties_rec.value;
+        l_rowtype.VALUE := ins.p_wdx_properties_rec.VALUE;
         l_rowtype.description := ins.p_wdx_properties_rec.description;
         l_rowtype.created_by := ins.p_wdx_properties_rec.created_by;
         l_rowtype.created_date := ins.p_wdx_properties_rec.created_date;
@@ -247,29 +248,29 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
           UPDATE   wdx_properties
              SET appid = NVL(p_wdx_properties_rec.appid,appid),
                 key = NVL(p_wdx_properties_rec.key,key),
-                value = NVL(p_wdx_properties_rec.value,value),
+                VALUE = NVL(p_wdx_properties_rec.VALUE,VALUE),
                 description = NVL(p_wdx_properties_rec.description,description),
                 modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                 modified_date = SYSDATE
            WHERE
-                appid = upd.p_wdx_properties_rec.appid AND 
+                appid = upd.p_wdx_properties_rec.appid AND
                 key = upd.p_wdx_properties_rec.key
                 ;
        ELSE
           UPDATE   wdx_properties
              SET appid = p_wdx_properties_rec.appid,
                 key = p_wdx_properties_rec.key,
-                value = p_wdx_properties_rec.value,
+                VALUE = p_wdx_properties_rec.VALUE,
                 description = p_wdx_properties_rec.description,
                 modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                 modified_date = SYSDATE
            WHERE
-                appid = upd.p_wdx_properties_rec.appid AND 
+                appid = upd.p_wdx_properties_rec.appid AND
                 key = upd.p_wdx_properties_rec.key
                 ;
        END IF;
 
-       IF SQL%ROWCOUNT != 1 THEN RAISE e_upd_failed; END IF;
+       IF sql%ROWCOUNT != 1 THEN RAISE e_upd_failed; END IF;
 
     EXCEPTION
        WHEN e_upd_failed
@@ -290,7 +291,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
           UPDATE   wdx_properties
              SET appid = NVL(p_wdx_properties_rec.appid,appid),
                 key = NVL(p_wdx_properties_rec.key,key),
-                value = NVL(p_wdx_properties_rec.value,value),
+                VALUE = NVL(p_wdx_properties_rec.VALUE,VALUE),
                 description = NVL(p_wdx_properties_rec.description,description),
                 modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                 modified_date = SYSDATE
@@ -299,14 +300,14 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
           UPDATE   wdx_properties
              SET appid = p_wdx_properties_rec.appid,
                 key = p_wdx_properties_rec.key,
-                value = p_wdx_properties_rec.value,
+                VALUE = p_wdx_properties_rec.VALUE,
                 description = p_wdx_properties_rec.description,
                 modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                 modified_date = SYSDATE
            WHERE  ROWID = p_wdx_properties_rec.row_id;
        END IF;
 
-       IF SQL%ROWCOUNT != 1 THEN RAISE e_upd_failed; END IF;
+       IF sql%ROWCOUNT != 1 THEN RAISE e_upd_failed; END IF;
 
     EXCEPTION
        WHEN e_upd_failed
@@ -343,7 +344,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
                 UPDATE   wdx_properties
                    SET appid = NVL(p_wdx_properties_rec.appid,appid),
                        key = NVL(p_wdx_properties_rec.key,key),
-                       value = NVL(p_wdx_properties_rec.value,value),
+                       VALUE = NVL(p_wdx_properties_rec.VALUE,VALUE),
                        description = NVL(p_wdx_properties_rec.description,description),
                        modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                        modified_date = SYSDATE
@@ -352,7 +353,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
                 UPDATE   wdx_properties
                    SET appid = p_wdx_properties_rec.appid,
                        key = p_wdx_properties_rec.key,
-                       value = p_wdx_properties_rec.value,
+                       VALUE = p_wdx_properties_rec.VALUE,
                        description = p_wdx_properties_rec.description,
                        modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                        modified_date = SYSDATE
@@ -397,7 +398,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
                 UPDATE   wdx_properties
                    SET appid = NVL(p_wdx_properties_rec.appid,appid),
                        key = NVL(p_wdx_properties_rec.key,key),
-                       value = NVL(p_wdx_properties_rec.value,value),
+                       VALUE = NVL(p_wdx_properties_rec.VALUE,VALUE),
                        description = NVL(p_wdx_properties_rec.description,description),
                        modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                        modified_date = SYSDATE
@@ -406,7 +407,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
                 UPDATE   wdx_properties
                    SET appid = p_wdx_properties_rec.appid,
                        key = p_wdx_properties_rec.key,
-                       value = p_wdx_properties_rec.value,
+                       VALUE = p_wdx_properties_rec.VALUE,
                        description = p_wdx_properties_rec.description,
                        modified_by = NVL(dbax_security.get_username (dbax_core.g$appid),USER),
                        modified_date = SYSDATE
@@ -435,7 +436,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
 
        DELETE FROM   wdx_properties
              WHERE
-                  appid = del.p_appid AND 
+                  appid = del.p_appid AND
                   key = del.p_key
                    ;
 
@@ -543,9 +544,19 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
    FUNCTION get_xml (p_appid IN wdx_properties.appid%TYPE)
       RETURN XMLTYPE
    AS
-      l_refcursor   sys_refcursor;
-      l_dummy       VARCHAR2 (1);      
+      l_refcursor             sys_refcursor;
+      l_dummy                 VARCHAR2 (1);      
+      l_xmldata               XMLTYPE;
+      l_current_date_format   VARCHAR2 (100);
    BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+
       --If record not exists raise NO_DATA_FOUND
       SELECT   NULL
         INTO   l_dummy
@@ -557,44 +568,57 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_properties IS
            FROM   wdx_properties
           WHERE   appid = UPPER (p_appid);
 
-      RETURN xmltype (l_refcursor);
+      l_xmldata   := xmltype (l_refcursor);
+
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
+
+      RETURN l_xmldata;
    END get_xml;
-   
-   FUNCTION get_tt (p_xml IN XMLTYPE)
+
+   FUNCTION get_tt (p_xml IN xmltype)
       RETURN wdx_properties_tt
       PIPELINED
    IS
       l_wdx_properties_rec   wdx_properties_rt;
+      l_current_date_format   VARCHAR2 (100);
    BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+      
       FOR c1 IN (SELECT   xt.*
                    FROM   XMLTABLE ('/ROWSET/ROW'
                                     PASSING get_tt.p_xml
-                                    COLUMNS 
-                                      "APPID"          VARCHAR2(50)    PATH 'APPID',
-                                      "KEY"            VARCHAR2(30)    PATH 'KEY',
-                                      "VALUE"          VARCHAR2(4000)  PATH 'VALUE',
-                                      "DESCRIPTION"    VARCHAR2(2000)  PATH 'DESCRIPTION',
-                                      "CREATED_BY"      VARCHAR2(100)  PATH 'CREATED_BY',
-                                      "CREATED_DATE"    VARCHAR2(20)   PATH 'CREATED_DATE',
-                                      "MODIFIED_BY"     VARCHAR2(100)  PATH 'MODIFIED_BY',
-                                      "MODIFIED_DATE"   VARCHAR2(20)   PATH 'MODIFIED_DATE'
+                                    COLUMNS
+                                      "APPID"          varchar2(50)    PATH 'APPID',
+                                      "KEY"            varchar2(30)    PATH 'KEY',
+                                      "VALUE"          varchar2(4000)  PATH 'VALUE',
+                                      "DESCRIPTION"    varchar2(2000)  PATH 'DESCRIPTION',
+                                      "CREATED_BY"      varchar2(100)  PATH 'CREATED_BY',
+                                      "CREATED_DATE"    varchar2(20)   PATH 'CREATED_DATE',
+                                      "MODIFIED_BY"     varchar2(100)  PATH 'MODIFIED_BY',
+                                      "MODIFIED_DATE"   varchar2(20)   PATH 'MODIFIED_DATE'
                                     ) xt)
       LOOP
           l_wdx_properties_rec.appid := c1.appid;
           l_wdx_properties_rec.key := c1.key;
-          l_wdx_properties_rec.value := c1.value;
+          l_wdx_properties_rec.VALUE := c1.VALUE;
           l_wdx_properties_rec.description := c1.description;
           l_wdx_properties_rec.created_by := c1.created_by;
           l_wdx_properties_rec.created_date := c1.created_date;
           l_wdx_properties_rec.modified_by := c1.modified_by;
-          l_wdx_properties_rec.modified_date := c1.modified_date;          
+          l_wdx_properties_rec.modified_date := c1.modified_date;
           PIPE ROW (l_wdx_properties_rec);
       END LOOP;
+
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
 
       RETURN;
    END get_tt;
 
 END tapi_wdx_properties;
 /
-
-

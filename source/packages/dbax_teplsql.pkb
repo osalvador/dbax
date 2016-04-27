@@ -826,6 +826,10 @@ AS
       DBMS_SQL.parse (v_cur_hdl, l_template, DBMS_SQL.native);
       DBMS_SQL.close_cursor (v_cur_hdl);
 
+      --minified html
+      --l_template := REGEXP_REPLACE(l_template, '[ ]{2,}',' ');
+      --l_template := REPLACE(l_template, CHR(10));
+
       RETURN l_template;
    EXCEPTION
       WHEN OTHERS

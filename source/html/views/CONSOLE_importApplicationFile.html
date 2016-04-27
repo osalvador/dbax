@@ -1,4 +1,4 @@
-<%! l_error_message VARCHAR2(4000) := '${errorMessage}';%>
+<%! l_error_message VARCHAR2(4000) := q'~${errorMessage}~';%>
 !\n
 <?dbax dbax_core.include('header'); ?>
 <!-- SideBar -->
@@ -9,13 +9,15 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Import Application            
+            Import ${module}
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
-            <li><i class="fa fa-upload"></i> Import</li>
-          </ol>          
+            <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
+            <li><a href="${base_path}/applications/edit/${current_app_id}#${module}"><i class="${module_icon}"></i> ${module} </a></li>            
+            <li><a href="${base_path}/applications/edit/${current_app_id}/<%= lower('${module}')%>/import"><i class="fa fa-upload"></i> Import </a></li>
+          </ol>
         </section>
 
         <!-- Main content -->
@@ -26,7 +28,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">    
                   <% if l_error_message is not null then %>  
-			        <div class="alert alert-danger alert-dismissible">
+                    <div class="alert alert-danger alert-dismissible">
                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                       <h4><i class="icon fa fa-ban"></i> Error!</h4>
                       <pre><code><%= l_error_message %></code></pre>
@@ -34,24 +36,13 @@
                   <% end if;%>
                   
                       <!-- form start -->
-                      <form name="importForm" id="importForm" action="${base_path}/applications/import" class="form-horizontal" method="POST" enctype="multipart/form-data">
-                         
-                         <div class="form-group">
-                            <label for="new_app_id" class="col-sm-2 control-label">*New Application ID</label>
-                            <div class="col-sm-10">
-                              <div class="input-group">
-                              	<input type="text" class="form-control" name="new_app_id" id="new_app_id" required>
-                              	<div class="input-group-addon"><i class="fa fa-rocket"></i></div>							   
-                              </div>
-                              <p class="help-block">The application must not exist.</p>
-                           </div>                            
-                         </div>
+                      <form name="importForm" id="importForm" action="${base_path}/applications/edit/${current_app_id}/<%= lower('${module}')%>/import" class="form-horizontal" method="POST" enctype="multipart/form-data">
                           
                         <div class="form-group">
-                            <label for="key" class="col-sm-2 control-label">*Zip File</label>
+                            <label for="key" class="col-sm-2 control-label">*Import file</label>
                             <div class="col-sm-10">
                               <div class="input-group">
-                              	<input type="file" class="form-control" name="file" id="file" accept="application/zip">
+                                  <input type="file" class="form-control" name="file" id="file" accept="text/xml">
                                 <div class="input-group-addon"><i class="fa fa-file-zip-o"></i></div>
                               </div>    
                             </div>
@@ -62,8 +53,8 @@
                   
                 <div class="box-footer">
                   <button  type="submit" form="importForm" id="importBtn" class="btn btn-info"><i class="fa fa-upload"></i> Start Import</button>
-                  <div class="pull-right">
-                    <a href="${base_path}/applications" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                  <div class="pull-right">                    
+                    <a href="${base_path}/applications/edit/${current_app_id}#${module}" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
                   </div>
                 </div><!-- /.box-footer -->
             </div> <!-- /.box -->              

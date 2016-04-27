@@ -730,7 +730,17 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
    AS
       l_refcursor   sys_refcursor;
       l_dummy       VARCHAR2 (1);      
+      l_xmldata               XMLTYPE;
+      l_current_date_format   VARCHAR2 (100);
    BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';   
+   
       --If record not exists raise NO_DATA_FOUND
       SELECT   NULL
         INTO   l_dummy
@@ -742,7 +752,11 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
            FROM   wdx_map_routes
           WHERE   appid = UPPER (p_appid) ORDER BY PRIORITY;
 
-      RETURN xmltype (l_refcursor);
+      l_xmldata   := xmltype (l_refcursor);
+
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
+
+      RETURN l_xmldata;
    END get_xml;
    
    FUNCTION get_tt (p_xml IN XMLTYPE)
@@ -750,7 +764,16 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
       PIPELINED
    IS
       l_wdx_map_routes_rec   wdx_map_routes_rt;
+      l_current_date_format   VARCHAR2 (100);
    BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';   
+   
       FOR c1 IN (SELECT   xt.*
                    FROM   XMLTABLE ('/ROWSET/ROW'
                                     PASSING get_tt.p_xml
@@ -784,6 +807,8 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
          PIPE ROW (l_wdx_map_routes_rec);
       END LOOP;
 
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
+      
       RETURN;
    END get_tt;
 

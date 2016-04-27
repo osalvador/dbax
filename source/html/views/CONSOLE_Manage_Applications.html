@@ -9,8 +9,8 @@
     <style type="text/css">
         th, td { white-space: nowrap; }
         .handle {cursor: move;}
-		
-		.bottom-buffer { margin-bottom: 3px; }	    
+        
+        .bottom-buffer { margin-bottom: 3px; }        
     </style>        
     ';
 %>!\n
@@ -28,7 +28,7 @@
             <small>${appName}</small>
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
             <li><a href="${base_path}/applications/edit/${appid}"><i class="fa fa-cogs"></i> ${current_app_id}</a></li>
           </ol> 
@@ -42,7 +42,7 @@
             <ul class="nav nav-tabs">
               <li class="active"><a href="#Settings" data-toggle="tab"><i class="fa fa-wrench"></i> Settings</a></li>
               <li><a href="#Properties" data-toggle="tab"><i class="fa fa-cog"></i> Properties</a></li>
-              <li><a href="#Routing" data-toggle="tab"><i class="fa fa-road"></i> Routing</a></li>
+              <li><a href="#Routes" data-toggle="tab"><i class="fa fa-road"></i> Routes</a></li>
               <li><a href="#Views" data-toggle="tab"><i class="fa fa-eye"></i> Views</a></li>              
               <li><a href="#RequestValidation" data-toggle="tab"><i class="fa fa-check"></i> Request Validation</a></li>
               <li><a href="#Security" data-toggle="tab"><i class="fa fa-lock"></i> Security</a></li>
@@ -92,8 +92,8 @@
                             <label for="app_access_control" class="col-sm-2 control-label">Access Control</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="app_access_control" name="app_access_control" required>
-                                  <option "<?dbax IF '${app_access_control}' = 'PUBLIC' THEN p('selected'); END IF; ?>">PUBLIC</option>
-                                  <option "<?dbax IF '${app_access_control}' = 'PRIVATE' THEN p('selected'); END IF; ?>">PRIVATE</option>                                  
+                                  <option <% if '${app_access_control}' = 'PUBLIC' then p('selected'); end if; %>>PUBLIC</option>
+                                  <option <% if '${app_access_control}' = 'PRIVATE' then p('selected'); end if; %>>PRIVATE</option>                                  
                                 </select>
                             </div>
                           </div>
@@ -103,17 +103,14 @@
                             <div class="col-sm-10">
                                 <select class="form-control" id="app_auth_scheme" name="app_auth_scheme">                                                    
                                   <option></option>
-                                  <?dbax
-                                      FOR c1 IN (SELECT scheme_name FROM wdx_auth_schemes)
-                                      LOOP
-                                          IF '${app_auth_scheme}' = c1.scheme_name
-                                          THEN
-                                              p('<option selected>'|| c1.scheme_name ||'</option>');
-                                          ELSE                                        
-                                              p('<option>'|| c1.scheme_name ||'</option>');
-                                          END IF;
-                                      END LOOP;
-                                  ?>                                
+                                  <% for c1 in (select * from wdx_auth_schemes) loop
+                                       if '${app_auth_scheme}' = c1.scheme_name then %>
+                                         <option selected><%= c1.scheme_name %></option>
+                                       <%else%>
+                                         <option><%= c1.scheme_name %></option>
+                                       <%end if;
+                                      end loop;
+                                   %>                                                      
                                 </select>
                             </div>
                           </div>
@@ -171,13 +168,19 @@
                         <p> Only the requests that belong to <i>Procedure Name</i> can be called from a browser.</p>
 
                         <div class="bottom-buffer">
-                        	<div class="btn-toolbar">
+                            <div class="btn-toolbar">
                                <div class="btn-group">                                    
                                    <a href="${base_path}/applications/edit/${current_app_id}/reqvalidation/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
                                </div>
                                <div class="btn-group">                                    
                                    <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RequestValidationTable','${base_path}/applications/edit/${current_app_id}/reqvalidation/delete')"> <i class="fa fa-trash"></i> Delete</button>
                                </div>
+                               <div class="btn-group pull-right" role="group">  
+                                    <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/edit/${current_app_id}/reqvalidation/import"> <i class="fa fa-upload"></i> Import</a>
+                               </div>
+                               <div class="btn-group pull-right" role="group">
+                                    <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/edit/${current_app_id}/reqvalidation/export"> <i class="fa fa-download"></i> Export</a>
+                               </div>                              
                            </div> <!-- /.btn-toolbar -->
                         </div>
                          
@@ -191,21 +194,13 @@
                                   </tr>
                                </thead>
                                <tbody>
-                                 <?dbax 
-									  DECLARE
-                                        l_link VARCHAR2(1000);
-                                      BEGIN                                      
-                                          FOR c1 IN (select * from table (tapi_wdx_reqvalidation.tt('${current_app_id}')))
-                                          LOOP
-											l_link := '<a href="${base_path}/applications/edit/${current_app_id}/reqvalidation/edit/'|| utl_url.escape (c1.procedure_name, true) ||'">' || c1.procedure_name || '</a>';
-											p('<tr>');
-                                                p('<td><input type="checkbox" value="'|| c1.procedure_name ||'"></td>');
-                                                p('<td>'|| l_link ||'</td>');                                                
-                                                p('<td>'|| c1.appid ||'</td>');                                                
-                                            p('</tr>');                      
-                                          END LOOP;
-									   END;
-                                    ?>
+                                 <% for c1 in (select * from table (tapi_wdx_reqvalidation.tt('${current_app_id}'))) loop %>
+                                    <tr>
+                                      <td><input type="checkbox" value="<%= c1.procedure_name %>"></td>
+                                      <td><a href="${base_path}/applications/edit/${current_app_id}/reqvalidation/edit/<%=utl_url.escape (c1.procedure_name, true) %>"><%= c1.procedure_name %></a></td>
+                                      <td><%=c1.appid %></td>
+                                    </tr>
+                                 <% end loop; %>                                 
                                 </tbody>
                                 <tfoot class="hide-if-no-paging">
                                     <tr>
@@ -238,17 +233,21 @@
                     </div><!-- /.box-header -->
                     <div class="box-body">
                     
-                    <p>Properties are configuration values managed as key/value pairs. In each pair, the key and value are both String values. The key identifies, and is used to retrieve, the value, much as a variable name is used to retrieve the variable's value. </p>
-                     <p>Properties can be accessed at any time from <code>dbax_core.g$view('key')</code>
-                        ,can be modified hot and will take effect in the new requests.</p>
+                    <p>Properties are configuration values managed as key/value pairs. Properties can be accessed at any time from <code>dbax_core.g$view('key')</code>, if you modify or create a property, it will take effect in the following request.</p>
                                             
                       <div class="bottom-buffer">
-                      	<div class="btn-toolbar">
+                          <div class="btn-toolbar">
                             <div class="btn-group">
                                 <a href="${base_path}/applications/edit/${current_app_id}/properties/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
                             </div>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-danger btn-xs" onclick="Delete('PropertiesTable','${base_path}/applications/edit/${current_app_id}/properties/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                            <div class="btn-group pull-right" role="group">  
+                                <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/edit/${current_app_id}/properties/import"> <i class="fa fa-upload"></i> Import</a>
+                            </div>
+                            <div class="btn-group pull-right" role="group">
+                                <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/edit/${current_app_id}/properties/export"> <i class="fa fa-download"></i> Export</a>
                             </div>
                         </div> <!-- /.btn-toolbar -->
                       </div>
@@ -264,26 +263,18 @@
                                      <th data-sort-ignore="true"><input type="checkbox" id="selectAllProp" onclick="checkAll(this.id, 'PropertiesTable');" name="all"></th>
                                      <th data-sort-initial="true">Key</th>
                                      <th>Value</th>
-                                     <th>Description</th>                           
+                                     <th>Description</th>
                                   </tr>
                                </thead>
                                <tbody>
-                                     <?dbax
-                                      DECLARE
-                                        l_link VARCHAR2(1000);
-                                      BEGIN
-                                          FOR c1 IN (select * from table (tapi_wdx_properties.tt('${current_app_id}')))
-                                          LOOP
-                                            l_link := '<a href="${base_path}/applications/edit/${current_app_id}/properties/edit/'|| utl_url.escape (c1.key, true) ||'">' || c1.key || '</a>';
-                                            p('<tr>');
-                                                p('<td><input type="checkbox" value="'|| c1.key||'"></td>');
-                                                p('<td>'|| l_link ||'</td>');
-                                                p('<td>'|| c1.value ||'</td>');
-                                                p('<td>'|| c1.description ||'</td>');                          
-                                            p('</tr>');                      
-                                          END LOOP;
-                                      END;
-                                    ?>
+                                <% for c1 in (select * from table (tapi_wdx_properties.tt('${current_app_id}'))) loop %>                                   
+                                 <tr>
+                                    <td><input type="checkbox" value="<%= c1.key %>"></td>
+                                    <td><a href="${base_path}/applications/edit/${current_app_id}/properties/edit/<%= utl_url.escape (c1.key, true)%>"><%= c1.key %> </a></td>
+                                    <td><%= c1.value %></td>
+                                    <td><%= c1.description %></td>
+                                 </tr>
+                                 <% end loop; %>
                                 </tbody>
                                 <tfoot class="hide-if-no-paging">
                                     <tr>
@@ -307,7 +298,7 @@
                   
           </div><!-- /.tab-pane -->
               
-          <div class="tab-pane" id="Routing">
+          <div class="tab-pane" id="Routes">
 
               <div class="box box-default box-solid">
                     <div class="box-header with-border">
@@ -320,7 +311,7 @@
                         and action of that controller should receive the request.</p>
                     
                       <div class="bottom-buffer">  
-                      	<div class="btn-toolbar">
+                          <div class="btn-toolbar">
                             <div class="btn-group">
                                 <a href="${base_path}/applications/edit/${current_app_id}/routes/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
                             </div>
@@ -330,6 +321,12 @@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-success btn-xs" onclick="SaveRoutesOrder()"> <i class="fa fa-floppy-o"></i> Save Routes Order</button>
                             </div>
+                            <div class="btn-group pull-right" role="group">  
+                                <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/edit/${current_app_id}/routes/import"> <i class="fa fa-upload"></i> Import</a>
+                            </div>
+                            <div class="btn-group pull-right" role="group">
+                                <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/edit/${current_app_id}/routes/export"> <i class="fa fa-download"></i> Export</a>
+                            </div>                          
                         </div> <!-- /.btn-toolbar -->
                       </div>
 
@@ -352,32 +349,22 @@
                               </tr>
                            </thead>
                            <tbody>
-                             <?dbax
-                              DECLARE
-                                l_link VARCHAR2(1000);
-                              BEGIN
-                                  FOR c1 IN (SELECT * FROM TABLE (tapi_wdx_map_routes.tt('${current_app_id}')) order by PRIORITY)
-                                  LOOP
-                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/routes/edit/'|| utl_url.escape (c1.route_name, true) ||'">' || c1.route_name || '</a>';
-                                    
-                                    p('<tr>');
-                                        p('<td><span class="handle"><i class="fa fa-ellipsis-v">&nbsp;</i><i class="fa fa-ellipsis-v"> </i></span></td>');
-                                        p('<td><input type="checkbox" value="'|| c1.route_name||'"></td>');
-                                        p('<td class="index RouteKey">'|| c1.PRIORITY ||'</td>');
-                                        p('<td class="RouteKey">'|| l_link ||'</td>');                                    
-                                        p('<td><code>'|| c1.URL_PATTERN ||'</code></td>');
-                                        p('<td>'|| c1.CONTROLLER_METHOD || '</td>');
-                                        p('<td>'|| c1.VIEW_NAME ||'</td>');       
-                                        IF c1.active = 'Y'
-                                        THEN
-                                            p('<td><span class="label label-success">Active</span></td>');
-                                        ELSE
-                                            p('<td><span class="label label-danger">Disable</span></td>');
-                                        END IF;        
-                                    p('</tr>');                      
-                                  END LOOP;
-                              END;
-                            ?>
+                             <% for c1 in (select * from table (tapi_wdx_map_routes.tt('${current_app_id}')) order by priority) loop %>
+                                <tr>
+                                    <td><span class="handle"><i class="fa fa-ellipsis-v">&nbsp;</i><i class="fa fa-ellipsis-v"> </i></span></td>
+                                    <td><input type="checkbox" value="<%= c1.route_name%>"></td>
+                                    <td class="index RouteKey"><%= c1.priority %></td>
+                                    <td class="RouteKey"><a href="${base_path}/applications/edit/${current_app_id}/routes/edit/<%= utl_url.escape (c1.route_name, true) %>"><%= c1.route_name %></a></td>
+                                    <td><code><%= c1.url_pattern %></code></td>
+                                    <td><%= c1.controller_method %></td>
+                                    <td><%= c1.view_name %></td>  
+                                    <%if c1.active = 'Y' then%>                             
+                                    <td><span class="label label-success">active</span></td>
+                                    <%else%>
+                                    <td><span class="label label-danger">disable</span></td>
+                                    <%end if;%>
+                                 </tr>
+                             <% end loop;%>
                             </tbody>
                             <tfoot class="hide-if-no-paging">
                                     <tr>
@@ -425,16 +412,16 @@
                                 <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-warning btn-xs" onclick="Export('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/export')"> <i class="fa fa-download"></i> Export</button>                              
-                            </div>							
-                   	        <div class="btn-group pull-right" role="group">  
+                                <button type="button" class="btn btn-warning btn-xs" onclick="Export('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/export')"> <i class="fa fa-download"></i> Export</button>
+                            </div>                            
+                               <div class="btn-group pull-right" role="group">  
                                <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/edit/${current_app_id}/views/import"> <i class="fa fa-upload"></i> Import View Files</a>
                             </div>
                             <div class="btn-group pull-right" role="group">
                                <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/edit/${current_app_id}/views/export-all"> <i class="fa fa-download"></i> Export all</a>
                             </div>
                            
-                        </div> <!-- /.btn-toolbar -->                      
+                        </div> <!-- /.btn-toolbar -->
                      </div>
                       
                       <div class="input-group">
@@ -447,38 +434,32 @@
                               <tr>
                                  <th data-sort-ignore="true"><input type="checkbox" id="selectAllViews" onclick="checkAll(this.id, 'ViewsTable');" name="all"></th>
                                  <th data-sort-initial="true">Name</th>
-                                 <th>Title</th>                                 
+                                 <th>Title</th>
                                  <th>Description</th>
                                  <th data-type="date">Modified Date</th>
                                  <th>Visible</th>
                               </tr>
                            </thead>
                            <tbody>
-                             <?dbax
-                              DECLARE
-                                l_link VARCHAR2(1000);
-                              BEGIN
-                                  FOR c1 IN (SELECT name, title, description, visible, modified_date
-                                             FROM TABLE (tapi_wdx_views.tt('${current_app_id}')))
-                                  LOOP
-                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/views/edit/'|| utl_url.escape (c1.name, true) ||'">' || c1.name || '</a>';
-                                    
-                                    p('<tr>');
-                                        p('<td><input type="checkbox" value="'|| c1.name||'"></td>');
-                                        p('<td>'|| l_link ||'</td>');
-                                        p('<td>'|| c1.title ||'</td>');                                    
-                                        p('<td>'|| c1.description ||'</td>');
-										p('<td>'|| to_char(c1.modified_date, 'yyyy-mm-dd hh24:mi:ss') ||'</td>');
-                                        IF c1.visible = 'Y'
-                                        THEN
-                                            p('<td><span class="label label-success">Visible</span></td>');
-                                        ELSE
-                                            p('<td><span class="label label-danger">Hidden</span></td>');
-                                        END IF;                                        
-                                    p('</tr>');                      
-                                  END LOOP;
-                               END;
-                            ?>
+                             <% for c1 in (select   name
+                                                  , title
+                                                  , description
+                                                  , visible
+                                                  , modified_date
+                                             from   table (tapi_wdx_views.tt ('${current_app_id}'))) loop %>
+                             <tr>
+                               <td><input type="checkbox" value="<%= c1.name%>"></td>
+                               <td><a href="${base_path}/applications/edit/${current_app_id}/views/edit/<%= utl_url.escape (c1.name, true) %>"><%= c1.name %></a></td>
+                               <td><%= c1.title %></td>
+                               <td><%= c1.description %></td>
+                               <td><%= to_char(c1.modified_date, 'yyyy-mm-dd hh24:mi:ss') %></td>
+                               <%if c1.visible = 'Y' then %>
+                               <td><span class="label label-success">Visible</span></td>
+                               <%else%>
+                               <td><span class="label label-danger">Hidden</span></td>
+                               <%end if;%>
+                             </tr>
+                             <%end loop;%>
                             </tbody>
                             <tfoot class="hide-if-no-paging">
                                 <tr>
@@ -507,7 +488,7 @@
 
           </div><!-- /.tab-pane -->
         
-		  <div class="tab-pane" id="Security">
+          <div class="tab-pane" id="Security">
             
           <!-- Custom Tabs -->
           <div class="nav-tabs-custom">
@@ -534,7 +515,13 @@
                             </div>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RolesTable','${base_path}/applications/edit/${current_app_id}/roles/delete')"> <i class="fa fa-trash"></i> Delete</button>
-                            </div>                           
+                            </div>
+                            <div class="btn-group pull-right" role="group">  
+                                <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/import"> <i class="fa fa-upload"></i> Import</a>
+                            </div>
+                            <div class="btn-group pull-right" role="group">
+                                <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/export"> <i class="fa fa-download"></i> Export</a>
+                            </div>                          
                         </div> <!-- /.btn-toolbar -->
                      </div>
                      
@@ -552,22 +539,13 @@
                               </tr>
                            </thead>
                            <tbody>
-                             <?dbax
-                              DECLARE
-                                l_link VARCHAR2(1000);
-                              BEGIN
-                                  FOR c1 IN (SELECT * FROM TABLE (tapi_wdx_roles.tt(null,'${current_app_id}')))		
-                                  LOOP
-                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/roles/edit/'|| utl_url.escape (c1.rolename, true) ||'">' || c1.rolename || '</a>';
-                                    
-                                    p('<tr>');
-                                        p('<td><input type="checkbox" value="'|| c1.rolename||'"></td>');
-										p('<td>'|| l_link ||'</td>');
-										p('<td>'|| c1.role_descr ||'</td>');                                       
-                                    p('</tr>');                      
-                                  END LOOP;
-                              END;
-                            ?>
+                             <% for c1 in (select * from table (tapi_wdx_roles.tt(null,'${current_app_id}'))) loop %>
+                             <tr>
+                               <td><input type="checkbox" value="<%= c1.rolename%>"></td>
+                               <td><a href="${base_path}/applications/edit/${current_app_id}/roles/edit/<%= utl_url.escape (c1.rolename, true) %>"><%= c1.rolename %></a></td>
+                               <td><%= c1.role_descr %></td>
+                             </tr>   
+                             <%end loop;%>
                             </tbody>
                             <tfoot class="hide-if-no-paging">
                                     <tr>
@@ -592,7 +570,7 @@
            </div><!-- /.tab-pane Roles-->
              
               
- 			<div class="tab-pane" id="Permissions">
+             <div class="tab-pane" id="Permissions">
               <div class="box box-default box-solid">
                     <div class="box-header with-border">
                       <h3 class="box-title">Permissions</h3>
@@ -613,6 +591,12 @@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-danger btn-xs" onclick="Delete('PmsnTable','${base_path}/applications/edit/${current_app_id}/pmsn/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>
+                            <div class="btn-group pull-right" role="group">  
+                                <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/import"> <i class="fa fa-upload"></i> Import</a>
+                            </div>
+                            <div class="btn-group pull-right" role="group">
+                                <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/export"> <i class="fa fa-download"></i> Export</a>
+                            </div>                          
                         </div> <!-- /.btn-toolbar -->
                       </div>
                       
@@ -630,22 +614,13 @@
                               </tr>
                            </thead>
                            <tbody>
-                             <?dbax
-                              DECLARE
-                                l_link VARCHAR2(1000);
-                              BEGIN                                  
-								  FOR c1 IN (SELECT * FROM wdx_permissions where appid = '${current_app_id}')
-                                  LOOP
-                                    l_link := '<a href="${base_path}/applications/edit/${current_app_id}/pmsn/edit/'|| utl_url.escape (c1.pmsname, true) ||'">' || c1.pmsname || '</a>';
-                                    
-                                    p('<tr>');                                        
-                                        p('<td><input type="checkbox" value="'|| c1.pmsname||'"></td>');
-										p('<td>'|| l_link ||'</td>');                                        
-										p('<td>'|| c1.pmsn_descr ||'</td>');
-                                    p('</tr>');                      
-                                  END LOOP;
-                              END;
-                            ?>
+                             <% for c1 in ( select * from table(tapi_wdx_permissions.tt(null,'${current_app_id}'))) loop %>
+                                    <tr>
+                                        <td><input type="checkbox" value="<%= c1.pmsname%>"></td>
+                                        <td><a href="${base_path}/applications/edit/${current_app_id}/pmsn/edit/<%= utl_url.escape (c1.pmsname, true) %>"><%= c1.pmsname %></a></td>
+                                        <td><%= c1.pmsn_descr %></td>
+                                    </tr>
+                             <% end loop; %>
                             </tbody>
                             <tfoot class="hide-if-no-paging">
                                     <tr>
@@ -682,7 +657,6 @@
    
      </section><!-- /.content -->
    </div><!-- /.content-wrapper -->
-
    
     <?dbax dbax_core.include('footer'); ?>
 
