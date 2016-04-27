@@ -1,4 +1,3 @@
-/* Formatted on 27/04/2016 12:58:39 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_m_dbax_console
 AS
    PROCEDURE properties_ins (p_wdx_properties_rec IN OUT tapi_wdx_properties.wdx_properties_rt)
@@ -958,7 +957,7 @@ END;]';
       l_tmp_blob         BLOB;
       l_xml_data         XMLTYPE;
       --
-      e_different_application exception;      
+      e_different_application exception;
    BEGIN
       /**
       * Roles
@@ -1049,6 +1048,10 @@ END;]';
             
          END LOOP;
       END IF;
+   EXCEPTION
+   WHEN e_different_application 
+    THEN
+        raise_application_error( -20001, 'You can not import security metadata from other applications' );   
    END import_security;
 END pk_m_dbax_console;
 /

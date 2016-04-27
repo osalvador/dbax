@@ -1,4 +1,3 @@
-/* Formatted on 26/04/2016 16:28:07 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
@@ -2266,10 +2265,10 @@ AS
 
    PROCEDURE import_reqvalidation (p_appid IN tapi_wdx_applications.appid)
    AS
-      l_real_file_name   VARCHAR2 (256);
-      l_tmp_blob         BLOB;
+      l_real_file_name     VARCHAR2 (256);
+      l_tmp_blob           BLOB;
       l_reqvalidation_rt   tapi_wdx_reqvalidation.wdx_request_valid_function_rt;
-      l_xml_data         XMLTYPE;
+      l_xml_data           XMLTYPE;
       e_different_application exception;
    BEGIN
       dbax_core.g$view ('module') := 'ReqValidation';
@@ -3666,13 +3665,13 @@ AS
          dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          RAISE;
    END user_layout_options;
-   
-   
+
+
    PROCEDURE export_security (p_appid IN tapi_wdx_applications.appid)
    AS
       l_blob_content   BLOB;
    BEGIN
-      l_blob_content := pk_m_dbax_console.export_security(UPPER (p_appid));
+      l_blob_content := pk_m_dbax_console.export_security (UPPER (p_appid));
 
       -- TODO dbax_document.download_this
       HTP.init;
@@ -3691,15 +3690,17 @@ AS
 
    PROCEDURE import_security (p_appid IN tapi_wdx_applications.appid)
    AS
-      l_real_file_name   VARCHAR2 (256);
-      l_tmp_blob         BLOB;
+      l_real_file_name     VARCHAR2 (256);
+      l_tmp_blob           BLOB;
       l_reqvalidation_rt   tapi_wdx_reqvalidation.wdx_request_valid_function_rt;
-      l_xml_data         XMLTYPE;
+      l_xml_data           XMLTYPE;
+      --
       e_different_application exception;
+      PRAGMA EXCEPTION_INIT (e_different_application, -20001);
    BEGIN
       dbax_core.g$view ('module') := 'Security';
       dbax_core.g$view ('current_app_id') := p_appid;
-      dbax_core.g$view ('module_icon') := 'fa fa-check';
+      dbax_core.g$view ('module_icon') := 'fa fa-lock';
 
       IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
       THEN
@@ -3714,28 +3715,7 @@ AS
 
          l_tmp_blob  := dbax_document.get_file_content (l_real_file_name);
 
-        /* l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-
-         FOR c1 IN (SELECT   * FROM table (tapi_wdx_reqvalidation.get_tt (l_xml_data)))
-         LOOP
-            l_reqvalidation_rt := c1;
-
-            IF l_reqvalidation_rt.appid <> p_appid
-            THEN
-               RAISE e_different_application;
-            END IF;
-
-            --Upsert Propertie
-            BEGIN
-               tapi_wdx_reqvalidation.ins (l_reqvalidation_rt);
-            EXCEPTION
-               WHEN DUP_VAL_ON_INDEX
-               THEN
-                  tapi_wdx_reqvalidation.upd (l_reqvalidation_rt);
-            END;
-         END LOOP;*/
-         
-         pk_m_dbax_console.import_security(l_tmp_blob, p_appid);
+         pk_m_dbax_console.import_security (l_tmp_blob, p_appid);
 
          -- Everything well
          dbax_core.g$status_line := 303;
@@ -3755,7 +3735,6 @@ AS
          dbax_core.g$view ('errorMessage') :=
             'Error importing Security: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
          dbax_core.load_view ('importApplicationFile');
-   END import_security;   
-   
+   END import_security;
 END pk_c_dbax_console;
 /
