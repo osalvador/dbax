@@ -1,9 +1,8 @@
 CREATE OR REPLACE PACKAGE pk_c_dbax_console
 AS
    /**
-   -- # pk_c_dbax_console
-   -- Version: 0.1. <br/>
-   -- Description: Controllers for DBAX Console application
+   * PK_C_DBAX_CONSOLE   
+   * Controllers for DBAX Console application
    */
 
    TYPE appl_arr
@@ -21,7 +20,7 @@ AS
    /**
    * Controller for logout user
    */
-   PROCEDURE logout;
+   PROCEDURE LOGOUT;
 
    /*
    * Example controllers
@@ -43,9 +42,9 @@ AS
    PROCEDURE upsert_app;
 
    PROCEDURE delete_app;
-   
+
    PROCEDURE import_app;
-   
+
    PROCEDURE export_app;
 
    /*
@@ -60,10 +59,10 @@ AS
    PROCEDURE delete_propertie;
 
    PROCEDURE upsert_propertie;
-   
-   PROCEDURE export_properties(p_appid in tapi_wdx_applications.appid);
-   
-   PROCEDURE import_properties(p_appid in tapi_wdx_applications.appid);
+
+   PROCEDURE export_properties (p_appid IN tapi_wdx_applications.appid);
+
+   PROCEDURE import_properties (p_appid IN tapi_wdx_applications.appid);
 
    /*
    * Map Routes controllers
@@ -81,10 +80,10 @@ AS
    PROCEDURE save_routes_order;
 
    PROCEDURE test_route;
-   
-   PROCEDURE import_routes;
-   
-   PROCEDURE export_routes;
+
+   PROCEDURE import_routes (p_appid IN tapi_wdx_applications.appid);
+
+   PROCEDURE export_routes (p_appid IN tapi_wdx_applications.appid);
 
    /*
    * Views controllers
@@ -124,6 +123,10 @@ AS
    PROCEDURE delete_reqvalidation;
 
    PROCEDURE upsert_reqvalidation;
+   
+   PROCEDURE import_reqvalidation (p_appid IN tapi_wdx_applications.appid);
+
+   PROCEDURE export_reqvalidation (p_appid IN tapi_wdx_applications.appid);
 
    /*
    * Logs controllers
@@ -156,7 +159,6 @@ AS
 
    PROCEDURE upsert_roles_permissions;
 
-
    /*
    * Permissions controllers
    */
@@ -185,6 +187,13 @@ AS
    PROCEDURE change_user_password;
 
    PROCEDURE user_layout_options;
+   
+   /*
+   * Security
+   */
+   PROCEDURE import_security (p_appid IN tapi_wdx_applications.appid);
 
+   PROCEDURE export_security (p_appid IN tapi_wdx_applications.appid);
+   
 END pk_c_dbax_console;
 /

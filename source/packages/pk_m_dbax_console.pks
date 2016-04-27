@@ -1,9 +1,8 @@
 CREATE OR REPLACE PACKAGE pk_m_dbax_console
 AS
    /**
-   -- # PK_M_DBAX_CONSOLE
-   -- Version: 0.1. <br/>
-   -- Description: Models for DBAX Console
+   * PK_M_DBAX_CONSOLE   
+   * Models for DBAX Console application
    */
 
    --Record type for "Latest Modifications" report
@@ -57,5 +56,21 @@ AS
    */
    PROCEDURE import_app (p_zipped_blob IN BLOB, p_new_appid IN tapi_wdx_applications.appid DEFAULT NULL );
       
+   /**   
+   * Returns a zipped blob of all metadata application security
+   *
+   * @param  p_appid    the application id to be extracted
+   */
+   FUNCTION export_security (p_appid IN tapi_wdx_applications.appid)
+      RETURN BLOB;
+   
+    /**
+   * Import metadata files from application security
+   *
+   * @param  p_zipped_blob  the zipped blob with metadata files
+   * @param  p_appid        the application id metadata
+   */
+   PROCEDURE import_security (p_zipped_blob IN BLOB, p_appid IN tapi_wdx_applications.appid);
+     
 END pk_m_dbax_console;
 /
