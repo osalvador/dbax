@@ -1,4 +1,7 @@
+<%! l_property_rt tapi_wdx_properties.wdx_properties_rt; %>
 <%
+    l_property_rt := tapi_wdx_properties.rt(p_appid=> '${current_app_id}', p_key=>'base_path');
+    
     dbax_core.g$var('page_head') := '        
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
@@ -24,9 +27,9 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            <i class="fa fa-rocket"></i> Settings for ${current_app_id} application
-            <small>${appName}</small>
-          </h1>
+            <i class="fa fa-rocket"></i> Settings for ${current_app_id} 
+            <small><a href="<%= l_property_rt.value %>" target="_blank"><i class="fa fa-external-link"></i> Launch application</a></small>
+          </h1>          
           <ol class="breadcrumb">
              <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
@@ -479,7 +482,7 @@
                           <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-trash"></i> Delete</button>
                       </div>
                       <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-warning btn-xs" onclick="Export('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/delete')"> <i class="fa fa-download"></i> Export</button>                              
+                        <button type="button" class="btn btn-warning btn-xs" onclick="Export('ViewsTable','${base_path}/applications/edit/${current_app_id}/views/export')"> <i class="fa fa-download"></i> Export</button>                              
                       </div>
                  </div> <!-- /.btn-toolbar -->
                 </div><!-- /.box-body -->                  
@@ -495,6 +498,14 @@
             <ul class="nav nav-tabs">
               <li class="active"><a href="#Roles" data-toggle="tab"><i class="fa fa-user-secret"></i> Roles</a></li>
               <li><a href="#Permissions" data-toggle="tab"><i class="fa fa-key"></i> Permissions</a></li>
+              <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group pull-right" role="group">  
+                  <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/edit/${current_app_id}/security/import"> <i class="fa fa-upload"></i> Import Security</a>
+                </div>
+                <div class="btn-group pull-right" role="group">
+                  <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/edit/${current_app_id}/security/export"> <i class="fa fa-download"></i> Export Security</a>
+                </div>
+              </div>
             </ul>
             
             <div class="tab-content">               
@@ -516,12 +527,6 @@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-danger btn-xs" onclick="Delete('RolesTable','${base_path}/applications/edit/${current_app_id}/roles/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>
-                            <div class="btn-group pull-right" role="group">  
-                                <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/import"> <i class="fa fa-upload"></i> Import</a>
-                            </div>
-                            <div class="btn-group pull-right" role="group">
-                                <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/export"> <i class="fa fa-download"></i> Export</a>
-                            </div>                          
                         </div> <!-- /.btn-toolbar -->
                      </div>
                      
@@ -591,12 +596,6 @@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-danger btn-xs" onclick="Delete('PmsnTable','${base_path}/applications/edit/${current_app_id}/pmsn/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>
-                            <div class="btn-group pull-right" role="group">  
-                                <a type="button" class="btn btn-success btn-xs" href="${base_path}/applications/import"> <i class="fa fa-upload"></i> Import</a>
-                            </div>
-                            <div class="btn-group pull-right" role="group">
-                                <a type="button" class="btn btn-warning btn-xs" href="${base_path}/applications/export"> <i class="fa fa-download"></i> Export</a>
-                            </div>                          
                         </div> <!-- /.btn-toolbar -->
                       </div>
                       

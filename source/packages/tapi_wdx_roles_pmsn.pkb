@@ -574,7 +574,17 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_roles_pmsn IS
    AS
       l_refcursor   sys_refcursor;
       l_dummy       VARCHAR2 (1);      
+      l_xmldata               XMLTYPE;
+      l_current_date_format   VARCHAR2 (100);
    BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+
       --If record not exists raise NO_DATA_FOUND
       SELECT   NULL
         INTO   l_dummy
@@ -586,7 +596,11 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_roles_pmsn IS
            FROM   wdx_roles_pmsn
           WHERE   appid = UPPER (p_appid);
 
-      RETURN xmltype (l_refcursor);
+      l_xmldata   := xmltype (l_refcursor);
+
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
+
+      RETURN l_xmldata;
    END get_xml;
    
    FUNCTION get_tt (p_xml IN XMLTYPE)
@@ -594,7 +608,16 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_roles_pmsn IS
       PIPELINED
    IS
       l_wdx_roles_pmsn_rec   wdx_roles_pmsn_rt;
+      l_current_date_format   VARCHAR2 (100);
    BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+
       FOR c1 IN (SELECT   xt.*
                    FROM   XMLTABLE ('/ROWSET/ROW'
                                     PASSING get_tt.p_xml
@@ -617,6 +640,8 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_roles_pmsn IS
           l_wdx_roles_pmsn_rec.modified_date := c1.modified_date;
           PIPE ROW (l_wdx_roles_pmsn_rec);
       END LOOP;
+
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
 
       RETURN;
    END get_tt;

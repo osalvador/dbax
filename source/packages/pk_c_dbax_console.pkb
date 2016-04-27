@@ -3666,5 +3666,96 @@ AS
          dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          RAISE;
    END user_layout_options;
+   
+   
+   PROCEDURE export_security (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_blob_content   BLOB;
+   BEGIN
+      l_blob_content := pk_m_dbax_console.export_security(UPPER (p_appid));
+
+      -- TODO dbax_document.download_this
+      HTP.init;
+      OWA_UTIL.mime_header ('application/zip', FALSE);
+      HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
+      HTP.p ('Content-Disposition: attachment; filename="dbax_' || UPPER (p_appid) || '_security.zip"');
+      OWA_UTIL.http_header_close;
+
+      WPG_DOCLOAD.download_file (l_blob_content);
+
+      DBMS_LOB.freetemporary (l_blob_content);
+
+      --Stop process and return
+      dbax_core.g_stop_process := TRUE;
+   END export_security;
+
+   PROCEDURE import_security (p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_real_file_name   VARCHAR2 (256);
+      l_tmp_blob         BLOB;
+      l_reqvalidation_rt   tapi_wdx_reqvalidation.wdx_request_valid_function_rt;
+      l_xml_data         XMLTYPE;
+      e_different_application exception;
+   BEGIN
+      dbax_core.g$view ('module') := 'Security';
+      dbax_core.g$view ('current_app_id') := p_appid;
+      dbax_core.g$view ('module_icon') := 'fa fa-check';
+
+      IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
+      THEN
+         dbax_core.load_view ('importApplicationFile');
+         RETURN;
+      ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
+      THEN
+         l_real_file_name :=
+            dbax_document.upload (dbax_core.g$post ('file')
+                                , dbax_core.g$appid
+                                , dbax_security.get_username (dbax_core.g$appid));
+
+         l_tmp_blob  := dbax_document.get_file_content (l_real_file_name);
+
+        /* l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_reqvalidation.get_tt (l_xml_data)))
+         LOOP
+            l_reqvalidation_rt := c1;
+
+            IF l_reqvalidation_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert Propertie
+            BEGIN
+               tapi_wdx_reqvalidation.ins (l_reqvalidation_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_reqvalidation.upd (l_reqvalidation_rt);
+            END;
+         END LOOP;*/
+         
+         pk_m_dbax_console.import_security(l_tmp_blob, p_appid);
+
+         -- Everything well
+         dbax_core.g$status_line := 303;
+         dbax_core.g$http_header ('Location') :=
+            dbax_core.get_path ('/applications/edit/' || UPPER (p_appid) || '#Security');
+      END IF;
+   EXCEPTION
+      WHEN e_different_application
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing Security. You can not import security metadata from other applications';
+         dbax_core.load_view ('importApplicationFile');
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.g$view ('errorMessage') :=
+            'Error importing Security: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
+         dbax_core.load_view ('importApplicationFile');
+   END import_security;   
+   
 END pk_c_dbax_console;
 /

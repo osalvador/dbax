@@ -1,3 +1,4 @@
+/* Formatted on 27/04/2016 12:58:39 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_m_dbax_console
 AS
    PROCEDURE properties_ins (p_wdx_properties_rec IN OUT tapi_wdx_properties.wdx_properties_rt)
@@ -16,8 +17,8 @@ AS
       l_application_rt   tapi_wdx_applications.wdx_applications_rt;
       l_properties_rt    tapi_wdx_properties.wdx_properties_rt;
       l_req_valid        tapi_wdx_reqvalidation.wdx_request_valid_function_rt;
-      l_views_rt          tapi_wdx_views.wdx_views_rt;
-      l_routes_rt         tapi_wdx_map_routes.wdx_map_routes_rt;
+      l_views_rt         tapi_wdx_views.wdx_views_rt;
+      l_routes_rt        tapi_wdx_map_routes.wdx_map_routes_rt;
       l_roles_rt         tapi_wdx_roles.wdx_roles_rt;
       l_permissions_rt   tapi_wdx_permissions.wdx_permissions_rt;
       l_roles_pmsn_rt    tapi_wdx_roles_pmsn.wdx_roles_pmsn_rt;
@@ -595,7 +596,6 @@ END pk_c_dbax_${appid};]';
    FUNCTION export_app (p_appid IN tapi_wdx_applications.appid)
       RETURN BLOB
    AS
-      l_refcursor     sys_refcursor;
       l_xml_data      CLOB;
       l_zipped_blob   BLOB;
    BEGIN
@@ -604,8 +604,8 @@ END pk_c_dbax_${appid};]';
 
       /* Settings */
       BEGIN
-         l_xml_data  := tapi_wdx_applications.get_xml(p_appid).getclobval ();
-         as_zip.add1file (l_zipped_blob, 'settings.xml', as_zip.clob_to_blob (l_xml_data));         
+         l_xml_data  := tapi_wdx_applications.get_xml (p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'settings.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
          THEN
@@ -614,17 +614,17 @@ END pk_c_dbax_${appid};]';
 
       /* Properties */
       BEGIN
-         l_xml_data  := tapi_wdx_properties.get_xml(p_appid).getclobval ();
-         as_zip.add1file (l_zipped_blob, 'properties.xml', as_zip.clob_to_blob (l_xml_data));         
+         l_xml_data  := tapi_wdx_properties.get_xml (p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'properties.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
          THEN
             NULL;
-      END;      
+      END;
 
       /* Routes */
       BEGIN
-         l_xml_data  := tapi_wdx_map_routes.get_xml(p_appid).getclobval ();         
+         l_xml_data  := tapi_wdx_map_routes.get_xml (p_appid).getclobval ();
          as_zip.add1file (l_zipped_blob, 'routes.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
@@ -633,17 +633,16 @@ END pk_c_dbax_${appid};]';
       END;
 
       /* Views */
-      BEGIN         
-         l_xml_data  := tapi_wdx_views.get_xml(p_appid).getclobval ();
+      BEGIN
+         l_xml_data  := tapi_wdx_views.get_xml (p_appid).getclobval ();
          as_zip.add1file (l_zipped_blob, 'views/views.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
-         THEN            
+         THEN
             NULL;
       END;
-      
-      FOR c1 IN (SELECT   appid, name, source
-                   FROM   table(tapi_wdx_views.tt(p_appid)))
+
+      FOR c1 IN (SELECT   appid, name, source FROM table (tapi_wdx_views.tt (p_appid)))
       LOOP
          as_zip.add1file (l_zipped_blob
                         , 'views/' || c1.appid || '_' || c1.name || '.html'
@@ -652,43 +651,43 @@ END pk_c_dbax_${appid};]';
 
       /* ReqValidationFunction */
       BEGIN
-         l_xml_data  := tapi_wdx_reqvalidation.get_xml(p_appid).getclobval ();
+         l_xml_data  := tapi_wdx_reqvalidation.get_xml (p_appid).getclobval ();
          as_zip.add1file (l_zipped_blob, 'reqValidationFunction.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
-         THEN            
+         THEN
             NULL;
       END;
 
       /* Roles */
       BEGIN
-         l_xml_data  := tapi_wdx_roles.get_xml(p_appid).getclobval ();
+         l_xml_data  := tapi_wdx_roles.get_xml (p_appid).getclobval ();
          as_zip.add1file (l_zipped_blob, 'roles.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
-         THEN            
+         THEN
             NULL;
       END;
 
       /* Permissions */
       BEGIN
-         l_xml_data  := tapi_wdx_permissions.get_xml(p_appid).getclobval ();
+         l_xml_data  := tapi_wdx_permissions.get_xml (p_appid).getclobval ();
          as_zip.add1file (l_zipped_blob, 'permissions.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
-         THEN            
+         THEN
             NULL;
       END;
 
       /* Roles x Permissions */
       BEGIN
-         l_xml_data  := tapi_wdx_roles_pmsn.get_xml(p_appid).getclobval ();
+         l_xml_data  := tapi_wdx_roles_pmsn.get_xml (p_appid).getclobval ();
          as_zip.add1file (l_zipped_blob, 'rolesPermissions.xml', as_zip.clob_to_blob (l_xml_data));
       EXCEPTION
          WHEN NO_DATA_FOUND
-         THEN            
+         THEN
             NULL;
-      END;     
+      END;
 
       as_zip.finish_zip (l_zipped_blob);
 
@@ -713,21 +712,21 @@ END pk_c_dbax_${appid};]';
       --
       l_tmp_blob         BLOB;
       l_xml_data         XMLTYPE;
-      l_error_template   CLOB;   
+      l_error_template   CLOB;
    BEGIN
       /* ISO 8601 date format*/
       EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
-      
+
       /*
       * Aplication Settings
       */
       l_xml_data  := xmltype (as_zip.blob_to_clob (as_zip.get_file (p_zipped_blob, 'settings.xml')));
 
-      FOR c1 IN (select * from table(tapi_wdx_applications.get_tt(l_xml_data)))
+      FOR c1 IN (SELECT   * FROM table (tapi_wdx_applications.get_tt (l_xml_data)))
       LOOP
          l_application_rt := c1;
          --only one application per file
-         exit;
+         EXIT;
       END LOOP;
 
 
@@ -743,144 +742,138 @@ END pk_c_dbax_${appid};]';
       /**
       * Properties
       */
-      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'properties.xml');
-      
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'properties.xml');
+
       IF l_tmp_blob IS NOT NULL
-      THEN      
-        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-      
-        FOR c1 IN (select * from table(tapi_wdx_properties.get_tt(l_xml_data)))
-        LOOP          
-          l_properties_rt :=   c1;
-          l_properties_rt.appid := l_application_rt.appid ;
-          
-          --Insert Propertie
-          tapi_wdx_properties.ins (l_properties_rt);
-        END LOOP;
-        
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_properties.get_tt (l_xml_data)))
+         LOOP
+            l_properties_rt := c1;
+            l_properties_rt.appid := l_application_rt.appid;
+
+            --Insert Propertie
+            tapi_wdx_properties.ins (l_properties_rt);
+         END LOOP;
       END IF;
 
       /**
       * Routes
       */
-      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'routes.xml');
-      
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'routes.xml');
+
       IF l_tmp_blob IS NOT NULL
-      THEN      
-        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-      
-        FOR c1 IN (select * from table(tapi_wdx_map_routes.get_tt(l_xml_data)))
-        LOOP          
-          l_routes_rt := c1;
-          l_routes_rt.appid :=             l_application_rt.appid ;
-          --Insert route
-          tapi_wdx_map_routes.ins (l_routes_rt);
-        END LOOP;
-        
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_map_routes.get_tt (l_xml_data)))
+         LOOP
+            l_routes_rt := c1;
+            l_routes_rt.appid := l_application_rt.appid;
+            --Insert route
+            tapi_wdx_map_routes.ins (l_routes_rt);
+         END LOOP;
       END IF;
 
       /**
       * Views
       */
-      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'views/views.xml');
-      
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'views/views.xml');
+
       IF l_tmp_blob IS NOT NULL
-      THEN      
-        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-      
-        FOR c1 IN (select * from table(tapi_wdx_views.get_tt(l_xml_data)))
-        LOOP          
-          l_views_rt         := c1;
-          l_views_rt.appid   := l_application_rt.appid;          
-          
-          --get view source
-          l_views_rt.source := as_zip.blob_to_clob (as_zip.get_file (p_zipped_blob, 'views/'||c1.appid ||'_' || c1.name ||'.html'));
-          
-          --Insert view
-          tapi_wdx_views.ins (l_views_rt);
-        END LOOP;
-        
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_views.get_tt (l_xml_data)))
+         LOOP
+            l_views_rt  := c1;
+            l_views_rt.appid := l_application_rt.appid;
+
+            --get view source
+            l_views_rt.source :=
+               as_zip.blob_to_clob (as_zip.get_file (p_zipped_blob, 'views/' || c1.appid || '_' || c1.name || '.html'));
+
+            --Insert view
+            tapi_wdx_views.ins (l_views_rt);
+         END LOOP;
       END IF;
-      
+
       --Compile all views
       dbax_teplsql.compile_all (l_application_rt.appid, l_error_template);
 
       /**
       * ReqValidationFunction
       */
-      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'reqValidationFunction.xml');
-      
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'reqValidationFunction.xml');
+
       IF l_tmp_blob IS NOT NULL
-      THEN      
-        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-      
-        FOR c1 IN (select * from table(tapi_wdx_reqvalidation.get_tt(l_xml_data)))
-        LOOP          
-            l_req_valid       := c1;
-            l_req_valid.appid := l_application_rt.appid ;
-                      
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_reqvalidation.get_tt (l_xml_data)))
+         LOOP
+            l_req_valid := c1;
+            l_req_valid.appid := l_application_rt.appid;
+
             --Insert reqValidFunction
             tapi_wdx_reqvalidation.ins (l_req_valid);
-        END LOOP;
-        
+         END LOOP;
       END IF;
 
-     
+
       /**
       * Roles
       */
-      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'roles.xml');
-      
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'roles.xml');
+
       IF l_tmp_blob IS NOT NULL
-      THEN      
-        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-      
-        FOR c1 IN (select * from table(tapi_wdx_roles.get_tt(l_xml_data)))
-        LOOP          
-            l_roles_rt       := c1;
-            l_roles_rt.appid := l_application_rt.appid ;
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles.get_tt (l_xml_data)))
+         LOOP
+            l_roles_rt  := c1;
+            l_roles_rt.appid := l_application_rt.appid;
             --Insert role
             tapi_wdx_roles.ins (l_roles_rt);
-        END LOOP;
-        
+         END LOOP;
       END IF;
-   
+
       /**
       * Permissions
       */
-      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'permissions.xml');
-      
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'permissions.xml');
+
       IF l_tmp_blob IS NOT NULL
-      THEN      
-        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-      
-        FOR c1 IN (select * from table(tapi_wdx_permissions.get_tt(l_xml_data)))
-        LOOP          
-            l_permissions_rt       := c1;
-            l_permissions_rt.appid := l_application_rt.appid ;
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_permissions.get_tt (l_xml_data)))
+         LOOP
+            l_permissions_rt := c1;
+            l_permissions_rt.appid := l_application_rt.appid;
             --Insert role
             tapi_wdx_permissions.ins (l_permissions_rt);
-        END LOOP;
-        
+         END LOOP;
       END IF;
-     
-     /**
-     * Roles x Permissions
-     */     
-      l_tmp_blob := as_zip.get_file (p_zipped_blob, 'rolesPermissions.xml');
-      
+
+      /**
+      * Roles x Permissions
+      */
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'rolesPermissions.xml');
+
       IF l_tmp_blob IS NOT NULL
-      THEN      
-        l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
-      
-        FOR c1 IN (select * from table(tapi_wdx_roles_pmsn.get_tt(l_xml_data)))
-        LOOP          
-            l_roles_pmsn_rt       := c1;
-            l_roles_pmsn_rt.appid := l_application_rt.appid ;
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles_pmsn.get_tt (l_xml_data)))
+         LOOP
+            l_roles_pmsn_rt := c1;
+            l_roles_pmsn_rt.appid := l_application_rt.appid;
             --Insert role
             tapi_wdx_roles_pmsn.ins (l_roles_pmsn_rt);
-        END LOOP;
-        
+         END LOOP;
       END IF;
 
       /**
@@ -909,10 +902,153 @@ END;]';
       --Render source code
       l_vars ('appid') := l_application_rt.appid;
       l_source    := teplsql.render (l_vars, l_source);
-      
+
       --Compile procedure
       EXECUTE IMMEDIATE l_source;
-      
    END import_app;
+
+
+   FUNCTION export_security (p_appid IN tapi_wdx_applications.appid)
+      RETURN BLOB
+   AS
+      l_xml_data      CLOB;
+      l_zipped_blob   BLOB;
+   BEGIN
+      /* Roles */
+      BEGIN
+         l_xml_data  := tapi_wdx_roles.get_xml (p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'roles.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            NULL;
+      END;
+
+      /* Permissions */
+      BEGIN
+         l_xml_data  := tapi_wdx_permissions.get_xml (p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'permissions.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            NULL;
+      END;
+
+      /* Roles x Permissions */
+      BEGIN
+         l_xml_data  := tapi_wdx_roles_pmsn.get_xml (p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'rolesPermissions.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            NULL;
+      END;
+
+      as_zip.finish_zip (l_zipped_blob);
+
+      RETURN l_zipped_blob;
+   END export_security;
+
+   PROCEDURE import_security (p_zipped_blob IN BLOB, p_appid IN tapi_wdx_applications.appid)
+   AS
+      l_roles_rt         tapi_wdx_roles.wdx_roles_rt;
+      l_permissions_rt   tapi_wdx_permissions.wdx_permissions_rt;
+      l_roles_pmsn_rt    tapi_wdx_roles_pmsn.wdx_roles_pmsn_rt;
+      --
+      l_tmp_blob         BLOB;
+      l_xml_data         XMLTYPE;
+      --
+      e_different_application exception;      
+   BEGIN
+      /**
+      * Roles
+      */
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'roles.xml');
+
+      IF l_tmp_blob IS NOT NULL
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles.get_tt (l_xml_data)))
+         LOOP
+            l_roles_rt := c1;
+
+            IF l_roles_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert role
+            BEGIN
+               tapi_wdx_roles.ins (l_roles_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_roles.upd (l_roles_rt);
+            END;        
+            
+         END LOOP;
+      END IF;
+
+      /**
+      * Permissions
+      */
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'permissions.xml');
+
+      IF l_tmp_blob IS NOT NULL
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_permissions.get_tt (l_xml_data)))
+         LOOP            
+            l_permissions_rt := c1;
+
+            IF l_permissions_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert Permissions
+            BEGIN
+               tapi_wdx_permissions.ins (l_permissions_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_permissions.upd (l_permissions_rt);
+            END;            
+            
+         END LOOP;
+      END IF;
+
+      /**
+      * Roles x Permissions
+      */
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'rolesPermissions.xml');
+
+      IF l_tmp_blob IS NOT NULL
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles_pmsn.get_tt (l_xml_data)))
+         LOOP           
+            l_roles_pmsn_rt := c1;
+
+            IF l_roles_pmsn_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert Roles x Permissions
+            BEGIN
+               tapi_wdx_roles_pmsn.ins (l_roles_pmsn_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_roles_pmsn.upd (l_roles_pmsn_rt);
+            END;             
+            
+         END LOOP;
+      END IF;
+   END import_security;
 END pk_m_dbax_console;
 /

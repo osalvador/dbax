@@ -1,4 +1,3 @@
-/* Formatted on 26/04/2016 14:54:19 (QP5 v5.115.810.9015) */
 --
 -- TAPI_WDX_PROPERTIES  (Package Body)
 --
