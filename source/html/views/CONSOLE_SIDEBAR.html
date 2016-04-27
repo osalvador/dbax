@@ -1,162 +1,55 @@
 <!-- Left side column. contains the logo and sidebar -->
-      <aside class="main-sidebar">
-
+    <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
-
-          <!-- /.search form -->
-           <!-- sidebar menu:-->
-        <ul class="sidebar-menu">
-           <li class="<?dbax if dbax_core.g$view_name = 'home' then p('active'); end if; ?>">
-              <a href="${base_path}/dashboard">
-              <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-              </a>
-           </li>
-          <li class="<?dbax if dbax_core.g$view_name = 'applications' then p('active'); end if; ?>">
-            <a href="${base_path}/applications">
-              <i class="fa fa-rocket"></i> <span>Applications</span>
-            </a>
-          </li>
-           <li class="treeview <?dbax if dbax_core.g$view_name like 'user%' or dbax_core.g$view_name in ('auth-schemes') then p('active'); end if; ?>">
-              <a href="#">
-              <i class="fa fa-lock"></i>
-              <span>Security</span>
-              <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                 <li class="<?dbax if dbax_core.g$view_name like 'user%' then p('active'); end if; ?>">
-                    <a href="${base_path}/users">
-                    <i class="fa fa-users"></i> <span>Users</span>
+            <!-- /.search form -->
+            <!-- sidebar menu:-->
+            <ul class="sidebar-menu">
+                <li class="<?dbax if dbax_core.g$view_name = 'home' then p('active'); end if; ?>">
+                    <a href="${base_path}/dashboard">
+                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                     </a>
-                 </li>
-                
-                 <li class="<?dbax if dbax_core.g$view_name = 'auth-schemes' then p('active'); end if; ?>">
-                    <a href="${base_path}/auth-schemes">
-                    <i class="fa fa-unlock-alt"></i> <span>Auth Schemes</span>
+                </li>
+                <li class="<?dbax if dbax_core.g$view_name = 'applications' then p('active'); end if; ?>">
+                    <a href="${base_path}/applications">
+                    <i class="fa fa-rocket"></i> <span>Applications</span>
                     </a>
-                 </li>                
-              </ul>
-           </li>
-           <li class="treeview <?dbax if dbax_core.g$view_name in ('logs','sessions','tops') then p('active'); end if; ?>">
-              <a href="#">
-              <i class="fa fa-desktop"></i>
-              <span>Monitor</span>
-              <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                 <li class="<?dbax if dbax_core.g$view_name = 'logs' then p('active'); end if; ?>">
-                    <a href="${base_path}/logs">
-                    <i class="fa fa-file-text-o"></i> <span>Logs</span>
-                    </a>
-                 </li>
-                 <!--<li class="<?dbax if dbax_core.g$view_name = 'sessions' then p('active'); end if; ?>">
-                    <a href="${base_path}/sessions">
-                    <i class="fa fa-eye-slash"></i> <span>Sessions</span>
-                    </a>
-                 </li>
-                 <li class="<?dbax if dbax_core.g$view_name = 'tops' then p('active'); end if; ?>">
-                    <a href="${base_path}/tops">
-                    <i class="fa fa-arrow-circle-o-up"></i> <span>Tops</span>
-                    </a>
-                 </li>
-              </ul>
-           </li>
-		   <li class="treeview <?dbax if dbax_core.g$view_name in ('editor','sql-workshop') then p('active'); end if; ?>">
-              <a href="#">
-              <i class="fa fa-connectdevelop"></i>
-              <span>Development</span>
-              <i class="fa fa-angle-left pull-right"></i>
-              </a>
-			  <ul class="treeview-menu">
-                 <li class="<?dbax if dbax_core.g$view_name = 'editor' then p('active'); end if; ?>">
-                    <a href="${base_path}/editor">
-                    <i class="fa fa-terminal"></i> <span>Editor</span>
-                    </a>
-                 </li>
-                 <li class="<?dbax if dbax_core.g$view_name = 'sql-workshop' then p('active'); end if; ?>">
-                    <a href="${base_path}/sql-workshop">
-                    <i class="fa fa-briefcase"></i> <span>SQL WorkShop</span>
-                    </a>
-                 </li>
-              </ul>
-           </li>          -->
-           <!--<li class="treeview ">
-              <a href="#">
-              <i class="fa fa-flag"></i>
-              <span>General</span>
-              <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                 <li class="">
-                    <a href="${base_path}/security">
-                    <i class=""></i> <span>Security</span>
-                    </a>
-                 </li>
-                 <li class="">
-                    <a href="${base_path}/sessions">
-                    <i class=""></i> <span>Sessions</span>
-                    </a>
-                 </li>
-                 <li class="">
-                    <a href="${base_path}/logs">
-                    <i class=""></i> <span>Logs</span>
-                    </a>
-                 </li>
-              </ul>
-           </li>-->        
-        <!--
-           <li class="">
-              <a href="${base_path}/widgets">
-              <i class="fa fa-th"></i> <span>Widgets</span>
-              </a>
-           </li>
-           <li class="treeview ">
-              <a href="#">
-              <i class="fa fa-pie-chart"></i>
-              <span>Gráficas</span>
-              <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                 <li class="">
-                    <a href="${base_path}/morris">
-                    <i class="fa fa-circle-o"></i> <span>Morris</span>
-                    </a>
-                 </li>
-                 <li class="treeview ">
+                </li>
+                <li class="treeview <?dbax if dbax_core.g$view_name like 'user%' or dbax_core.g$view_name in ('auth-schemes') then p('active'); end if; ?>">
                     <a href="#">
-                    <i class="fa fa-circle-o"></i>
-                    <span>flot</span>
+                    <i class="fa fa-lock"></i>
+                    <span>Security</span>
                     <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                       <li class="">
-                          <a href="${base_path}/otro">
-                          <i class="fa fa-circle-o"></i> <span>otro</span>
-                          </a>
-                       </li>
+                        <li class="<?dbax if dbax_core.g$view_name like 'user%' then p('active'); end if; ?>">
+                            <a href="${base_path}/users">
+                            <i class="fa fa-users"></i> <span>Users</span>
+                            </a>
+                        </li>
+                        <li class="<?dbax if dbax_core.g$view_name = 'auth-schemes' then p('active'); end if; ?>">
+                            <a href="${base_path}/auth-schemes">
+                            <i class="fa fa-unlock-alt"></i> <span>Auth Schemes</span>
+                            </a>
+                        </li>
                     </ul>
-                 </li>
-              </ul>
-           </li>
-           <li class="">
-              <a href="${base_path}/ejemplos">
-              <i class="fa fa-th"></i> <span>Ejemplos</span>
-              </a>
-           </li>
-           <li class="">
-              <a href="${base_path}/documents">
-              <i class="fa fa-book"></i> <span>Documents</span>
-              </a>
-           </li>
-           <li class="">
-              <a href="${base_path}/blank">
-              <i class="fa fa-circle-o"></i> <span>Blank Page</span>
-              </a>
-           </li>-->
-        </ul>     
-          
-          
-        <!-- /.sidebar-menu -->
+                </li>
+                <li class="treeview <?dbax if dbax_core.g$view_name in ('logs','sessions','tops') then p('active'); end if; ?>">
+                    <a href="#">
+                    <i class="fa fa-desktop"></i>
+                    <span>Monitor</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="<?dbax if dbax_core.g$view_name = 'logs' then p('active'); end if; ?>">
+                            <a href="${base_path}/logs">
+                            <i class="fa fa-file-text-o"></i> <span>Logs</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- /.sidebar-menu -->
         </section>
         <!-- /.sidebar -->
-      </aside>
+    </aside>
