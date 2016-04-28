@@ -1,3 +1,4 @@
+/* Formatted on 28/04/2016 16:58:03 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE dbax_core
 AS
    /**
@@ -99,6 +100,20 @@ AS
    FUNCTION get_path (p_local_path IN VARCHAR2 DEFAULT NULL )
       RETURN VARCHAR2;
 
+   /**
+   * Return regex parameters from dbax url pattern
+   *
+   * @param     p_string             the dbax url pattern with regex_string@position,occurrence,match_parameter
+   * @return    p_pattern            the regex pattern 
+   * @return    p_postion            the regex position
+   * @return    p_occurrence         the regex occurrence
+   * @return    p_match_parameter    the regex match_parameters  
+   */
+   PROCEDURE regex_parameters (p_string            IN     VARCHAR2
+                             , p_pattern              OUT VARCHAR2
+                             , p_postion              OUT PLS_INTEGER
+                             , p_occurrence           OUT PLS_INTEGER
+                             , p_match_parameter      OUT VARCHAR2);
 
    /**
    * For security. You can use the Validation Function to determine if the requested procedure in the URL should be allowed for processing.
@@ -125,5 +140,6 @@ AS
    PROCEDURE PRINT (p_data IN NUMBER);
 
    PROCEDURE p (p_data IN NUMBER);
+
 END dbax_core;
 /

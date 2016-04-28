@@ -1,3 +1,4 @@
+/* Formatted on 28/04/2016 16:56:15 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
@@ -986,12 +987,12 @@ AS
       THEN
          --Update route
          tapi_wdx_map_routes.web_upd (p_wdx_map_routes_rec => l_routes_rt, p_ignore_nulls => FALSE);
-         tapi_wdx_map_routes.reorder_routes(l_routes_rt.appid, l_routes_rt.route_name);
+         tapi_wdx_map_routes.reorder_routes (l_routes_rt.appid, l_routes_rt.route_name);
       ELSIF l_routes_rt.appid IS NOT NULL AND l_routes_rt.route_name IS NOT NULL
       THEN
          --Insert propertie
          tapi_wdx_map_routes.ins (p_wdx_map_routes_rec => l_routes_rt);
-         tapi_wdx_map_routes.reorder_routes(l_routes_rt.appid, l_routes_rt.route_name);
+         tapi_wdx_map_routes.reorder_routes (l_routes_rt.appid, l_routes_rt.route_name);
       ELSE
          RAISE e_null_param;
       END IF;
@@ -1102,7 +1103,7 @@ AS
          tapi_wdx_map_routes.del (l_appid, l_route_name);
       END LOOP;
 
-     tapi_wdx_map_routes.reorder_routes(l_appid);
+      tapi_wdx_map_routes.reorder_routes (l_appid);
 
       l_json.put ('text', l_data_values.COUNT () || ' items deleted.');
 
@@ -1201,6 +1202,10 @@ AS
       l_retval              PLS_INTEGER := 0;
       l_return              VARCHAR2 (1000);
       l_json                json := json ();
+
+      l_position            PLS_INTEGER;
+      l_occurrence          PLS_INTEGER;
+      l_match_parameter     VARCHAR2 (100);
    BEGIN
       --The response is json
       dbax_core.g$content_type := 'application/json';
@@ -1209,15 +1214,34 @@ AS
       l_url_pattern := dbax_utils.get (dbax_core.g$post, 'url_pattern');
       l_controller_method := dbax_utils.get (dbax_core.g$post, 'test_controller_method');
 
+      dbax_core.regex_parameters (l_url_pattern
+                                , l_url_pattern
+                                , l_position
+                                , l_occurrence
+                                , l_match_parameter);
+
+
       l_url_pattern := '^' || l_url_pattern || '(/|$)';
 
 
-      l_retval    := REGEXP_INSTR (l_test_url, l_url_pattern);
+      l_retval    :=
+         REGEXP_INSTR (l_test_url
+                     , l_url_pattern
+                     , l_position
+                     , NVL (l_occurrence, 1)
+                     , '0'
+                     , l_match_parameter);
 
 
       IF l_retval > 0
       THEN
-         l_return    := REGEXP_REPLACE (l_test_url, l_url_pattern, l_controller_method);
+         l_return    :=
+            REGEXP_REPLACE (l_test_url
+                          , l_url_pattern
+                          , l_controller_method || '/'
+                          , l_position
+                          , NVL (l_occurrence, 0)
+                          , l_match_parameter);
 
          l_json.put ('return', l_return);
       ELSE

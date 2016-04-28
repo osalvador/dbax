@@ -1,3 +1,4 @@
+/* Formatted on 28/04/2016 16:56:46 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY dbax_core
 AS
    PROCEDURE print_http_header;
@@ -48,6 +49,54 @@ AS
          RETURN NULL;
    END get_property;
 
+   /**
+   * Gets the regex variables from the string
+   */
+   PROCEDURE regex_parameters (p_string            IN     VARCHAR2
+                             , p_pattern              OUT VARCHAR2
+                             , p_postion              OUT PLS_INTEGER
+                             , p_occurrence           OUT PLS_INTEGER
+                             , p_match_parameter      OUT VARCHAR2)
+   AS
+      l_regex_pos   PLS_INTEGER;
+      l_param_tab   DBMS_UTILITY.maxname_array;
+   BEGIN
+      l_regex_pos := INSTR (p_string, '@', -1);
+
+      IF l_regex_pos <> 0
+      THEN
+         p_pattern   := SUBSTR (p_string, 1, l_regex_pos - 1);
+
+         l_param_tab := dbax_utils.tokenizer (SUBSTR (p_string, l_regex_pos + 1));
+
+         IF l_param_tab.EXISTS (1) AND l_param_tab (1) IS NOT NULL
+         THEN
+            p_postion   := l_param_tab (1);
+         ELSE
+            p_postion   := 1;
+         END IF;
+
+         IF l_param_tab.EXISTS (2)
+         THEN
+            p_occurrence := l_param_tab (2);
+         ELSE
+            p_occurrence := 0;
+         END IF;
+
+         IF l_param_tab.EXISTS (3)
+         THEN
+            p_match_parameter := l_param_tab (3);
+         END IF;
+      ELSE
+         --Default values
+         p_pattern   := p_string;
+         p_postion   := 1;
+         p_occurrence := NULL; --The default value of REGEX_INSTR is 1, but default value for REGEX_REPLACE is 0.
+         p_match_parameter := NULL;
+      END IF;
+   END regex_parameters;
+
+
    PROCEDURE routing (p_path                IN     VARCHAR2
                     , p_controller_method      OUT VARCHAR2
                     , p_view_name              OUT VARCHAR2
@@ -59,53 +108,6 @@ AS
       l_position          PLS_INTEGER;
       l_occurrence        PLS_INTEGER;
       l_match_parameter   VARCHAR2 (100);
-
-      /**
-      * Gets the regex variables from the string
-      */
-      PROCEDURE advanced_regex (p_string            IN     VARCHAR2
-                              , p_pattern              OUT VARCHAR2
-                              , p_postion              OUT PLS_INTEGER
-                              , p_occurrence           OUT PLS_INTEGER
-                              , p_match_parameter      OUT VARCHAR2)
-      AS
-         l_regex_pos   PLS_INTEGER;
-         l_param_tab   DBMS_UTILITY.maxname_array;
-      BEGIN
-         l_regex_pos := INSTR (p_string, '@', -1);
-
-         IF l_regex_pos <> 0
-         THEN
-            p_pattern   := SUBSTR (p_string, 1, l_regex_pos - 1);
-
-            l_param_tab := dbax_utils.tokenizer (SUBSTR (p_string, l_regex_pos + 1));
-
-            IF l_param_tab.EXISTS (1) AND l_param_tab (1) IS NOT NULL
-            THEN
-               p_postion   := l_param_tab (1);
-            ELSE
-               p_postion   := 1;
-            END IF;
-
-            IF l_param_tab.EXISTS (2)
-            THEN
-               p_occurrence := l_param_tab (2);
-            ELSE
-               p_occurrence := 0;
-            END IF;
-
-            IF l_param_tab.EXISTS (3)
-            THEN
-               p_match_parameter := l_param_tab (3);
-            END IF;
-         ELSE
-            --Default values
-            p_pattern   := p_string;
-            p_postion   := 1;
-            p_occurrence := NULL; --The default value of REGEX_INSTR is 1, but default value for REGEX_REPLACE is 0.
-            p_match_parameter := NULL;
-         END IF;
-      END;
    BEGIN
       /**
       * Regex URL pattern
@@ -124,11 +126,11 @@ AS
                     WHERE   appid = g$appid AND active = 'Y'
                  ORDER BY   priority)
       LOOP
-         advanced_regex (c1.url_pattern
-                       , c1.url_pattern
-                       , l_position
-                       , l_occurrence
-                       , l_match_parameter);
+         regex_parameters (c1.url_pattern
+                         , c1.url_pattern
+                         , l_position
+                         , l_occurrence
+                         , l_match_parameter);
 
          c1.url_pattern := '^' || c1.url_pattern || '(/|$)';
 
@@ -174,11 +176,11 @@ AS
 
             l_replace_string := NVL (c1.controller_method, c1.view_name);
 
-            advanced_regex (l_replace_string
-                          , l_replace_string
-                          , l_position
-                          , l_occurrence
-                          , l_match_parameter);
+            regex_parameters (l_replace_string
+                            , l_replace_string
+                            , l_position
+                            , l_occurrence
+                            , l_match_parameter);
 
             /*dbax_log.trace(   'Parameters for REGEXP_REPLACE: '
                         || CHR (10)
