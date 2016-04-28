@@ -61,6 +61,16 @@ IS
 
    FUNCTION num_rows RETURN pls_integer;
 
+   
+   /**
+   * Sorts routes based on their priority.
+   *
+   * @param p_appid                 the route application id 
+   * @param p_modified_route_name   the name of the updated or created route. If you delete a route, this parameter is null.
+   */
+   PROCEDURE reorder_routes (p_appid                 IN wdx_map_routes.appid%TYPE
+                           , p_modified_route_name   IN wdx_map_routes.route_name%TYPE DEFAULT NULL );
+ 
     /**
     --## Function Name: HASH
     --### Description:

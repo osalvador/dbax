@@ -986,10 +986,12 @@ AS
       THEN
          --Update route
          tapi_wdx_map_routes.web_upd (p_wdx_map_routes_rec => l_routes_rt, p_ignore_nulls => FALSE);
+         tapi_wdx_map_routes.reorder_routes(l_routes_rt.appid, l_routes_rt.route_name);
       ELSIF l_routes_rt.appid IS NOT NULL AND l_routes_rt.route_name IS NOT NULL
       THEN
          --Insert propertie
          tapi_wdx_map_routes.ins (p_wdx_map_routes_rec => l_routes_rt);
+         tapi_wdx_map_routes.reorder_routes(l_routes_rt.appid, l_routes_rt.route_name);
       ELSE
          RAISE e_null_param;
       END IF;
@@ -1099,6 +1101,8 @@ AS
          l_route_name := utl_url.unescape (l_data_values (i));
          tapi_wdx_map_routes.del (l_appid, l_route_name);
       END LOOP;
+
+     tapi_wdx_map_routes.reorder_routes(l_appid);
 
       l_json.put ('text', l_data_values.COUNT () || ' items deleted.');
 

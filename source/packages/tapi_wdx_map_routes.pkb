@@ -162,46 +162,71 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
 
    END hash_rowid;
 
-    PROCEDURE reorder_routes (p_appid        IN wdx_map_routes.appid%TYPE
-                            , p_route_name   IN wdx_map_routes.route_name%TYPE
-                            , p_priority     IN wdx_map_routes.priority%TYPE
-                            , p_action       IN varchar2)
-    AS
-        l_max_priority pls_integer;
-    BEGIN
-       select max(priority) into l_max_priority from wdx_map_routes where appid = reorder_routes.p_appid;
-       
-       --Move the priority of routes
-       IF p_action = 'INS'
-       THEN
-          FOR c1 IN (  SELECT   *
-                         FROM   table (tapi_wdx_map_routes.tt (reorder_routes.p_appid))
-                        WHERE   priority >= reorder_routes.p_priority AND route_name <> LOWER(reorder_routes.p_route_name)
-                     ORDER BY   priority DESC)
-          LOOP
-             if c1.priority <> l_max_priority
-             then
-                c1.priority := c1.priority + 1;
-                tapi_wdx_map_routes.upd_rowid (c1, TRUE);
-             end if;
-          END LOOP;
-       ELSIF p_action = 'DEL'
-       THEN
-          FOR c1 IN (  SELECT   *
-                         FROM   table (tapi_wdx_map_routes.tt (reorder_routes.p_appid))
-                        WHERE   priority >= reorder_routes.p_priority AND route_name <> LOWER(reorder_routes.p_route_name)
-                     ORDER BY   priority ASC)
-          LOOP
-             c1.priority := c1.priority -1;
-             tapi_wdx_map_routes.upd_rowid (c1, TRUE);
-          END LOOP;
-       END IF;
-    END reorder_routes;
+   PROCEDURE reorder_routes (p_appid                 IN wdx_map_routes.appid%TYPE
+                           , p_modified_route_name   IN wdx_map_routes.route_name%TYPE DEFAULT NULL )
+   AS
+      l_route_rt   tapi_wdx_map_routes.wdx_map_routes_rt;
+      i            PLS_INTEGER := 0;
+   BEGIN
+      IF reorder_routes.p_modified_route_name IS NOT NULL
+      THEN
+         --Inserts or updates
 
+         l_route_rt  := rt (reorder_routes.p_appid, reorder_routes.p_modified_route_name);
+
+
+         FOR c1 IN (  SELECT   *
+                        FROM   table (tapi_wdx_map_routes.tt (reorder_routes.p_appid))
+                       WHERE   route_name <> reorder_routes.p_modified_route_name
+                    ORDER BY   priority ASC, modified_date DESC)
+         LOOP
+            i           := i + 1;
+
+            IF i = l_route_rt.priority
+            THEN
+               i           := i + 1;
+            END IF;
+
+            UPDATE   wdx_map_routes
+               SET   appid        = NVL (c1.appid, appid)
+                   , route_name   = NVL (c1.route_name, route_name)
+                   , priority     = i
+                   , url_pattern  = NVL (c1.url_pattern, url_pattern)
+                   , controller_method = NVL (c1.controller_method, controller_method)
+                   , view_name    = NVL (c1.view_name, view_name)
+                   , description  = NVL (c1.description, description)
+                   , active       = NVL (c1.active, active)
+                   , modified_by  = USER
+                   , modified_date = SYSDATE
+             WHERE   ROWID = c1.row_id;
+         END LOOP;
+      ELSE
+         --Deletes
+         FOR c1 IN (  SELECT   *
+                        FROM   table (tapi_wdx_map_routes.tt (reorder_routes.p_appid))
+                    ORDER BY   priority ASC, modified_date DESC)
+         LOOP
+            i           := i + 1;
+
+            UPDATE   wdx_map_routes
+               SET   appid        = NVL (c1.appid, appid)
+                   , route_name   = NVL (c1.route_name, route_name)
+                   , priority     = i
+                   , url_pattern  = NVL (c1.url_pattern, url_pattern)
+                   , controller_method = NVL (c1.controller_method, controller_method)
+                   , view_name    = NVL (c1.view_name, view_name)
+                   , description  = NVL (c1.description, description)
+                   , active       = NVL (c1.active, active)
+                   , modified_by  = USER
+                   , modified_date = SYSDATE
+             WHERE   ROWID = c1.row_id;
+         END LOOP;
+      END IF;
+   END reorder_routes;
 
    FUNCTION rt (
         p_appid     IN      wdx_map_routes.appid%TYPE,
-  p_route_name     IN      wdx_map_routes.route_name%TYPE
+        p_route_name     IN      wdx_map_routes.route_name%TYPE
           )
       RETURN wdx_map_routes_rt RESULT_CACHE
    IS
@@ -337,12 +362,10 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
        l_rowtype.modified_by := p_wdx_map_routes_rec.modified_by;
        l_rowtype.modified_date := p_wdx_map_routes_rec.modified_date;
 
-       reorder_routes(l_rowtype.appid, l_rowtype.route_name,l_rowtype.priority, 'INS');
-
        INSERT INTO wdx_map_routes
          VALUES   l_rowtype;
 
-
+        
     END ins;
 
     PROCEDURE upd (p_wdx_map_routes_rec IN wdx_map_routes_rt, p_ignore_nulls IN boolean := FALSE)
@@ -383,7 +406,7 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
        END IF;
 
        IF sql%ROWCOUNT != 1 THEN RAISE e_upd_failed; END IF;
-
+        
 
     EXCEPTION
        WHEN e_del_failed
@@ -494,7 +517,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
       END IF;
 
 
-
    EXCEPTION
      WHEN e_ol_check_failed
      THEN
@@ -561,8 +583,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
       END IF;
 
 
-
-
    EXCEPTION
      WHEN e_ol_check_failed
      THEN
@@ -593,7 +613,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
           RAISE e_del_failed;
        END IF;
 
-      reorder_routes(l_wdx_map_routes_rec.appid, l_wdx_map_routes_rec.route_name, l_wdx_map_routes_rec.priority, 'DEL');
 
 
     EXCEPTION
@@ -619,7 +638,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
           RAISE e_del_failed;
        END IF;
 
-      reorder_routes(l_wdx_map_routes_rec.appid, l_wdx_map_routes_rec.route_name, l_wdx_map_routes_rec.priority, 'DEL');
 
     EXCEPTION
        WHEN e_del_failed
@@ -630,15 +648,13 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
 
     PROCEDURE web_del (
         p_appid IN wdx_map_routes.appid%TYPE,
-  p_route_name IN wdx_map_routes.route_name%TYPE
+        p_route_name IN wdx_map_routes.route_name%TYPE
       , p_hash IN varchar2
    )
    IS
 
       l_wdx_map_routes_rec wdx_map_routes_rt;
    BEGIN
-
-
 
       OPEN wdx_map_routes_cur(web_del.p_appid, web_del.p_route_name);
 
@@ -660,8 +676,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
       END IF;
 
 
-      reorder_routes(l_wdx_map_routes_rec.appid, l_wdx_map_routes_rec.route_name, l_wdx_map_routes_rec.priority, 'DEL');
-
    EXCEPTION
      WHEN e_ol_check_failed
      THEN
@@ -677,8 +691,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
 
       l_wdx_map_routes_rec wdx_map_routes_rt;
    BEGIN
-
-
 
       OPEN wdx_map_routes_rowid_cur(web_del_rowid.p_rowid);
 
@@ -698,8 +710,6 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_map_routes IS
             CLOSE wdx_map_routes_rowid_cur;
          END IF;
       END IF;
-
-      reorder_routes(l_wdx_map_routes_rec.appid, l_wdx_map_routes_rec.route_name, l_wdx_map_routes_rec.priority, 'DEL');
 
    EXCEPTION
      WHEN e_ol_check_failed
