@@ -2,6 +2,8 @@
 <%
     l_property_rt := tapi_wdx_properties.rt(p_appid=> '${current_app_id}', p_key=>'base_path');
     
+    dbax_core.g$var('active_menu') := 'Applications';
+    
     dbax_core.g$var('page_head') := '        
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />

@@ -1,9 +1,10 @@
 <?dbax  
-    dbax_core.g$var('page_head') := '        
+    dbax_core.g$var('active_menu') := 'Security-user';
+    dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
-  	<!-- iCheck for checkboxes and radio inputs -->
-  	<link rel="stylesheet" href="${resources_url}/plugins/iCheck/all.css">
+      <!-- iCheck for checkboxes and radio inputs -->
+      <link rel="stylesheet" href="${resources_url}/plugins/iCheck/all.css">
     ';
 ?>!\n
 <?dbax dbax_core.include('header'); ?>
@@ -18,7 +19,7 @@
         User Profile
       </h1>
        <ol class="breadcrumb">
-		 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>       
+         <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>       
          <li><a href="${base_path}/users"><i class="fa fa-users"></i> Users</a></li>
          <li>${profile_username}</li>
        </ol>          
@@ -33,7 +34,7 @@
           <div class="box box-primary">
             <div class="box-body box-profile">
               <!--<img class="profile-user-img img-responsive img-circle" src="${resources_url}/dist/img/avatar5.png" alt="User profile picture">-->
-			  
+              
               <h3 class="profile-username text-center">${profile_first_name} ${profile_last_name}</h3>
 
               <p class="text-muted text-center">${profile_display_name}</p>
@@ -52,13 +53,13 @@
               
               <?dbax 
                /*Obtener la IP del cliente*/
-				/*declare
+                /*declare
                     l_ip varchar2(300);
                 begin
                   select sys_context( 'userenv', 'ip_address' ) into l_ip from dual;
                   p(l_ip);
                 end;*/
-			  ?>
+              ?>
               
               <!--<a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>-->
             </div>
@@ -158,16 +159,16 @@
             
             
             <div class="tab-pane" id="password">
-            	 
+                 
               <?dbax
                 IF '${alert_pwd}' = '1'
-				THEN
+                THEN
                   p('<div class="alert alert-warning text-center">
                     <i class="icon fa fa-warning"></i> The user has been created from an authentication scheme.
-					Change the password in the origin system
+                    Change the password in the origin system
                   </div>');
-				END IF;
-			  ?>
+                END IF;
+              ?>
               
               <!-- form start -->
                 <form name="userPasswordForm" id="userPasswordForm" action="${base_path}/users/${profile_username}/change-password" class="form-horizontal" method="POST">                        
@@ -189,7 +190,7 @@
                     <div class="col-sm-10">
                       <input type="password" class="form-control" name="confirm_new_password" id="confirm_new_password"  placeholder="Confirm New Password" ${disabled}>
                     </div>
-                  </div>                  				  
+                  </div>                                    
                 </form>
               
                <div class="row">
@@ -200,9 +201,9 @@
               
             </div><!-- /.tab-pane -->
             <div class="tab-pane" id="roles">
-            	<h4>Roles assigned to the user</h4>
+                <h4>Roles assigned to the user</h4>
               
-			 	<table class="table table-bordered table-striped table-hover">
+                 <table class="table table-bordered table-striped table-hover">
                   <thead>
                     <tr>
                     <th style="width: 10px">#</th>
@@ -212,17 +213,17 @@
                   </tr>
                   </thead>
                   <tbody>
-					 <?dbax
+                     <?dbax
                       FOR c1 IN (SELECT a.*, rownum FROM TABLE (tapi_wdx_users_roles.tt('${profile_username}')) a )
                       LOOP
                         p('<tr>');
                           p('<td>'|| c1.rownum ||'.</td>');                        
                           p('<td>'|| c1.rolename||'</td>');                        
                           p('<td>'|| c1.appid ||'</td>');                        
-                          p('<td>'|| to_char(c1.modified_date, 'YYYY/MM/DD hh24:mi:ss') ||'</td>');					    
+                          p('<td>'|| to_char(c1.modified_date, 'YYYY/MM/DD hh24:mi:ss') ||'</td>');                        
                         p('</tr>');                      
                       END LOOP;
-					 ?>
+                     ?>
                 </tbody>
               </table>              
             </div><!-- /.tab-pane -->
@@ -265,13 +266,13 @@
     <!-- dbaxAdmin -->
     <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
     <!-- iCheck 1.0.1 -->
-	<script src="${resources_url}/plugins/iCheck/icheck.min.js"></script>
+    <script src="${resources_url}/plugins/iCheck/icheck.min.js"></script>
       
-	<script>
+    <script>
         //Submit jQuery Ajax Form 
         function SubmitForm(formId){        
             dbaxSubmitForm(formId).done(function(data) {
-                //If no error              	
+                //If no error                  
                 if (data.cod_error === undefined){
                     if (formId ==='userSettingsForm'){
                       //Update Values
@@ -294,7 +295,7 @@
             $.post(  '${base_path}/users/${profile_username}/layout-options', { togglesidebar: "on"});
         });      
       
-      	$('#togglesidebar').on('ifUnchecked', function(event){
+          $('#togglesidebar').on('ifUnchecked', function(event){
             $.post(  '${base_path}/users/${profile_username}/layout-options', {togglesidebar: 'off'});
         });
   

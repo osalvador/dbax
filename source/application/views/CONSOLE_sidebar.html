@@ -5,43 +5,43 @@
             <!-- /.search form -->
             <!-- sidebar menu:-->
             <ul class="sidebar-menu">
-                <li class="<?dbax if dbax_core.g$view_name = 'home' then p('active'); end if; ?>">
+                <li class="<?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') = 'index' then p('active'); end if; ?>">
                     <a href="${base_path}/dashboard">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="<?dbax if dbax_core.g$view_name = 'applications' then p('active'); end if; ?>">
+                <li class="<?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') = 'Applications' then p('active'); end if; ?>">
                     <a href="${base_path}/applications">
                     <i class="fa fa-rocket"></i> <span>Applications</span>
                     </a>
                 </li>
-                <li class="treeview <?dbax if dbax_core.g$view_name like 'user%' or dbax_core.g$view_name in ('auth-schemes') then p('active'); end if; ?>">
+                <li class="treeview <?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') like 'Security%' then p('active'); end if; ?>">
                     <a href="#">
                     <i class="fa fa-lock"></i>
                     <span>Security</span>
                     <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li class="<?dbax if dbax_core.g$view_name like 'user%' then p('active'); end if; ?>">
+                        <li class="<?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') = 'Security-user' then p('active'); end if; ?>">
                             <a href="${base_path}/users">
                             <i class="fa fa-users"></i> <span>Users</span>
                             </a>
                         </li>
-                        <li class="<?dbax if dbax_core.g$view_name = 'auth-schemes' then p('active'); end if; ?>">
+                        <li class="<?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') = 'Security-auth-schemes' then p('active'); end if; ?>">
                             <a href="${base_path}/auth-schemes">
                             <i class="fa fa-unlock-alt"></i> <span>Auth Schemes</span>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="treeview <?dbax if dbax_core.g$view_name in ('logs','sessions','tops') then p('active'); end if; ?>">
+                <li class="treeview <?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') like 'Monitor%' then p('active'); end if; ?>">
                     <a href="#">
                     <i class="fa fa-desktop"></i>
                     <span>Monitor</span>
                     <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li class="<?dbax if dbax_core.g$view_name = 'logs' then p('active'); end if; ?>">
+                        <li class="<?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') = 'Monitor-Logs' then p('active'); end if; ?>">
                             <a href="${base_path}/logs">
                             <i class="fa fa-file-text-o"></i> <span>Logs</span>
                             </a>

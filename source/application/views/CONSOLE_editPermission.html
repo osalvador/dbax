@@ -1,14 +1,13 @@
-<?dbax  
-    dbax_core.g$var('page_head') := '        
+<%
+    dbax_core.g$var('active_menu') := 'Applications';
+    dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />        
     ';
-?>
-<?dbax dbax_core.include('header'); ?>
+%>
+<%@ include(header)%>
 <!-- SideBar -->
-<?dbax dbax_core.include('sidebar');?> 
-
-   
+<%@ include(sidebar)%>  
  <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -17,7 +16,7 @@
             Edit Permission            
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}#Security"><i class="fa fa-key"></i> Permissions</a></li>            
@@ -118,7 +117,7 @@
         //Submit jQuery Ajax Form 
         function SubmitForm(formId){        
             dbaxSubmitForm(formId).done(function(data) {
-                //If no error              	
+                //If no error                  
                 if (data.cod_error === undefined){
                     //Update Values
                     $('#hash').val(data.hash)

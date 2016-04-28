@@ -1,4 +1,5 @@
 <?dbax  
+    dbax_core.g$var('active_menu') := 'Applications';    
     dbax_core.g$var('page_head') := '        
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
@@ -20,7 +21,7 @@
             <small>Edit Role</small>
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}#Security"><i class="fa fa-user-secret"></i> Roles</a></li>            
@@ -31,7 +32,7 @@
         <!-- Main content -->
         <section class="content">
           
-		<!-- Custom Tabs -->
+        <!-- Custom Tabs -->
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#General" data-toggle="tab"><i class="fa fa-clone"></i> General</a></li>
@@ -123,25 +124,25 @@
                   </div><!-- /.box-header -->
                   <div class="box-body">     
                     <!-- form start -->
-                    <form name="rolesPermissionsForm" id="rolesPermissionsForm" action="${base_path}/applications/edit/${current_app_id}/roles/roles-pmsns" class="form-horizontal" method="POST">                		
-                      	  <select name="roles_permissions[]" id="roles_permissions" multiple size="15" class="form-control">
+                    <form name="rolesPermissionsForm" id="rolesPermissionsForm" action="${base_path}/applications/edit/${current_app_id}/roles/roles-pmsns" class="form-horizontal" method="POST">                        
+                            <select name="roles_permissions[]" id="roles_permissions" multiple size="15" class="form-control">
                               <?dbax 
-								FOR c1 IN (select * from table (tapi_wdx_permissions.pmsn_with_roles_tt( '${rolename}','${current_app_id}')))
-								LOOP
+                                FOR c1 IN (select * from table (tapi_wdx_permissions.pmsn_with_roles_tt( '${rolename}','${current_app_id}')))
+                                LOOP
                                    p( '<option value="' || c1.pmsname || '" selected="selected">' || c1.pmsname || '</option>');
                                 END LOOP;
 
-								FOR c1 IN (select * from table (tapi_wdx_permissions.pmsn_without_roles_tt( '${rolename}','${current_app_id}')))
-								LOOP
+                                FOR c1 IN (select * from table (tapi_wdx_permissions.pmsn_without_roles_tt( '${rolename}','${current_app_id}')))
+                                LOOP
                                    p( '<option value="' || c1.pmsname || '" >' || c1.pmsname || '</option>');
                                 END LOOP;
                               ?>
                             </select>   
-                   	     
-                          <input type="hidden" name="rolename" id="hash" value="${rolename}">                       	  
+                            
+                          <input type="hidden" name="rolename" id="hash" value="${rolename}">                             
                        </form>
                      </div><!-- /.box-body -->
-					
+                    
                     <div class="box-footer">
                       <button id="rolePermissionsBtn" class="btn btn-info" onclick="SubmitForm('rolesPermissionsForm')"><i class="fa fa-save"></i> Save</button>
                       <div class="pull-right">
@@ -151,16 +152,16 @@
                 </div> <!-- /.box -->                  
               </div><!-- /.tab-pane -->
             
- 			  <div class="tab-pane" id="Users">
+               <div class="tab-pane" id="Users">
                 <div class="box box-default box-solid">
                  <div class="box-header with-border">
                       <h3 class="box-title">Users with ${rolename} role assigned</h3>
                   </div><!-- /.box-header -->
                   <div class="box-body">     
                     <!-- form start -->
-                    <form name="rolesUsersForm" id="rolesUsersForm" action="${base_path}/applications/edit/${current_app_id}/roles/roles-users" class="form-horizontal" method="POST">                		
-                      	<select name="users_roles[]" id="users_roles" multiple size="15" class="form-control">
- 								<?dbax
+                    <form name="rolesUsersForm" id="rolesUsersForm" action="${base_path}/applications/edit/${current_app_id}/roles/roles-users" class="form-horizontal" method="POST">                        
+                          <select name="users_roles[]" id="users_roles" multiple size="15" class="form-control">
+                                 <?dbax
                                      FOR c1 IN (select * from table (tapi_wdx_users.users_with_roles_tt( '${rolename}','${current_app_id}')))
                                      LOOP                                                              
                                        p( '<option value="' || c1.username || '" selected="selected">'|| c1.username || ', '|| c1.first_name || ' '|| c1.last_name ||'</option>');
@@ -171,11 +172,11 @@
                                      END LOOP;
                                 ?>             
                             </select>   
-                   	     
-                          <input type="hidden" name="rolename" id="hash" value="${rolename}">                       	  
+                            
+                          <input type="hidden" name="rolename" id="hash" value="${rolename}">                             
                        </form>
                      </div><!-- /.box-body -->
-					
+                    
                     <div class="box-footer">
                       <button id="rolePermissionsBtn" class="btn btn-info" onclick="SubmitForm('rolesUsersForm')"><i class="fa fa-save"></i> Save</button>
                       <div class="pull-right">
@@ -204,16 +205,16 @@
     
     <!-- dbaxAdmin -->
     <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
-	
-	<!-- Bootstrap Dual Listbox -->    
-	<script type="text/javascript" src="${resources_url}/plugins/bootstrap-duallistbox/jquery.bootstrap-duallistbox.js"></script>
+    
+    <!-- Bootstrap Dual Listbox -->    
+    <script type="text/javascript" src="${resources_url}/plugins/bootstrap-duallistbox/jquery.bootstrap-duallistbox.js"></script>
 
     <script>        
         //Submit jQuery Ajax Form 
         function SubmitForm(formId){        
             dbaxSubmitForm(formId).done(function(data) {
                 //If no error
-              	// tal ta tal 
+                  // tal ta tal 
                 if (data.cod_error === undefined){
                     //Update Values
                     $('#hash').val(data.hash)
@@ -222,7 +223,7 @@
                 }
             });
         }
-	 
+     
      /*
      * Dual ListBox
      */

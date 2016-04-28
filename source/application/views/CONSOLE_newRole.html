@@ -1,4 +1,5 @@
 <?dbax  
+    dbax_core.g$var('active_menu') := 'Applications';
     dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />        
@@ -18,7 +19,7 @@
             New Role            
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}/properties"><i class="fa fa-cog"></i> Roles</a></li>            

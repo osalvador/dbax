@@ -1,5 +1,5 @@
-<% dbax_core.g$var('page_head') := '	
-	<!--Dropzone -->
+<% dbax_core.g$var('page_head') := '    
+    <!--Dropzone -->
    <link href="${resources_url}/plugins/dropzone/dropzone.css" rel="stylesheet" type="text/css" />
 
    <style>
@@ -49,6 +49,7 @@
       }
     </style>';
 %>!\n
+<% dbax_core.g$var('active_menu') := 'Applications'; %>
 <?dbax dbax_core.include('header'); ?>
 <!-- SideBar -->
 <?dbax dbax_core.include('sidebar');?>   
@@ -72,11 +73,11 @@
                 <p>The name of the view must have the following pattern <strong>"[APPID]_[ViewName].html"</strong>.</p>
 
                   <div class="btn-toolbar" role="toolbar">
-                   	<div class="btn-group" role="group">
-                        <button class="btn btn-success btn-xs fileinput-button"><i class="fa fa-plus"></i> Add files...</button>                       	
-                 	</div>
+                       <div class="btn-group" role="group">
+                        <button class="btn btn-success btn-xs fileinput-button"><i class="fa fa-plus"></i> Add files...</button>                           
+                     </div>
                     <div class="btn-group" role="group">
-                    	<button id="action-cancel" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Delete all files</button>
+                        <button id="action-cancel" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Delete all files</button>
                     </div>
                  </div>
                   
@@ -85,7 +86,7 @@
                   <div id="dragger" class="text-muted well well-sm no-shadow" style="margin-top: 1em;">
                     <div class="text-center"><h3 id="dragDropText"><i class="icon fa fa-info"></i> You can drag &amp; drop files here to upload.</h3></div>
                     <div class="table table-striped files" id="previews">
-                   	 	
+                            
                       <div id="template" class="file-row">
                         <!-- This is used as the file preview template -->
                         <div>
@@ -116,14 +117,14 @@
                     </div>
                   
                   <div class="btn-toolbar" role="toolbar">
-                   	<div class="btn-group" role="group">
+                       <div class="btn-group" role="group">
                       <button id="action-start" type="submit" class="btn btn-primary btn-xs start"><i class="glyphicon glyphicon-upload"></i><span> Upload all</span></button>                      
-                  	</div>
+                      </div>
                     <div class="btn-group" role="group">
                       <button id="action-start-compile" type="submit" class="btn btn-warning btn-xs start"><i class="glyphicon glyphicon-upload"></i><span> Upload and compile all</span></button>
                    </div>
                  </div>
-				
+                
                </div><!-- /.box-body -->
                   
                 <div class="box-footer">
@@ -180,13 +181,13 @@
       });
       
       myDropzone.on("success", function(file, responseText) {
-      	// Handle the responseText, add the text to the data-dz-message element:
+          // Handle the responseText, add the text to the data-dz-message element:
         //file.previewElement.querySelector(".successMessage").innerHTML= responseText;        
         $(file.previewElement).find('[data-dz-successmessage]').html('✔ '+responseText);
       });
       
       myDropzone.on("error", function(file, errorMessage, xhr) {
-      	// Handle the responseText, add the text to the data-dz-message element:
+          // Handle the responseText, add the text to the data-dz-message element:
         //file.previewElement.querySelector(".successMessage").innerHTML= responseText;             
         $(file.previewElement).find('[data-dz-errormessage]').html('<pre><code><xmp>'+errorMessage+'</xmp></code></pre> The view has not been saved.');
       });    

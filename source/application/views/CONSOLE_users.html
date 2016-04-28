@@ -1,5 +1,6 @@
 <?dbax  
-    dbax_core.g$var('page_head') := '        
+    dbax_core.g$var('active_menu') := 'Security-user';    
+    dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
     
@@ -8,7 +9,7 @@
     
     <style type="text/css">
         th, td { white-space: nowrap; }        
-		.bottom-buffer { margin-bottom: 3px; }	    
+        .bottom-buffer { margin-bottom: 3px; }        
     </style>        
     ';
 ?>!\n
@@ -25,7 +26,7 @@
             <i class="fa fa-user"></i> User Accounts
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/users"><i class="fa fa-user"></i> Users</a></li>
           </ol> 
         </section>
@@ -33,13 +34,13 @@
         <!-- Main content -->
         <section class="content">
           
-				<div class="box box-default box-solid">
+                <div class="box box-default box-solid">
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="fa fa-clone"></i> Manage users</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">  
                       <div class="bottom-buffer">  
-                      	<div class="btn-toolbar">
+                          <div class="btn-toolbar">
                             <div class="btn-group">                                
                                 <a href="${base_path}/users/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
                             </div>
@@ -48,12 +49,12 @@
                             </div>                                
                         </div>                        
                        </div>   
-                    		<div class="input-group">
-                				<span class="input-group-addon"><i class="fa fa-search"></i></span>
-                				<input id="filter" type="text" class="form-control" placeholder="Search...">
-              				</div>                        
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                <input id="filter" type="text" class="form-control" placeholder="Search...">
+                              </div>                        
                   
-							<div class="table-responsive">
+                            <div class="table-responsive">
                                <table class="table table-bordered table-striped footable" id="users_table" data-page-size="15" data-filter="#filter" data-filter-text-only="true">
                                    <thead>
                                       <tr>
@@ -69,11 +70,11 @@
                                         DECLARE
                                           l_link             VARCHAR2(1000);
                                         BEGIN                  
-                                          for c1 in (select * from table (tapi_wdx_users.tt))										  
+                                          for c1 in (select * from table (tapi_wdx_users.tt))                                          
                                           loop
                                             l_link := '<a href="${base_path}/users/'|| c1.username ||'">' || c1.username || '</a>';
                                             p('<tr>');                                                
-												p('<td><input type="checkbox" value="'|| c1.username||'"></td>');
+                                                p('<td><input type="checkbox" value="'|| c1.username||'"></td>');
                                                 p('<td>'|| l_link ||'</td>');
                                                 p('<td>'|| c1.first_name ||'</td>');
                                                 p('<td>'|| c1.last_name ||'</td>');
@@ -96,7 +97,7 @@
                                 <a href="${base_path}/users/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
                             </div>
                             <div class="btn-group">                                
-	                            <button type="button" class="btn btn-danger btn-xs" onclick="Delete('users_table','${base_path}/users/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('users_table','${base_path}/users/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>                                
                         </div>
                     </div><!-- /.box-body -->
@@ -109,7 +110,7 @@
    
     <?dbax dbax_core.include('footer'); ?>
 
-	<!-- dbaxAdmin -->
+    <!-- dbaxAdmin -->
     <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>    
     <!-- SweetAlert 2 -->
     <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>

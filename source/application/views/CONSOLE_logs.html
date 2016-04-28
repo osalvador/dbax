@@ -1,20 +1,21 @@
 <?dbax  
+    dbax_core.g$var('active_menu') := 'Monitor-Logs';
     dbax_core.g$var('page_head') := '        
 
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
 
-	<!-- DateTimePicker -->
-	<link href="${resources_url}/plugins/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">        
-	<!-- DATA TABLES -->
-	<link href="${resources_url}/plugins/datatables/datatables-1.10.9/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
-	<link href="${resources_url}/plugins/datatables/responsive-1.0.7/css/responsive.bootstrap.min.css" rel="stylesheet" type="text/css" />
-	<link href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.css" type="text/css">
-	
+    <!-- DateTimePicker -->
+    <link href="${resources_url}/plugins/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">        
+    <!-- DATA TABLES -->
+    <link href="${resources_url}/plugins/datatables/datatables-1.10.9/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="${resources_url}/plugins/datatables/responsive-1.0.7/css/responsive.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.css" type="text/css">
+    
     <style type="text/css">
         th, td { white-space: nowrap; }
         pre {
-            overflow-x: auto;			
+            overflow-x: auto;            
             overflow-wrap: normal;
             white-space: pre;
         }
@@ -22,12 +23,12 @@
       .modal-content {
           /* 95% of window height */
           height: 95%;
-	      width: 85%;
+          width: 85%;
       }
       .modal-body {
           /* 100% = dialog height, 120px = header + footer */
           max-height: calc(100% - 120px);
-          overflow-y: scroll;		  
+          overflow-y: scroll;          
       }
     </style>        
 
@@ -48,7 +49,7 @@
             <small>for dbax applications</small>
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/logs"><i class="fa fa-file-text-o"></i> ${title}</a></li>            
           </ol> 
         </section>
@@ -58,9 +59,9 @@
           <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Search Filters</h3>
-                  	<div class="box-tools pull-right">
-                    	<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                  	</div><!-- /.box-tools -->
+                      <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                      </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">                                     
 
@@ -75,14 +76,14 @@
                         <div class="col-md-4">  
                             <label for="appid" class="control-label">Appid</label>
                             <!--<input type="text" class="form-control" >-->
-                          	<select class="form-control" name="appid" id="appid">
+                              <select class="form-control" name="appid" id="appid">
                               <option></option>
                               <?dbax
                                   FOR c1 IN ( SELECT    appid
-                                              FROM   	table (tapi_wdx_applications.tt)
+                                              FROM       table (tapi_wdx_applications.tt)
                                               ORDER BY  appid)
                                   LOOP                                                                         
-                                  	p('<option>'|| c1.appid ||'</option>');                                          
+                                      p('<option>'|| c1.appid ||'</option>');                                          
                                   END LOOP;
                               ?>        
                             </select>
@@ -100,7 +101,7 @@
                         
                          <div class="col-md-4">  
                           <div class="input-append date form_datetime">  
-                          	<label for="date_from" class="control-label">Date From</label>
+                              <label for="date_from" class="control-label">Date From</label>
                             <input type="text" class="form-control" name="date_from" id="date_from" value="${date_from}">
                             <span class="add-on"><i class="icon-th"></i></span>
                           </div>
@@ -117,7 +118,7 @@
                         <div class="col-md-12">  
                             <label for="log_text" class="control-label">Log Text</label>                             
                              <textarea class="form-control" id="log_text" name="log_text"  style="width: 100%; "></textarea>
-                          	 <p class="help-block">Log Text use <a href="http://docs.oracle.com/cd/B28359_01/text.111/b28304/cqoper.htm">Oracle Text CONTAINS Query Operators</a>. So remember to escape <a href="http://docs.oracle.com/cd/B28359_01/text.111/b28304/cqspcl.htm">Special Characters in Oracle Text</a></p>
+                               <p class="help-block">Log Text use <a href="http://docs.oracle.com/cd/B28359_01/text.111/b28304/cqoper.htm">Oracle Text CONTAINS Query Operators</a>. So remember to escape <a href="http://docs.oracle.com/cd/B28359_01/text.111/b28304/cqspcl.htm">Special Characters in Oracle Text</a></p>
                         </div>                        
                       </form>
                   </div><!-- /.box-body -->
@@ -142,7 +143,7 @@
                           <li><a href="${base_path}/logs/get_list/csv"><i class="fa fa-file-archive-o"></i>CSV</a></li>
                         </ul>                    
                     </div>
-              	  </div>
+                    </div>
                   <div class="btn-toolbar pull-right" role="toolbar">
                     <button type="button" class="btn btn-default" onclick="Delete(selected,'${base_path}/logs/delete')">Delete</button>
                   </div>
@@ -151,7 +152,7 @@
                   
                   
                   <div id="dataDiv">
-                  	<!--<table id="logTable" class="table table-bordered table-hover">-->
+                      <!--<table id="logTable" class="table table-bordered table-hover">-->
                       <table id="logTable" class="table table-striped table-bordered table-hover dt-responsive nowrap" cellspacing="0" width="100%">
                       <thead>
                         <tr>                          
@@ -186,7 +187,7 @@
       </div><!-- /.content-wrapper -->
 
 
- 	<!-- Modal Info-->
+     <!-- Modal Info-->
     <div class="modal fade" id="modalLogText" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -194,9 +195,9 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">Log Text</h4>
           </div>
-          <div class="modal-body">            			
-           	<pre class="prettyprint">
-				<div id="logText"></div>
+          <div class="modal-body">                        
+               <pre class="prettyprint">
+                <div id="logText"></div>
             </pre>            
           </div>
           <div class="modal-footer">
@@ -209,30 +210,30 @@
    
     <?dbax dbax_core.include('footer'); ?>
     
-	<!-- DateTimePicker -->	
-	<script type="text/javascript" src="${resources_url}/plugins/datetimepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
-	
-	<!-- DATA TABLES SCRIPT -->
+    <!-- DateTimePicker -->    
+    <script type="text/javascript" src="${resources_url}/plugins/datetimepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    
+    <!-- DATA TABLES SCRIPT -->
     <script language="javascript" src="${resources_url}/plugins/datatables/datatables-1.10.9/js/jquery.dataTables.js" type="text/javascript"></script>
     <script language="javascript" src="${resources_url}/plugins/datatables/datatables-1.10.9/js/dataTables.bootstrap.js" type="text/javascript"></script>
-	<script language="javascript" src="${resources_url}/plugins/datatables/datatables-1.10.9/js/dbax.dataTables.js" type="text/javascript"></script>
-	<script language="javascript" src="${resources_url}/plugins/datatables/responsive-1.0.7/js/dataTables.responsive.js" type="text/javascript"></script>
+    <script language="javascript" src="${resources_url}/plugins/datatables/datatables-1.10.9/js/dbax.dataTables.js" type="text/javascript"></script>
+    <script language="javascript" src="${resources_url}/plugins/datatables/responsive-1.0.7/js/dataTables.responsive.js" type="text/javascript"></script>
 
-	<!-- SweetAlert 2 -->
+    <!-- SweetAlert 2 -->
     <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
-	<!-- Google Prettyprint-->		
-	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=desert"></script>
+    <!-- Google Prettyprint-->        
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=desert"></script>
 
 
 
   <script type="text/javascript">
-	$(document).ready( function() {
-		//Event handler for Enter Key on SearchForm
-		$('#filterLogForm').on('keyup', 'input', function(e) {
-			if (e.which == 13) { // enter key            
-				SubmitForm('filterLogForm');
-			}
-		});
+    $(document).ready( function() {
+        //Event handler for Enter Key on SearchForm
+        $('#filterLogForm').on('keyup', 'input', function(e) {
+            if (e.which == 13) { // enter key            
+                SubmitForm('filterLogForm');
+            }
+        });
     });
     
    $(".form_datetime").datetimepicker({
@@ -248,7 +249,7 @@
     
    //DataTable    
    function initLogTable() {
-	  //init selected array 
+      //init selected array 
       selected = [];
       //Init datatable
       logTable = $('#logTable').DataTable({                    
@@ -259,17 +260,17 @@
                           "type": "POST"
                      },                     
                      "searching": false,
-        		     "order": [1, 'desc'],
-            		 "columnDefs": [{
+                     "order": [1, 'desc'],
+                     "columnDefs": [{
                          'targets': 0,
-                       	 'data': null, 
+                            'data': null, 
                          'searchable':false,
                          'orderable':false,                         
                          'render': function (data, type, full, meta){
                              return '<input type="checkbox">';
-                         	}
+                             }
                          },
-			             {
+                         {
                           'targets': 6,
                           'data': null,
                           'searchable': false,
@@ -279,56 +280,56 @@
                            }                          
                         }  
                      ],        
-                     "columns": [                       	  
-                       	  null,	  
+                     "columns": [                             
+                             null,      
                           { "data": "ID" },
                           { "data": "APPID" },
-                       	  { "data": "CREATED_DATE" },   
+                             { "data": "CREATED_DATE" },   
                           { "data": "DBAX_SESSION" },                          
                           { "data": "LOG_USER" },
-                       	  null                          
+                             null                          
                       ],
-                     "rowCallback": function( row, data ) {                       		
-                       		if ( $.inArray(data.DT_RowId, selected) !== -1 ) {                                
+                     "rowCallback": function( row, data ) {                               
+                               if ( $.inArray(data.DT_RowId, selected) !== -1 ) {                                
                                 $(row).find('td input:checkbox').prop("checked", true);                              
-                            }                       		
+                            }                               
                       } 
-                  });      	
+                  });          
       
       /**
       * DBAX checkbox row selction
-      *	@param   tableId   the tableID
-      *	@param   dataTable   the datatable object
-      *	@param   selectAllName   the name of the input checkbox in the table header
-      *	@param   selectedArr   the name of the array of selected checboxes
+      *    @param   tableId   the tableID
+      *    @param   dataTable   the datatable object
+      *    @param   selectAllName   the name of the input checkbox in the table header
+      *    @param   selectedArr   the name of the array of selected checboxes
       */      
       checkboxRowSelection('logTable',logTable,'select_all',selected);
       inputTextKeyMap('logTable');
- 	} 
+     } 
     
     //Iinit Datatable
     initLogTable();
 
     //Submit Ajax Form
- 	function SubmitForm(formId){
+     function SubmitForm(formId){
             var form =  $('#' + formId);
-      		$.post( $(form).attr('action'), $(form).serialize())
-            	.done(function() {    				
-              		//reload datatable
-              		logTable.destroy();
-              		initLogTable();
-  			});     
+              $.post( $(form).attr('action'), $(form).serialize())
+                .done(function() {                    
+                      //reload datatable
+                      logTable.destroy();
+                      initLogTable();
+              });     
         }  
     
-	//GetLog Ajax get
-	function getLog(logId){
-		$.post("${base_path}/logs/get-log/"+logId, function( data ) {        									
+    //GetLog Ajax get
+    function getLog(logId){
+        $.post("${base_path}/logs/get-log/"+logId, function( data ) {                                            
             //Pretiffy log
-			$('#logText').html(PR.prettyPrintOne(data,'bash',0));
-		});     		
-      	//Modal Show
-		$('#modalLogText').modal('show');
-	}    
+            $('#logText').html(PR.prettyPrintOne(data,'bash',0));
+        });             
+          //Modal Show
+        $('#modalLogText').modal('show');
+    }    
         
 //Delete checked Items, Post Ajax and reload datatable
 function Delete(tableId, postURL){
@@ -364,12 +365,12 @@ function Delete(tableId, postURL){
                                 swal({  title: "Successfully deleted", text: data.text, type: "success"}
                                         , function(){
                                             //reload datatable
-              								logTable.destroy();
-              								initLogTable();
+                                              logTable.destroy();
+                                              initLogTable();
                                         });
                                 //reload datatable
-              					logTable.destroy();
-              					initLogTable();
+                                  logTable.destroy();
+                                  initLogTable();
                             },
                             error: function(jqXHR, textStatus, errorThrown) 
                             {   

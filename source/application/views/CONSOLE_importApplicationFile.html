@@ -1,5 +1,6 @@
 <%! l_error_message VARCHAR2(4000) := q'~${errorMessage}~';%>
 !\n
+<% dbax_core.g$var('active_menu') := 'Applications'; %>
 <?dbax dbax_core.include('header'); ?>
 <!-- SideBar -->
 <?dbax dbax_core.include('sidebar');?> 

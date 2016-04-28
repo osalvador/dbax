@@ -1,4 +1,5 @@
 <?dbax  
+    dbax_core.g$var('active_menu') := 'Applications';
     dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />        
@@ -17,7 +18,7 @@
             New View            
           </h1>
           <ol class="breadcrumb">
-			 <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="${base_path}/applications"><i class="fa fa-rocket"></i> Applications</a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}"><i class="fa fa-cogs"></i> ${current_app_id} </a></li>
             <li><a href="${base_path}/applications/edit/${current_app_id}/views"><i class="fa fa-eye"></i> Views</a></li>            
@@ -126,7 +127,7 @@
     <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
     
           
-	<script type="text/javascript">          
+    <script type="text/javascript">          
         //Submit jQuery Ajax Form 
         function SubmitForm(formId){        
             dbaxSubmitForm(formId).done(function(data) {

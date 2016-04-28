@@ -1,4 +1,5 @@
 <?dbax
+    dbax_core.g$var('active_menu') := 'Applications';    
     dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2 -->
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />    
@@ -143,8 +144,8 @@
                         <button id="viewCodeCompiledBtn" class="btn btn-warning" onclick="editor.save(); SubmitClobForm('viewCodeForm','compiled'); changes=false;"><i class="fa fa-save"></i> Save and compile</button>
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalInfo"><i class="fa fa-info"></i> Keyboard shortcuts</button>
                         <div class="pull-right">
-                        	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalExport"><i class="fa fa-download"></i> Export</button>
-                        	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImport"><i class="fa fa-upload"></i> Import</button>                        	
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalExport"><i class="fa fa-download"></i> Export</button>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImport"><i class="fa fa-upload"></i> Import</button>                            
                         </div>
                       <!--</div>-->
                       <br><br>
@@ -169,7 +170,7 @@
                   
               </div><!-- /.tab-pane -->
                   
-			  <div class="tab-pane" id="CompiledSource">
+              <div class="tab-pane" id="CompiledSource">
                     
                     <div class="box">
                     <div class="box-header with-border">
@@ -179,8 +180,8 @@
 
                       <div class="btn-group" role="group">                        
                         <button type="button" class="btn btn-default btn-lrg ajax" onclick="reloadCompiledCode();" title="Reload compiled code">
-            				<i id="reloadIcon" class="fa fa-refresh"></i> Reload
-          				</button>
+                            <i id="reloadIcon" class="fa fa-refresh"></i> Reload
+                          </button>
                       </div>
                       <br><br>
                         
@@ -336,7 +337,7 @@
          });
       
       
-	compiledEditor = CodeMirror.fromTextArea(document.getElementById("compiledCode"), {                  
+    compiledEditor = CodeMirror.fromTextArea(document.getElementById("compiledCode"), {                  
           lineNumbers: true,
           mode: "text/x-plsql",
           matchBrackets: true,
@@ -370,7 +371,7 @@
                   //data are plain/text
                   compiledEditor.setValue(data);
                   compiledEditor.setSize("100%",500);
-              	  $('#reloadIcon').toggleClass( "fa-spin");
+                    $('#reloadIcon').toggleClass( "fa-spin");
             }            
          });     
    }
