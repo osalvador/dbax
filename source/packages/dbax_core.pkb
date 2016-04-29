@@ -1,4 +1,3 @@
-/* Formatted on 28/04/2016 16:56:46 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY dbax_core
 AS
    PROCEDURE print_http_header;
