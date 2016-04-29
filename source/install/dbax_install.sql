@@ -10,8 +10,6 @@ Rem
 Rem    Example:
 Rem      sqlplus "user/userpasss" @dbax_install
 Rem
-Rem    MODIFIED   (MM/DD/YYYY)
-Rem    osalvador  11/12/2015 - Created
 
 whenever sqlerror exit
 
@@ -19,7 +17,7 @@ PROMPT ------------------------------------------;
 PROMPT -- Checking user grants --;
 PROMPT ------------------------------------------;
 
--- User Grants. 
+-- User Grants. DBMS_CRYPTO, UTL_FILE, UTL_HTTP, UTL_SMTP, UTL_TCP
 DECLARE
    l_count   PLS_INTEGER := 0;
 BEGIN
@@ -54,6 +52,55 @@ BEGIN
    THEN
       raise_application_error (-20000, 'Execute on UTL_FILE grant is necessary.');
    END IF;
+   
+   --UTL_HTTP
+   SELECT   COUNT ( * )
+     INTO   l_count
+     FROM   (SELECT   1
+               FROM   user_tab_privs u
+              WHERE   table_name = 'UTL_HTTP' AND privilege = 'EXECUTE'
+             UNION ALL
+             SELECT   1
+               FROM   all_tab_privs a
+              WHERE   table_name = 'UTL_HTTP' AND privilege = 'EXECUTE' AND grantee = 'PUBLIC');
+
+   IF l_count = 0
+   THEN
+      raise_application_error (-20000, 'Execute on UTL_HTTP grant is necessary.');
+   END IF;   
+   
+   --UTL_SMTP
+   SELECT   COUNT ( * )
+     INTO   l_count
+     FROM   (SELECT   1
+               FROM   user_tab_privs u
+              WHERE   table_name = 'UTL_SMTP' AND privilege = 'EXECUTE'
+             UNION ALL
+             SELECT   1
+               FROM   all_tab_privs a
+              WHERE   table_name = 'UTL_SMTP' AND privilege = 'EXECUTE' AND grantee = 'PUBLIC');
+
+   IF l_count = 0
+   THEN
+      raise_application_error (-20000, 'Execute on UTL_SMTP grant is necessary.');
+   END IF;    
+ 
+   --UTL_TCP
+   SELECT   COUNT ( * )
+     INTO   l_count
+     FROM   (SELECT   1
+               FROM   user_tab_privs u
+              WHERE   table_name = 'UTL_TCP' AND privilege = 'EXECUTE'
+             UNION ALL
+             SELECT   1
+               FROM   all_tab_privs a
+              WHERE   table_name = 'UTL_TCP' AND privilege = 'EXECUTE' AND grantee = 'PUBLIC');
+
+   IF l_count = 0
+   THEN
+      raise_application_error (-20000, 'Execute on UTL_TCP grant is necessary.');
+   END IF;
+  
 END;
 /
 

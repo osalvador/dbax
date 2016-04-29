@@ -24,6 +24,8 @@ AS
       --
       l_vars             teplsql.t_assoc_array;
       l_source           VARCHAR2 (32767);
+      --
+      l_error_templace   CLOB;
    BEGIN
       --Application data
       l_application_rt := p_application_rt;
@@ -109,6 +111,9 @@ AS
          l_views_rt.visible := c1.visible;
          tapi_wdx_views.ins (l_views_rt);
       END LOOP;
+      
+      --Compile views
+      dbax_teplsql.compile_all(l_application_rt.appid,l_error_templace);
 
       /*
       * Create Routes

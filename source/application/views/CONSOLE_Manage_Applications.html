@@ -1,6 +1,12 @@
 <%! l_property_rt tapi_wdx_properties.wdx_properties_rt; %>
 <%
-    l_property_rt := tapi_wdx_properties.rt(p_appid=> '${current_app_id}', p_key=>'base_path');
+    BEGIN
+        l_property_rt := tapi_wdx_properties.rt(p_appid=> '${current_app_id}', p_key=>'base_path');
+    EXCEPTION
+    WHEN NO_DATA_FOUND
+    THEN
+        null;
+    END;
     
     dbax_core.g$var('active_menu') := 'Applications';
     
