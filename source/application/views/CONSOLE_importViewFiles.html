@@ -169,7 +169,7 @@
         };
         
         file.previewElement.querySelector(".start-compile").onclick = function() { 
-          myDropzone.options.url = '${base_path}/applications/edit/${current_app_id}/views/upload?compile=true';
+          myDropzone.options.url = '${base_path}/applications/edit/${current_app_id}/views/upload/compile';
           myDropzone.enqueueFile(file); 
         };
       });
@@ -183,7 +183,7 @@
       myDropzone.on("success", function(file, responseText) {
           // Handle the responseText, add the text to the data-dz-message element:
         //file.previewElement.querySelector(".successMessage").innerHTML= responseText;        
-        $(file.previewElement).find('[data-dz-successmessage]').html('✔ '+responseText);
+        $(file.previewElement).find('[data-dz-successmessage]').html('¿ '+responseText);
       });
       
       myDropzone.on("error", function(file, errorMessage, xhr) {
@@ -200,7 +200,7 @@
         myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
       };
       document.querySelector("#action-start-compile").onclick = function() {
-        myDropzone.options.url = '${base_path}/applications/edit/${current_app_id}/views/upload?compile=true';
+        myDropzone.options.url = '${base_path}/applications/edit/${current_app_id}/views/upload/compile';
         myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
       };
       document.querySelector("#action-cancel").onclick = function() {

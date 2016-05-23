@@ -1,5 +1,4 @@
-/* Formatted on 28/04/2016 16:56:15 (QP5 v5.115.810.9015) */
-CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
+CREATE OR REPLACE PACKAGE BODY DBAX.pk_c_dbax_console
 AS
    FUNCTION f_admin_user
       RETURN BOOLEAN
@@ -1810,6 +1809,7 @@ AS
 
          l_file      := dbax_document.get_file_content (l_real_file_name);
          l_clob      := dbax_document.blob2clob (l_file);
+          
 
          --Delete file
          dbax_document.del (l_real_file_name, dbax_core.g$appid);
@@ -1870,6 +1870,7 @@ AS
 
          --If compile is true
          IF dbax_utils.get (dbax_core.g$post, 'compile') = 'true'
+         OR (dbax_core.g$parameter.EXISTS (2) AND dbax_core.g$parameter (2) IS NOT NULL AND dbax_core.g$parameter (2) = 'compile') 
          THEN
             --Compile
             BEGIN
