@@ -1,4 +1,6 @@
 # DBAX
+
+[![Join the chat at https://gitter.im/osalvador/dbax](https://badges.gitter.im/osalvador/dbax.svg)](https://gitter.im/osalvador/dbax?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 DataBase Application Express
 
 DBAX is a PL/SQL MVC Web Framework. 
