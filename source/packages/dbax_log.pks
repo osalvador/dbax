@@ -1,3 +1,4 @@
+/* Formatted on 27/05/2016 17:02:13 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE dbax.dbax_log
 AS
    /**
@@ -31,6 +32,9 @@ AS
    PROCEDURE open_log (p_log_level IN VARCHAR2);
 
    PROCEDURE close_log;
+
+   FUNCTION close_log
+      RETURN tapi_wdx_log.id;
 
    FUNCTION get_log_level_str (p_log_level IN NUMBER)
       RETURN VARCHAR2;

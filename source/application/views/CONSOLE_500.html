@@ -3,64 +3,50 @@
    <head>
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <meta charset="utf-8">
-      <title>DBAX Exception</title>
+      <title>dbax Exception</title>
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
       <!-- Latest compiled and minified CSS -->
       <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
       <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->    
+       <style>.operative { font-weight: bold; border:1px solid red }</style>
    </head>
    <body>
       <header class="navbar navbar-default navbar-static-top" role="banner">
          <div class="container">
             <div class="navbar-header">
-               <a href="http://dbax-project.org" class="navbar-brand">DBAX Exception. 500 Error</a>
+               <a href="http://dbax.io" class="navbar-brand">dbax exception: 500 Internal Server Error</a>
             </div>
          </div>
       </header>
       <!-- Begin Body -->
       <div class="container">
          <div class="row">
-            <div class="col-md-3" id="leftCol">
-               <div class="well">
-                  <ul class="nav nav-stacked" id="sidebar">
-                     <li><a href="#userError">User Error</a></li>
-                     <li><a href="#callStack">Call Stack</a></li>
-                     <li><a href="#errorStack">Error Stack</a></li>
-                     <li><a href="#errorBacktrace">Error Backtrace</a></li>
-                  </ul>
-               </div>
-            </div>
-            <div class="col-md-9">
-               <h1 class="text-danger"><b>Error 500. Internal Server Error</b></h1>
+            <div class="col-md-12">
+               <h1 class="text-danger text-center"><b>Error 500. Internal Server Error (${logId})</b></h1>
                 <br>
-               <p>There is a problem with the resource you are looking for, and it cannot be displayed. <code id="http_referer"></code></p>
-
-               <hr>
+               <h4 class="text-center">There is a problem with the resource you are looking for, and it cannot be displayed. <code id="http_referer"></code></h4>
+               <h4 class="text-center">Contact your administrator with details of the action you performed before error occured with this log id: ${logId}</h4>
+              <% if '${500_error_style}' = 'DebugStyle' then %> 
+              <hr>
                <h2 id="userError">User Error</h2>
-               <div>
-                  <div class="panel panel-default">
-                     <div class="panel-heading">
-                        <h4>Error Code: ${errorCode}</h4>
-                     </div>
-                     <div class="panel-body">Error Message: ${errorMsg}
-                     </div>
-                  </div>
-               </div>
+               <pre class="prettyprint"><code class="language-sql">Error Code: ${errorCode}</code></pre>
+               <pre class="prettyprint"><code class="language-sql">${errorMsg}</code></pre>
                <hr>
-               <h2 id="callStack">Call Stack</h2>
-               ${callStackTable}
-
-               <hr>
-               <h2 id="errorStack">Error Stack</h2>
-               <p>
-                  <code>${errorStack}</code>
-               </p>
+               <h2 id="errorStack">Error Stack</h2>               
+               <pre class="prettyprint"><code class="language-sql">${errorStack}</code></pre>
                <hr>
                <h2 id="errorBacktrace">Error Backtrace</h2>
-               <p><code>${errorBacktrace}</code>
-               </p>
+               <pre class="prettyprint"><code class="language-sql">${errorBacktrace}</code></pre>              
+               <hr>
+               <h2 id="callStack">Call Stack</h2>
+               <pre class="prettyprint"><code class="language-sql">${callStack}</code></pre>
+               <hr>              
+               <h2 id="code">Code</h2>               
+               ${code}
+              <hr>
+              <% end if; %>
             </div>
          </div>
       </div>
@@ -70,6 +56,7 @@
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
       <script type="text/javascript">
           document.getElementById("http_referer").innerHTML = window.location.pathname;       
-       </script>
+       </script>      
+      <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=sql&amp;skin=sons-of-obsidian"></script>
    </body>
 </html>

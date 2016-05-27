@@ -847,6 +847,82 @@ AS
          dbax_log.error (p_error_template);
          RAISE;
    END compile;
+   
+   FUNCTION compile (p_template IN clob, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
+      RETURN CLOB
+   AS
+      l_template   CLOB;
+      v_cur_hdl    INTEGER;
+   BEGIN
+      --Get template
+      l_template  := p_template;
+
+      dbax_log.trace ('Compile Function. l_template:' || l_template);
+      
+      --Parse <% %> tags
+      parse (l_template);
+
+      --Get Includes
+      get_includes (p_template => l_template, p_appid => p_appid);
+
+      --Interpret the template
+      interpret (l_template);
+
+      --Code blocks directive
+      l_template  :=
+         REGEXP_REPLACE (l_template
+                       , '<%([^%>].*?)%>'
+                       , '~''); \1 DBAX_tePLSQL.p(q''~'
+                       , 1
+                       , 0
+                       , 'n');
+
+      l_template  :=
+         REGEXP_REPLACE (l_template
+                       , '<\?dbax([^\?>].*?)\?>'
+                       , '~''); \1 DBAX_tePLSQL.p(q''~'
+                       , 1
+                       , 0
+                       , 'n');
+
+      --Delete all null code blocks
+      l_template  :=
+         REGEXP_REPLACE (l_template
+                       , q'@DBAX_tePLSQL.p\(q\'\~\~\'\)\;@'
+                       , ''
+                       , 1
+                       , 0
+                       , 'n');
+
+      --Avoid PLS-00172: string literal too long
+      string_literal_too_long (l_template);
+
+      v_cur_hdl   := DBMS_SQL.open_cursor;
+      DBMS_SQL.parse (v_cur_hdl, l_template, DBMS_SQL.native);
+      DBMS_SQL.close_cursor (v_cur_hdl);
+
+      --minified html
+      --l_template := REGEXP_REPLACE(l_template, '[ ]{2,}',' ');
+      --l_template := REPLACE(l_template, CHR(10));
+
+      RETURN l_template;
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         --Return error
+         p_error_template := p_error_template || ('### tePLSQL Compile Error ###');
+         p_error_template := p_error_template || (CHR (10));
+         p_error_template := p_error_template || (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+         p_error_template := p_error_template || (CHR (10));
+         p_error_template :=
+            p_error_template
+            || ('### Processing template ' );
+         p_error_template := p_error_template || (CHR (10));
+         p_error_template := p_error_template || (l_template);
+         dbax_log.error (p_error_template);
+         RAISE;
+   END compile;   
+   
 
    PROCEDURE compile (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
    AS
@@ -975,6 +1051,7 @@ AS
                     , p_template        IN CLOB DEFAULT NULL )
    AS
       l_template   CLOB;
+      l_error_template CLOB;
    BEGIN
       IF p_template_name IS NULL AND p_template IS NULL
       THEN
@@ -986,7 +1063,8 @@ AS
       THEN
          l_template  := include_compiled (p_template_name, p_appid);
       ELSE
-         l_template  := p_template;
+         --compile the template         
+         l_template  := compile(p_template,p_appid,l_error_template);
       END IF;
 
       --Bind the variables into template

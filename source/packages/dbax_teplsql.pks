@@ -67,6 +67,9 @@ AS
    */
    FUNCTION compile (p_template_name IN VARCHAR2, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
       RETURN CLOB;
+      
+   FUNCTION compile (p_template IN CLOB, p_appid IN VARCHAR2, p_error_template OUT NOCOPY CLOB)
+      RETURN CLOB;      
 
    /**
    *  Compile view and store it in wdx_views.compiled_source

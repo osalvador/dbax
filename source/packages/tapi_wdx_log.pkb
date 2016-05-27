@@ -220,6 +220,14 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_log IS
 
     PROCEDURE ins (p_wdx_log_rec IN OUT wdx_log_rt)
     IS
+      l_id tapi_wdx_log.id;       
+    BEGIN
+       l_id := ins(p_wdx_log_rec);
+    END ins;
+
+   FUNCTION ins (p_wdx_log_rec IN OUT wdx_log_rt)
+      RETURN tapi_wdx_log.id
+   AS 
        l_rowtype     wdx_log%ROWTYPE;
        l_date        wdx_log.created_date%TYPE := SYSTIMESTAMP;
     BEGIN
@@ -235,8 +243,10 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_log IS
 
        INSERT INTO wdx_log
          VALUES   l_rowtype;
-
+       
+       return l_rowtype.id;
     END ins;
+
 
     PROCEDURE upd (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN boolean := FALSE)
     IS

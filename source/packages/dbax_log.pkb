@@ -1,3 +1,4 @@
+/* Formatted on 27/05/2016 17:26:23 (QP5 v5.115.810.9015) */
 CREATE OR REPLACE PACKAGE BODY dbax.dbax_log
 AS
    --Default Log level is ERROR
@@ -69,12 +70,15 @@ AS
       RETURN g_log_level;
    END get_log_context;
 
-   PROCEDURE close_log
+
+   FUNCTION close_log
+      RETURN tapi_wdx_log.id
    AS
       PRAGMA AUTONOMOUS_TRANSACTION;
       v_cgi_env      VARCHAR2 (32000);
       l_log_rt       tapi_wdx_log.wdx_log_rt;
       l_session_id   wdx_sessions.session_id%TYPE;
+      l_id_log       tapi_wdx_log.id;
    BEGIN
       --If DEBUG
       IF g_log_level >= 4
@@ -102,10 +106,15 @@ AS
          l_log_rt.log_level := get_log_level_str (g_log_level);
          l_log_rt.log_text := g_log;
 
-         tapi_wdx_log.ins (l_log_rt);
+         l_id_log    := tapi_wdx_log.ins (l_log_rt);
       END IF;
 
       COMMIT;
+
+      g_log_level := NULL;
+      g_log       := NULL;
+
+      RETURN l_id_log;
    EXCEPTION
       WHEN OTHERS
       THEN
@@ -119,7 +128,7 @@ AS
             l_log_rt.log_level := 'error';
             l_log_rt.log_text := g_log;
 
-            tapi_wdx_log.ins (l_log_rt);
+            l_id_log    := tapi_wdx_log.ins (l_log_rt);
          EXCEPTION
             WHEN OTHERS
             THEN
@@ -127,6 +136,16 @@ AS
          END;
 
          COMMIT;
+         g_log_level := NULL;
+         g_log       := NULL;
+         RETURN l_id_log;
+   END close_log;
+
+   PROCEDURE close_log
+   AS
+      l_id_log   tapi_wdx_log.id;
+   BEGIN
+      l_id_log    := close_log;
    END close_log;
 
    PROCEDURE trace (p_log_text IN CLOB)

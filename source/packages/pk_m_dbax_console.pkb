@@ -193,21 +193,20 @@ AS
          q'[CREATE OR REPLACE PROCEDURE ${appid} (name_array    IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr
                                   , value_array   IN OWA_UTIL.vc_arr DEFAULT dbax_core.empty_vc_arr )
 AS
-   l_appid CONSTANT   VARCHAR2 (100) := '${appid}';
+   c_appid CONSTANT   VARCHAR2 (100) := '${appid}';
 BEGIN
    /**
    * YOU SHOULD NOT MODIFY THIS FILE, BECAUSE IT WILL BE
    * OVERWRITTEN WHEN YOU DELETE,IMPORT OR RE-CRATE THE APPLICATION.
    */   
-   dbax_core.dispatcher (l_appid, name_array, value_array);
+   dbax_core.dispatcher (c_appid, name_array, value_array);
 EXCEPTION
    WHEN OTHERS
    THEN
       dbax_log.open_log ('error');
-      dbax_core.g$appid := l_appid;
-      dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+      dbax_core.g$appid := c_appid;
+      dbax_exception.raise (SQLCODE, SQLERRM);
       dbax_log.close_log;
-      RAISE;
 END;]';
       --Render source code
       l_vars ('appid') := l_application_rt.appid;

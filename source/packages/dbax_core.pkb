@@ -255,15 +255,13 @@ AS
          THEN
             IF SQLCODE = -06550
             THEN
-               dbax_exception.raise (100, 'The controller that are trying to execute does not exist');
+               dbax_exception.raise (100, 'Error trying to execute the controller: ' || upper(p_controller) );
             ELSIF SQLCODE = -06503
             THEN
                --Function returned without value
-
                NULL;
-            ELSE
-               --TODO Log and Raise this exception
-               dbax_exception.raise (SQLCODE, SQLERRM || ' <b>Executing: ' || p_controller || ' </b>');
+            ELSE               
+               dbax_exception.raise (SQLCODE, SQLERRM || CHR(10) || 'Executing controller: ' || upper(p_controller));
             END IF;
       END;
    END execute_controller;
@@ -528,12 +526,10 @@ AS
          dbax_log.error ('Application ' || p_appid || ' is marked as inactive.');
          dbax_log.close_log;
       WHEN OTHERS
-      THEN
-         dbax_log.error (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         dbax_session.save_sesison_variable;
-         --dbax_exception.raise (SQLCODE, SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+      THEN         
+         dbax_session.save_sesison_variable;         
+         dbax_exception.raise (SQLCODE, SQLERRM);         
          dbax_log.close_log;
-         RAISE;
    END dispatcher;
 
    PROCEDURE load_view (p_name IN VARCHAR2, p_appid IN VARCHAR2 DEFAULT NULL )

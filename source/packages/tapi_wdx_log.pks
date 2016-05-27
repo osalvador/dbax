@@ -1,11 +1,13 @@
+/* Formatted on 27/05/2016 17:03:48 (QP5 v5.115.810.9015) */
 --
--- TAPI_WDX_LOG  (Package) 
+-- TAPI_WDX_LOG  (Package)
 --
---  Dependencies: 
+--  Dependencies:
 --   STANDARD (Package)
 --   WDX_LOG (Table)
 --
-CREATE OR REPLACE PACKAGE      tapi_wdx_log
+
+CREATE OR REPLACE PACKAGE tapi_wdx_log
 IS
    /**
    -- # TAPI_wdx_log
@@ -16,310 +18,310 @@ IS
    */
 
    --Scalar/Column types
-   SUBTYPE hash_t IS varchar2 (40);   
+   SUBTYPE hash_t IS VARCHAR2 (40);
+
    SUBTYPE id IS wdx_log.id%TYPE;
+
    SUBTYPE appid IS wdx_log.appid%TYPE;
+
    SUBTYPE dbax_session IS wdx_log.dbax_session%TYPE;
+
    SUBTYPE created_date IS wdx_log.created_date%TYPE;
+
    SUBTYPE log_user IS wdx_log.log_user%TYPE;
-   SUBTYPE log_level IS wdx_log.log_level%TYPE;   
-   SUBTYPE log_text IS wdx_log.log_text%TYPE;   
+
+   SUBTYPE log_level IS wdx_log.log_level%TYPE;
+
+   SUBTYPE log_text IS wdx_log.log_text%TYPE;
 
    --Record type
    TYPE wdx_log_rt
    IS
       RECORD (
-        id   wdx_log.id%TYPE,
-		appid   wdx_log.appid%TYPE,
-		dbax_session   wdx_log.dbax_session%TYPE,
-		created_date   wdx_log.created_date%TYPE,
-		log_user   wdx_log.log_user%TYPE,
-		log_level   wdx_log.log_level%TYPE,		
-		log_text   wdx_log.log_text%TYPE,
-        hash               hash_t,
-        row_id            VARCHAR2(64)
+         id             wdx_log.id%TYPE
+       , appid          wdx_log.appid%TYPE
+       , dbax_session   wdx_log.dbax_session%TYPE
+       , created_date   wdx_log.created_date%TYPE
+       , log_user       wdx_log.log_user%TYPE
+       , log_level      wdx_log.log_level%TYPE
+       , log_text       wdx_log.log_text%TYPE
+       , hash           hash_t
+       , row_id         VARCHAR2 (64)
       );
 
    --Collection types (record)
    TYPE wdx_log_tt IS TABLE OF wdx_log_rt;
 
    --Global exceptions
-   e_ol_check_failed EXCEPTION; --Optimistic lock check failed
-   e_row_missing     EXCEPTION; --The cursor failed to get a row
-   e_upd_failed      EXCEPTION; --The update operation failed
-   e_del_failed      EXCEPTION; --The delete operation failed
+   e_ol_check_failed exception; --Optimistic lock check failed
+   e_row_missing exception; --The cursor failed to get a row
+   e_upd_failed exception; --The update operation failed
+   e_del_failed exception; --The delete operation failed
 
-    FUNCTION num_rows RETURN PLS_INTEGER;
+   FUNCTION num_rows
+      RETURN PLS_INTEGER;
 
-    /**
-    --## Function Name: HASH
-    --### Description:
-    --       This function generates a SHA1 hash for optimistic locking purposes.
-    --
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --    
-    --    |p_id | wdx_log.id%TYPE | must be NOT NULL     
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   FUNCTION hash (
-        p_id IN wdx_log.id%TYPE)
-   RETURN VARCHAR2;
+   /**
+   --## Function Name: HASH
+   --### Description:
+   --       This function generates a SHA1 hash for optimistic locking purposes.
+   --
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |p_id | wdx_log.id%TYPE | must be NOT NULL
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   FUNCTION hash (p_id IN wdx_log.id%TYPE)
+      RETURN VARCHAR2;
 
-    /**
-    --## Function Name: HASH_ROWID
-    --### Description:
-    --       This function generates a SHA1 hash for optimistic locking purposes.
-             Access directly to the row by rowid
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --    
-    --    |P_ROWID | VARCHAR2(64)| must be NOT NULL     
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   FUNCTION hash_rowid (p_rowid IN varchar2)
-   RETURN varchar2;
+   /**
+   --## Function Name: HASH_ROWID
+   --### Description:
+   --       This function generates a SHA1 hash for optimistic locking purposes.
+            Access directly to the row by rowid
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |P_ROWID | VARCHAR2(64)| must be NOT NULL
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   FUNCTION hash_rowid (p_rowid IN VARCHAR2)
+      RETURN VARCHAR2;
 
-    /**
-    --## Function Name: RT
-    --### Description:
-    --       This is a table encapsulation function designed to retrieve information from the wdx_log table.
-    --
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    |p_id | wdx_log.id%TYPE | must be NOT NULL         
-    --### Return
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    |     | wdx_log_rt |  wdx_log Record Type 
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   FUNCTION rt (
-        p_id     IN      wdx_log.id%TYPE)
-      RETURN wdx_log_rt ;
+   /**
+   --## Function Name: RT
+   --### Description:
+   --       This is a table encapsulation function designed to retrieve information from the wdx_log table.
+   --
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |p_id | wdx_log.id%TYPE | must be NOT NULL
+   --### Return
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |     | wdx_log_rt |  wdx_log Record Type
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   FUNCTION rt (p_id IN wdx_log.id%TYPE)
+      RETURN wdx_log_rt;
 
-    /**
-    --## Function Name: RT_FOR_UPDATE
-    --### Description:
-    --       This is a table encapsulation function designed to retrieve information
-             from the wdx_log table while placing a lock on it for a potential
-             update/delete. Do not use this for updates in web based apps, instead use the 
-             rt_for_web_update function to get a FOR_WEB_UPDATE_RT record which
-             includes all of the tables columns along with an md5 checksum for use in the
-             web_upd and web_del procedures.
-    --
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    |p_id | wdx_log.id%TYPE | must be NOT NULL         
-    --### Return
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    |     | wdx_log_rt |  wdx_log Record Type 
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   FUNCTION rt_for_update (
-     p_id     IN      wdx_log.id%TYPE)
-      RETURN wdx_log_rt ;
+   /**
+   --## Function Name: RT_FOR_UPDATE
+   --### Description:
+   --       This is a table encapsulation function designed to retrieve information
+            from the wdx_log table while placing a lock on it for a potential
+            update/delete. Do not use this for updates in web based apps, instead use the
+            rt_for_web_update function to get a FOR_WEB_UPDATE_RT record which
+            includes all of the tables columns along with an md5 checksum for use in the
+            web_upd and web_del procedures.
+   --
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |p_id | wdx_log.id%TYPE | must be NOT NULL
+   --### Return
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |     | wdx_log_rt |  wdx_log Record Type
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   FUNCTION rt_for_update (p_id IN wdx_log.id%TYPE)
+      RETURN wdx_log_rt;
 
-    /**
-    --## Function Name: TT
-    --### Description:
-    --       This is a table encapsulation function designed to retrieve information from the wdx_log table.
-    --       This function return Record Table as PIPELINED Function
-    --
-    --### IN Paramters
-    --  | Name | Type | Description
-    --  | -- | -- | --
-    --    |p_id | wdx_log.id%TYPE | must be NOT NULL     
-    --### Return
-    --  | Name | Type | Description
-    --  | -- | -- | --
-    --  |     | wdx_log_tt |  wdx_log Table Record Type 
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   FUNCTION tt (
-        p_id     IN      wdx_log.id%TYPE DEFAULT NULL)
-   RETURN wdx_log_tt
-   PIPELINED;
+   /**
+   --## Function Name: TT
+   --### Description:
+   --       This is a table encapsulation function designed to retrieve information from the wdx_log table.
+   --       This function return Record Table as PIPELINED Function
+   --
+   --### IN Paramters
+   --  | Name | Type | Description
+   --  | -- | -- | --
+   --    |p_id | wdx_log.id%TYPE | must be NOT NULL
+   --### Return
+   --  | Name | Type | Description
+   --  | -- | -- | --
+   --  |     | wdx_log_tt |  wdx_log Table Record Type
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   FUNCTION tt (p_id IN wdx_log.id%TYPE DEFAULT NULL )
+      RETURN wdx_log_tt
+      PIPELINED;
 
-     /**
-    --## Function Name: INS
-    --### Description:
-    --      This is a table encapsulation function designed to insert a row into the wdx_log table.
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --   | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type 
-    --### Return
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    | p_wdx_log_rec | wdx_log_rt |  wdx_log Record Type 
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
+   /**
+  --## Function Name: INS
+  --### Description:
+  --      This is a table encapsulation function designed to insert a row into the wdx_log table.
+  --### IN Paramters
+  --    | Name | Type | Description
+  --    | -- | -- | --
+  --   | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
+  --### Return
+  --    | Name | Type | Description
+  --    | -- | -- | --
+  --    | p_wdx_log_rec | wdx_log_rt |  wdx_log Record Type
+  --### Amendments
+  --| When         | Who                      | What
+  --|--------------|--------------------------|------------------
+  --|13-AGO-2015 17:02   | DBAX | Created
+  */
    PROCEDURE ins (p_wdx_log_rec IN OUT wdx_log_rt);
 
-    /**
-    --## Function Name: UPD
-    --### Description:
-    --     his is a table encapsulation function designed to update a row in the wdx_log table.
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --   | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
-    --   | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update         
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   PROCEDURE upd (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN boolean := FALSE);
+   FUNCTION ins (p_wdx_log_rec IN OUT wdx_log_rt)
+      RETURN tapi_wdx_log.id;
 
-    /**
-    --## Function Name: UPD_ROWID
-    --### Description:
-    --     his is a table encapsulation function designed to update a row in the wdx_log table,
+   /**
+   --## Function Name: UPD
+   --### Description:
+   --     his is a table encapsulation function designed to update a row in the wdx_log table.
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --   | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
+   --   | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE upd (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN BOOLEAN := FALSE);
+
+   /**
+   --## Function Name: UPD_ROWID
+   --### Description:
+   --     his is a table encapsulation function designed to update a row in the wdx_log table,
+          access directly to the row by rowid
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --   | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
+   --   | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE upd_rowid (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN BOOLEAN := FALSE);
+
+   /**
+   --## Function Name: WEB_UPD
+   --### Description:
+   --      This is a table encapsulation function designed to update a row
+           in the wdx_log table whith optimistic lock validation
+   --### IN Paramters
+   --  | Name | Type | Description
+   --  | -- | -- | --
+   --  | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
+   --  | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE web_upd (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN BOOLEAN := FALSE);
+
+   /**
+   --## Function Name: WEB_UPD_ROWID
+   --### Description:
+   --      This is a table encapsulation function designed to update a row
+           in the wdx_log table whith optimistic lock validation
            access directly to the row by rowid
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --   | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
-    --   | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update         
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   PROCEDURE upd_rowid (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN boolean := FALSE);
-      
-    /**
-    --## Function Name: WEB_UPD
-    --### Description:
-    --      This is a table encapsulation function designed to update a row
-            in the wdx_log table whith optimistic lock validation
-    --### IN Paramters
-    --  | Name | Type | Description
-    --  | -- | -- | --
-    --  | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
-    --  | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update  
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   PROCEDURE web_upd (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN boolean := FALSE);
-   
-    /**
-    --## Function Name: WEB_UPD_ROWID
-    --### Description:
-    --      This is a table encapsulation function designed to update a row
-            in the wdx_log table whith optimistic lock validation
-            access directly to the row by rowid
-    --### IN Paramters
-    --  | Name | Type | Description
-    --  | -- | -- | --
-    --  | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
-    --  | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update  
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   PROCEDURE web_upd_rowid (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN boolean := FALSE);   
-   
-    /**
-    --## Function Name: DEL
-    --### Description:
-    --       This is a table encapsulation function designed to delete a row from the wdx_log table.
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --   |p_id | wdx_log.id%TYPE | must be NOT NULL  
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   PROCEDURE del (
-        p_id     IN      wdx_log.id%TYPE
-          );
+   --### IN Paramters
+   --  | Name | Type | Description
+   --  | -- | -- | --
+   --  | p_wdx_log_rec | wdx_log_rt| wdx_log Record Type
+   --  | p_ignore_nulls | BOOLEAN | IF TRUE then null values are ignored in the update
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE web_upd_rowid (p_wdx_log_rec IN wdx_log_rt, p_ignore_nulls IN BOOLEAN := FALSE);
 
-    /**
-    --## Function Name: DEL_ROWID
-    --### Description:
-    --       This is a table encapsulation function designed to delete a row from the wdx_log table.
-             Access directly to the row by rowid
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    |P_ROWID | VARCHAR2(64)| must be NOT NULL
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-    PROCEDURE del_rowid (p_rowid IN VARCHAR2);
+   /**
+   --## Function Name: DEL
+   --### Description:
+   --       This is a table encapsulation function designed to delete a row from the wdx_log table.
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --   |p_id | wdx_log.id%TYPE | must be NOT NULL
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE del (p_id IN wdx_log.id%TYPE);
+
+   /**
+   --## Function Name: DEL_ROWID
+   --### Description:
+   --       This is a table encapsulation function designed to delete a row from the wdx_log table.
+            Access directly to the row by rowid
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |P_ROWID | VARCHAR2(64)| must be NOT NULL
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE del_rowid (p_rowid IN VARCHAR2);
 
 
-    /**
-    --## Function Name: WEB_DEL
-    --### Description:
-    --       This is a table encapsulation function designed to delete a row from the wdx_log table
-    --       whith optimistic lock validation
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    |p_id | wdx_log.id%TYPE | must be NOT NULL  
-    --   | p_hash | HASH_T | must be NOT NULL    
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-   PROCEDURE web_del (
-        p_id     IN      wdx_log.id%TYPE   
-      , p_hash IN VARCHAR2);
+   /**
+   --## Function Name: WEB_DEL
+   --### Description:
+   --       This is a table encapsulation function designed to delete a row from the wdx_log table
+   --       whith optimistic lock validation
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |p_id | wdx_log.id%TYPE | must be NOT NULL
+   --   | p_hash | HASH_T | must be NOT NULL
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE web_del (p_id IN wdx_log.id%TYPE, p_hash IN VARCHAR2);
 
-    /**
-    --## Function Name: WEB_DEL_ROWID
-    --### Description:
-    --       This is a table encapsulation function designed to delete a row from the wdx_log table
-    --       whith optimistic lock validation, access directly to the row by rowid
-    --### IN Paramters
-    --    | Name | Type | Description
-    --    | -- | -- | --
-    --    |P_ROWID | VARCHAR2(64)| must be NOT NULL
-    --   | P_HASH | HASH_T | must be NOT NULL
-    --### Amendments
-    --| When         | Who                      | What
-    --|--------------|--------------------------|------------------
-    --|13-AGO-2015 17:02   | DBAX | Created
-    */
-    PROCEDURE web_del_rowid (p_rowid IN varchar2,p_hash IN varchar2);
+   /**
+   --## Function Name: WEB_DEL_ROWID
+   --### Description:
+   --       This is a table encapsulation function designed to delete a row from the wdx_log table
+   --       whith optimistic lock validation, access directly to the row by rowid
+   --### IN Paramters
+   --    | Name | Type | Description
+   --    | -- | -- | --
+   --    |P_ROWID | VARCHAR2(64)| must be NOT NULL
+   --   | P_HASH | HASH_T | must be NOT NULL
+   --### Amendments
+   --| When         | Who                      | What
+   --|--------------|--------------------------|------------------
+   --|13-AGO-2015 17:02   | DBAX | Created
+   */
+   PROCEDURE web_del_rowid (p_rowid IN VARCHAR2, p_hash IN VARCHAR2);
 
-    FUNCTION count_user_page_views(p_username in wdx_log.log_user%TYPE) return pls_integer;
-            
-
+   FUNCTION count_user_page_views (p_username IN wdx_log.log_user%TYPE)
+      RETURN PLS_INTEGER;
 END tapi_wdx_log;
 /
-
-
