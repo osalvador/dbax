@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE BODY DBAX.pk_c_dbax_console
+CREATE OR REPLACE PACKAGE BODY pk_c_dbax_console
 AS
    FUNCTION f_admin_user
       RETURN BOOLEAN
@@ -43,19 +43,44 @@ AS
       dbax_core.g$view ('count_logs') := tapi_wdx_log.num_rows;
 
       --activityChartTime
-      l_cursor    := pk_m_dbax_console.get_activity_chart_time (480, 30);
-      dbax_core.g$view ('activityChartTimes') :=
-         json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+      -- Testing cache
+      --IF dbax_ctx_api.get_parameter ('activityChartTimes') IS NULL
+      --THEN
+         l_cursor    := pk_m_dbax_console.get_activity_chart_time (480, 30);
+         dbax_core.g$view ('activityChartTimes') :=
+            json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+
+         --Set data to cache
+        -- dbax_ctx_api.set_parameter ('activityChartTimes', dbax_core.g$view ('activityChartTimes'));
+      --ELSE
+         --dbax_core.g$view ('activityChartTimes') := dbax_ctx_api.get_parameter ('activityChartTimes');
+      --END IF;
 
       --activityChartData
-      l_cursor    := pk_m_dbax_console.get_activity_chart_data (480, 30);
-      dbax_core.g$view ('activityChartData') :=
-         json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+      --IF dbax_ctx_api.get_parameter ('activityChartData') IS NULL
+      --THEN
+         l_cursor    := pk_m_dbax_console.get_activity_chart_data (480, 30);
+         dbax_core.g$view ('activityChartData') :=
+            json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+
+         --Set data to cache
+         --dbax_ctx_api.set_parameter ('activityChartData', dbax_core.g$view ('activityChartData'));
+      --ELSE
+         --dbax_core.g$view ('activityChartData') := dbax_ctx_api.get_parameter ('activityChartData');
+      --END IF;
 
       --Browser usage
-      l_cursor    := pk_m_dbax_console.get_browser_usage_chart_data (480);
-      dbax_core.g$view ('pieChartValues') :=
-         json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+      --IF dbax_ctx_api.get_parameter ('pieChartValues') IS NULL
+      --THEN         
+         l_cursor    := pk_m_dbax_console.get_browser_usage_chart_data (480);
+         dbax_core.g$view ('pieChartValues') :=
+            json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+
+         --Set data to cache
+         --dbax_ctx_api.set_parameter ('pieChartValues', dbax_core.g$view ('pieChartValues'));
+      --ELSE
+         --dbax_core.g$view ('pieChartValues') := dbax_ctx_api.get_parameter ('pieChartValues');
+      --END IF;
 
       dbax_core.load_view ('index');
    END index_;
@@ -1809,7 +1834,7 @@ AS
 
          l_file      := dbax_document.get_file_content (l_real_file_name);
          l_clob      := dbax_document.blob2clob (l_file);
-          
+
 
          --Delete file
          dbax_document.del (l_real_file_name, dbax_core.g$appid);
@@ -1870,7 +1895,9 @@ AS
 
          --If compile is true
          IF dbax_utils.get (dbax_core.g$post, 'compile') = 'true'
-         OR (dbax_core.g$parameter.EXISTS (2) AND dbax_core.g$parameter (2) IS NOT NULL AND dbax_core.g$parameter (2) = 'compile') 
+            OR (    dbax_core.g$parameter.EXISTS (2)
+                AND dbax_core.g$parameter (2) IS NOT NULL
+                AND dbax_core.g$parameter (2) = 'compile')
          THEN
             --Compile
             BEGIN
