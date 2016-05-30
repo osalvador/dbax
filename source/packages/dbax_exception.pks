@@ -1,9 +1,3 @@
---
--- DBAX_EXCEPTION  (Package) 
---
---  Dependencies: 
---   STANDARD (Package)
---
 CREATE OR REPLACE PACKAGE      dbax_exception
 AS
    /**

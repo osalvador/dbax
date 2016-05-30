@@ -80,6 +80,11 @@ AS
       l_properties_rt.VALUE := 'dbax_' || LOWER (l_application_rt.appid);
       l_properties_rt.description := 'Session cookie name.';
       properties_ins (l_properties_rt);
+      --
+      l_properties_rt.key := '500_error_style';
+      l_properties_rt.VALUE := 'DebugStyle';
+      l_properties_rt.description := 'Posible values: DebugStyle, UserStyle';
+      properties_ins (l_properties_rt);      
 
       /*
       * Create Request validation function
