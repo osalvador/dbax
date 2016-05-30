@@ -207,6 +207,20 @@ AS
       -- IF METHOD is GET load view else create application
       IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
       THEN
+          CASE
+            WHEN UPPER (dbax_core.g$parameter (1)) = 'TEMPLATE'
+            THEN
+               dbax_core.g$view ('app_type') := 'TEMPLATE';
+               dbax_core.g$view ('app_type_desc') := 'Template';
+            WHEN UPPER (dbax_core.g$parameter (1)) = 'ADVANCED'
+            THEN
+               dbax_core.g$view ('app_type') := 'ADVANCED';
+               dbax_core.g$view ('app_type_desc') := 'Advanced Application';
+            ELSE
+               dbax_core.g$view ('app_type') := 'APP';
+               dbax_core.g$view ('app_type_desc') := 'Application';
+          END CASE;                 
+         
          dbax_core.load_view ('newApp');
          RETURN;
       ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
@@ -215,8 +229,9 @@ AS
          l_application_rt.appid := UPPER (dbax_utils.get (dbax_core.g$post, 'new_appid'));
          l_application_rt.name := dbax_utils.get (dbax_core.g$post, 'new_name');
          l_application_rt.description := dbax_utils.get (dbax_core.g$post, 'new_desc');
+         l_application_rt.app_type := dbax_utils.get (dbax_core.g$post, 'new_app_type');
          l_appid_template := dbax_utils.get (dbax_core.g$post, 'new_appid_template');
-
+         
          IF dbax_utils.get (dbax_core.g$post, 'new_active') = 'on'
          THEN
             l_application_rt.active := 'Y';
@@ -237,13 +252,6 @@ AS
       ELSE
          NULL;
       END IF;
-   EXCEPTION
-      WHEN OTHERS
-      THEN
-         l_json.put ('cod_error', SQLCODE);
-         l_json.put ('msg_error', SQLERRM);
-         dbax_log.error (SQLCODE || ' ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
-         RAISE;
    END new_app;
 
    PROCEDURE edit_app
@@ -442,6 +450,20 @@ AS
 
       IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
       THEN
+          CASE
+            WHEN UPPER (dbax_core.g$parameter (1)) = 'TEMPLATE'
+            THEN
+               dbax_core.g$view ('app_type') := 'TEMPLATE';
+               dbax_core.g$view ('app_type_desc') := 'Template';
+            WHEN UPPER (dbax_core.g$parameter (1)) = 'ADVANCED'
+            THEN
+               dbax_core.g$view ('app_type') := 'ADVANCED';
+               dbax_core.g$view ('app_type_desc') := 'Advanced Application';
+            ELSE
+               dbax_core.g$view ('app_type') := 'APP';
+               dbax_core.g$view ('app_type_desc') := 'Application';
+          END CASE;          
+         
          dbax_core.load_view ('importApplication');
          RETURN;
       ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
@@ -504,6 +526,20 @@ AS
 
       IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
       THEN
+          CASE
+            WHEN UPPER (dbax_core.g$parameter (1)) = 'TEMPLATE'
+            THEN
+               dbax_core.g$view ('app_type') := 'TEMPLATE';
+               dbax_core.g$view ('app_type_desc') := 'Template';
+            WHEN UPPER (dbax_core.g$parameter (1)) = 'ADVANCED'
+            THEN
+               dbax_core.g$view ('app_type') := 'ADVANCED';
+               dbax_core.g$view ('app_type_desc') := 'Advanced Application';
+            ELSE
+               dbax_core.g$view ('app_type') := 'APP';
+               dbax_core.g$view ('app_type_desc') := 'Application';
+          END CASE;    
+         
          dbax_core.load_view ('exportApplication');
          RETURN;
       ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'

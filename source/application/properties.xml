@@ -43,7 +43,7 @@
  <ROW>
   <APPID>CONSOLE</APPID>
   <KEY>resources_url</KEY>
-  <VALUE>/resources</VALUE>
+  <VALUE>http://dbax.eroski.es/resources/AdminLTE2</VALUE>
   <DESCRIPTION>Resources location (images, js, css etc...)</DESCRIPTION>
   <CREATED_BY>-1</CREATED_BY>
   <CREATED_DATE>2015-07-17T16:18:38</CREATED_DATE>

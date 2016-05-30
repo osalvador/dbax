@@ -11,7 +11,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Export Application            
+            Export ${app_type_desc}
           </h1>
           <ol class="breadcrumb">
              <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -42,8 +42,8 @@
                             <div class="col-sm-10">
                               <div class="input-group">
                                 <select class="form-control" id="appId" name="appid">                                  
-                                  <%  FOR c1 IN (SELECT appid from table (tapi_wdx_applications.tt)) LOOP %>
-                                      <option> <%= c1.appid%></option>                                        
+                                  <%  FOR c1 IN (SELECT appid from table (tapi_wdx_applications.tt) where app_type = '${app_type}') LOOP %>
+                                      <option> <%= c1.appid %></option>
                                   <% END LOOP;%>                                
                                 </select>
                               <div class="input-group-addon"><i class="fa fa-rocket"></i></div>

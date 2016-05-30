@@ -14,7 +14,8 @@ IS
    SUBTYPE name IS wdx_applications.name%TYPE;
    SUBTYPE description IS wdx_applications.description%TYPE;
    SUBTYPE active IS wdx_applications.active%TYPE;
-   SUBTYPE access_control IS wdx_applications.access_control%TYPE;
+   SUBTYPE app_type IS wdx_applications.app_type%TYPE;
+   SUBTYPE access_control IS wdx_applications.access_control%TYPE;   
    SUBTYPE auth_scheme IS wdx_applications.auth_scheme%TYPE;
    SUBTYPE created_by IS wdx_applications.created_by%TYPE;
    SUBTYPE created_date IS wdx_applications.created_date%TYPE;
@@ -29,6 +30,7 @@ IS
             name wdx_applications.name%TYPE,
             description wdx_applications.description%TYPE,
             active wdx_applications.active%TYPE,
+            app_type wdx_applications.app_type%TYPE,
             access_control wdx_applications.access_control%TYPE,
             auth_scheme wdx_applications.auth_scheme%TYPE,
             created_by wdx_applications.created_by%TYPE,

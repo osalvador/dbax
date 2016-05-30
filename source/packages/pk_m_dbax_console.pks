@@ -21,7 +21,7 @@ AS
 
 
    PROCEDURE new_application (p_application_rt   IN tapi_wdx_applications.wdx_applications_rt
-                            , p_appid_template   IN tapi_wdx_applications.appid DEFAULT 'DEFAULT' );
+                            , p_appid_template   IN tapi_wdx_applications.appid DEFAULT NULL );
 
    PROCEDURE del_application (p_appid IN tapi_wdx_applications.appid);
 

@@ -19,6 +19,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
             name,
             description,
             active,
+            app_type,
             access_control,
             auth_scheme,
             created_by,
@@ -40,6 +41,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
              name,
              description,
              active,
+             app_type,
              access_control,
              auth_scheme,
              created_by,
@@ -84,6 +86,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
             name||
             description||
             active||
+            app_type||
             access_control||
             auth_scheme||
             created_by||
@@ -122,6 +125,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
             name||
             description||
             active||
+            app_type || 
             access_control||
             auth_scheme||
             created_by||
@@ -218,6 +222,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
               l_wdx_applications_rec.name := c1.name;
               l_wdx_applications_rec.description := c1.description;
               l_wdx_applications_rec.active := c1.active;
+              l_wdx_applications_rec.app_type := c1.app_type;
               l_wdx_applications_rec.access_control := c1.access_control;
               l_wdx_applications_rec.auth_scheme := c1.auth_scheme;
               l_wdx_applications_rec.created_by := c1.created_by;
@@ -250,6 +255,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
         l_rowtype.name := ins.p_wdx_applications_rec.name;
         l_rowtype.description := ins.p_wdx_applications_rec.description;
         l_rowtype.active := ins.p_wdx_applications_rec.active;
+        l_rowtype.app_type := NVL(ins.p_wdx_applications_rec.app_type,'APP');
         l_rowtype.access_control := ins.p_wdx_applications_rec.access_control;
         l_rowtype.auth_scheme := ins.p_wdx_applications_rec.auth_scheme;
         l_rowtype.created_by := ins.p_wdx_applications_rec.created_by;
@@ -276,6 +282,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                 name = NVL(p_wdx_applications_rec.name,name),
                 description = NVL(p_wdx_applications_rec.description,description),
                 active = NVL(p_wdx_applications_rec.active,active),
+                app_type = NVL(p_wdx_applications_rec.app_type,app_type),
                 access_control = NVL(p_wdx_applications_rec.access_control,access_control),
                 auth_scheme = NVL(p_wdx_applications_rec.auth_scheme,auth_scheme),
                 modified_by = NVL(dbax_security.get_username(dbax_core.g$appid),USER),
@@ -289,6 +296,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                 name = p_wdx_applications_rec.name,
                 description = p_wdx_applications_rec.description,
                 active = p_wdx_applications_rec.active,
+                app_type = p_wdx_applications_rec.app_type,
                 access_control = p_wdx_applications_rec.access_control,
                 auth_scheme = p_wdx_applications_rec.auth_scheme,
                 modified_by = NVL(dbax_security.get_username(dbax_core.g$appid),USER),
@@ -321,6 +329,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                 name = NVL(p_wdx_applications_rec.name,name),
                 description = NVL(p_wdx_applications_rec.description,description),
                 active = NVL(p_wdx_applications_rec.active,active),
+                app_type = NVL(p_wdx_applications_rec.app_type,app_type),
                 access_control = NVL(p_wdx_applications_rec.access_control,access_control),
                 auth_scheme = NVL(p_wdx_applications_rec.auth_scheme,auth_scheme),
                 modified_by = NVL(dbax_core.g$username,USER),
@@ -332,6 +341,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                 name = p_wdx_applications_rec.name,
                 description = p_wdx_applications_rec.description,
                 active = p_wdx_applications_rec.active,
+                app_type = p_wdx_applications_rec.app_type,
                 access_control = p_wdx_applications_rec.access_control,
                 auth_scheme = p_wdx_applications_rec.auth_scheme,
                 modified_by = NVL(dbax_core.g$username,USER),
@@ -377,6 +387,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                        name = NVL(p_wdx_applications_rec.name,name),
                        description = NVL(p_wdx_applications_rec.description,description),
                        active = NVL(p_wdx_applications_rec.active,active),
+                       app_type = NVL(p_wdx_applications_rec.app_type,app_type),
                        access_control = NVL(p_wdx_applications_rec.access_control,access_control),
                        auth_scheme = NVL(p_wdx_applications_rec.auth_scheme,auth_scheme),
                        modified_by = NVL(dbax_core.g$username,USER),
@@ -388,6 +399,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                        name = p_wdx_applications_rec.name,
                        description = p_wdx_applications_rec.description,
                        active = p_wdx_applications_rec.active,
+                       app_type = p_wdx_applications_rec.app_type,
                        access_control = p_wdx_applications_rec.access_control,
                        auth_scheme = p_wdx_applications_rec.auth_scheme,
                        modified_by = NVL(dbax_core.g$username,USER),
@@ -435,6 +447,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                        name = NVL(p_wdx_applications_rec.name,name),
                        description = NVL(p_wdx_applications_rec.description,description),
                        active = NVL(p_wdx_applications_rec.active,active),
+                       app_type = NVL(p_wdx_applications_rec.app_type,app_type),
                        access_control = NVL(p_wdx_applications_rec.access_control,access_control),
                        auth_scheme = NVL(p_wdx_applications_rec.auth_scheme,auth_scheme),
                        modified_by = NVL(dbax_core.g$username,USER),
@@ -446,6 +459,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                        name = p_wdx_applications_rec.name,
                        description = p_wdx_applications_rec.description,
                        active = p_wdx_applications_rec.active,
+                       app_type = p_wdx_applications_rec.app_type,
                        access_control = p_wdx_applications_rec.access_control,
                        auth_scheme = p_wdx_applications_rec.auth_scheme,
                        modified_by = NVL(dbax_core.g$username,USER),
@@ -611,6 +625,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
                                       "NAME"            VARCHAR2(50)   PATH 'NAME',
                                       "DESCRIPTION"     VARCHAR2(300)  PATH 'DESCRIPTION',
                                       "ACTIVE"          VARCHAR2(1)    PATH 'ACTIVE',
+                                      "APP_TYPE"        VARCHAR2(50)   PATH 'APP_TYPE',
                                       "ACCESS_CONTROL"  VARCHAR2(50)   PATH 'ACCESS_CONTROL',
                                       "AUTH_SCHEME"     VARCHAR2(255)  PATH 'AUTH_SCHEME',
                                       "CREATED_BY"      VARCHAR2(100)  PATH 'CREATED_BY',
@@ -623,6 +638,7 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_applications IS
          l_wdx_applications_rec.name := c1.name;
          l_wdx_applications_rec.description := c1.description;
          l_wdx_applications_rec.active := c1.active;
+         l_wdx_applications_rec.app_type := c1.app_type;
          l_wdx_applications_rec.access_control := c1.access_control;
          l_wdx_applications_rec.auth_scheme := c1.auth_scheme;
          l_wdx_applications_rec.created_by := c1.created_by;

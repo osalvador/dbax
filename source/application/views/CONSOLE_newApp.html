@@ -18,7 +18,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            <i class="fa fa-rocket"></i> New Application
+            <i class="fa fa-rocket"></i> New ${app_type_desc}
           </h1>
           <ol class="breadcrumb">
              <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -31,7 +31,7 @@
         <section class="content">
             <div class="box box-solid box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">New Application</h3>
+                    <h3 class="box-title">New ${app_type_desc}</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">                    
                     
@@ -108,7 +108,7 @@
                                               p('<option>'|| c1.scheme_name ||'</option>');
                                           END IF;
                                       END LOOP;
-                                  ?>                                
+                                  ?>
                                 </select>
                               <div class="input-group-addon"><i class="fa fa-unlock-alt"></i></div>
                             </div>
@@ -117,25 +117,21 @@
                     <hr>
                     <h4>Application Template</h4>
                     <div class="form-group">
-                      <label for="new_appid_template" class="col-sm-2 control-label">*Appid Template</label>
+                      <label for="new_appid_template" class="col-sm-2 control-label">Appid Template</label>
                       <div class="col-sm-10">
                         <div class="input-group">
-                            <select class="form-control" id="new_appid_template" name="new_appid_template" required>
-                                <?dbax
-                                  FOR c1 IN ( SELECT    appid, name
-                                  FROM       table (tapi_wdx_applications.tt)
-                                  WHERE appid <> 'CONSOLE'
-                                  ORDER BY  appid)
-                                  LOOP                                                                         
-                                    p('<option value="'||c1.appid||'">'|| c1.appid ||', '|| c1.name||'</option>');                                          
-                                  END LOOP;
-                                ?>                                
-                                </select>                              
+                            <select class="form-control" id="new_appid_template" name="new_appid_template">
+                                  <option></option>
+                                  <% for c1 in (select appid, name from table(tapi_wdx_applications.tt) where app_type = 'TEMPLATE' order by appid) loop %>
+                                     <option value="<%=c1.appid %>"><%=c1.appid %>, <%=c1.name %></option>
+                                  <% end loop; %>
+                                </select>
                               <div class="input-group-addon"><i class="fa fa-bars"></i></div>
                          </div>
                       </div>
                     </div>
-                                        
+                    
+                    <input type="hidden" name="new_app_type" value="${app_type}">
                    </form>
                 </div><!-- /.box-body -->
                   

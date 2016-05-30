@@ -11,7 +11,7 @@ AS
    END properties_ins;
 
    PROCEDURE new_application (p_application_rt   IN tapi_wdx_applications.wdx_applications_rt
-                            , p_appid_template   IN tapi_wdx_applications.appid DEFAULT 'DEFAULT' )
+                            , p_appid_template   IN tapi_wdx_applications.appid DEFAULT NULL )
    AS
       l_application_rt   tapi_wdx_applications.wdx_applications_rt;
       l_properties_rt    tapi_wdx_properties.wdx_properties_rt;
@@ -47,13 +47,16 @@ AS
       l_properties_rt.modified_date := SYSDATE;
 
       --Create template properties
-      FOR c1 IN (SELECT   * FROM table (tapi_wdx_properties.tt (p_appid_template)))
-      LOOP
-         l_properties_rt.key := c1.key;
-         l_properties_rt.VALUE := c1.VALUE;
-         l_properties_rt.description := c1.description;
-         tapi_wdx_properties.ins (l_properties_rt);
-      END LOOP;
+      IF p_appid_template IS NOT NULL
+      THEN
+          FOR c1 IN (SELECT   * FROM table (tapi_wdx_properties.tt (p_appid_template)))
+          LOOP
+             l_properties_rt.key := c1.key;
+             l_properties_rt.VALUE := c1.VALUE;
+             l_properties_rt.description := c1.description;
+             tapi_wdx_properties.ins (l_properties_rt);
+          END LOOP;
+      END IF;
 
       --Create mondatory properties
       l_properties_rt.key := 'base_path';
@@ -107,89 +110,92 @@ AS
       l_views_rt.modified_date := SYSDATE;
 
       --Create template views
-      FOR c1 IN (SELECT   * FROM table (tapi_wdx_views.tt (p_appid_template)))
-      LOOP
-         l_views_rt.name := c1.name;
-         l_views_rt.title := c1.title;
-         l_views_rt.source := c1.source;
-         l_views_rt.description := c1.description;
-         l_views_rt.visible := c1.visible;
-         tapi_wdx_views.ins (l_views_rt);
-      END LOOP;
-      
-      --Compile views
-      dbax_teplsql.compile_all(l_application_rt.appid,l_error_templace);
+      IF p_appid_template IS NOT NULL
+      THEN
+          FOR c1 IN (SELECT   * FROM table (tapi_wdx_views.tt (p_appid_template)))
+          LOOP
+             l_views_rt.name := c1.name;
+             l_views_rt.title := c1.title;
+             l_views_rt.source := c1.source;
+             l_views_rt.description := c1.description;
+             l_views_rt.visible := c1.visible;
+             tapi_wdx_views.ins (l_views_rt);
+          END LOOP;
+          
+          --Compile views
+          dbax_teplsql.compile_all(l_application_rt.appid,l_error_templace);
 
-      /*
-      * Create Routes
-      */
-      l_routes_rt.appid := l_application_rt.appid;
-      l_routes_rt.created_by := dbax_core.g$username;
-      l_routes_rt.created_date := SYSDATE;
-      l_routes_rt.modified_by := dbax_core.g$username;
-      l_routes_rt.modified_date := SYSDATE;
+          /*
+          * Create Routes
+          */
+          l_routes_rt.appid := l_application_rt.appid;
+          l_routes_rt.created_by := dbax_core.g$username;
+          l_routes_rt.created_date := SYSDATE;
+          l_routes_rt.modified_by := dbax_core.g$username;
+          l_routes_rt.modified_date := SYSDATE;
 
-      FOR c1 IN (  SELECT   *
-                     FROM   table (tapi_wdx_map_routes.tt (p_appid_template))
-                 ORDER BY   priority)
-      LOOP
-         l_routes_rt.route_name := REPLACE (c1.route_name, '${appid}', l_application_rt.appid);
-         l_routes_rt.priority := c1.priority;
-         l_routes_rt.url_pattern := REPLACE (c1.url_pattern, '${appid}', l_application_rt.appid);
-         l_routes_rt.controller_method := REPLACE (c1.controller_method, '${appid}', l_application_rt.appid);
-         l_routes_rt.view_name := REPLACE (c1.view_name, '${appid}', l_application_rt.appid);
-         l_routes_rt.description := REPLACE (c1.description, '${appid}', l_application_rt.appid);
-         l_routes_rt.active := c1.active;
-         tapi_wdx_map_routes.ins (l_routes_rt);
-      END LOOP;
+          FOR c1 IN (  SELECT   *
+                         FROM   table (tapi_wdx_map_routes.tt (p_appid_template))
+                     ORDER BY   priority)
+          LOOP
+             l_routes_rt.route_name := REPLACE (c1.route_name, '${appid}', l_application_rt.appid);
+             l_routes_rt.priority := c1.priority;
+             l_routes_rt.url_pattern := REPLACE (c1.url_pattern, '${appid}', l_application_rt.appid);
+             l_routes_rt.controller_method := REPLACE (c1.controller_method, '${appid}', l_application_rt.appid);
+             l_routes_rt.view_name := REPLACE (c1.view_name, '${appid}', l_application_rt.appid);
+             l_routes_rt.description := REPLACE (c1.description, '${appid}', l_application_rt.appid);
+             l_routes_rt.active := c1.active;
+             tapi_wdx_map_routes.ins (l_routes_rt);
+          END LOOP;
 
-      /*
-      * Create roles
-      */
-      l_roles_rt.appid := l_application_rt.appid;
-      l_roles_rt.created_by := dbax_core.g$username;
-      l_roles_rt.created_date := SYSDATE;
-      l_roles_rt.modified_by := dbax_core.g$username;
-      l_roles_rt.modified_date := SYSDATE;
+          /*
+          * Create roles
+          */
+          l_roles_rt.appid := l_application_rt.appid;
+          l_roles_rt.created_by := dbax_core.g$username;
+          l_roles_rt.created_date := SYSDATE;
+          l_roles_rt.modified_by := dbax_core.g$username;
+          l_roles_rt.modified_date := SYSDATE;
 
-      FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles.tt (p_appid => p_appid_template)))
-      LOOP
-         l_roles_rt.rolename := c1.rolename;
-         l_roles_rt.role_descr := c1.role_descr;
-         tapi_wdx_roles.ins (l_roles_rt);
-      END LOOP;
+          FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles.tt (p_appid => p_appid_template)))
+          LOOP
+             l_roles_rt.rolename := c1.rolename;
+             l_roles_rt.role_descr := c1.role_descr;
+             tapi_wdx_roles.ins (l_roles_rt);
+          END LOOP;
 
-      /*
-      * Create Permissions
-      */
-      l_permissions_rt.appid := l_application_rt.appid;
-      l_permissions_rt.created_by := dbax_core.g$username;
-      l_permissions_rt.created_date := SYSDATE;
-      l_permissions_rt.modified_by := dbax_core.g$username;
-      l_permissions_rt.modified_date := SYSDATE;
+          /*
+          * Create Permissions
+          */
+          l_permissions_rt.appid := l_application_rt.appid;
+          l_permissions_rt.created_by := dbax_core.g$username;
+          l_permissions_rt.created_date := SYSDATE;
+          l_permissions_rt.modified_by := dbax_core.g$username;
+          l_permissions_rt.modified_date := SYSDATE;
 
-      FOR c1 IN (SELECT   * FROM table (tapi_wdx_permissions.tt (p_appid => p_appid_template)))
-      LOOP
-         l_permissions_rt.pmsname := c1.pmsname;
-         l_permissions_rt.pmsn_descr := c1.pmsn_descr;
-         tapi_wdx_permissions.ins (l_permissions_rt);
-      END LOOP;
+          FOR c1 IN (SELECT   * FROM table (tapi_wdx_permissions.tt (p_appid => p_appid_template)))
+          LOOP
+             l_permissions_rt.pmsname := c1.pmsname;
+             l_permissions_rt.pmsn_descr := c1.pmsn_descr;
+             tapi_wdx_permissions.ins (l_permissions_rt);
+          END LOOP;
 
-      /*
-      * Create roles permissions
-      */
-      l_roles_pmsn_rt.appid := l_application_rt.appid;
-      l_roles_pmsn_rt.created_by := dbax_core.g$username;
-      l_roles_pmsn_rt.created_date := SYSDATE;
-      l_roles_pmsn_rt.modified_by := dbax_core.g$username;
-      l_roles_pmsn_rt.modified_date := SYSDATE;
+          /*
+          * Create roles permissions
+          */
+          l_roles_pmsn_rt.appid := l_application_rt.appid;
+          l_roles_pmsn_rt.created_by := dbax_core.g$username;
+          l_roles_pmsn_rt.created_date := SYSDATE;
+          l_roles_pmsn_rt.modified_by := dbax_core.g$username;
+          l_roles_pmsn_rt.modified_date := SYSDATE;
 
-      FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles_pmsn.tt (p_appid => p_appid_template)))
-      LOOP
-         l_roles_pmsn_rt.rolename := c1.rolename;
-         l_roles_pmsn_rt.pmsname := c1.pmsname;
-         tapi_wdx_roles_pmsn.ins (l_roles_pmsn_rt);
-      END LOOP;
+          FOR c1 IN (SELECT   * FROM table (tapi_wdx_roles_pmsn.tt (p_appid => p_appid_template)))
+          LOOP
+             l_roles_pmsn_rt.rolename := c1.rolename;
+             l_roles_pmsn_rt.pmsname := c1.pmsname;
+             tapi_wdx_roles_pmsn.ins (l_roles_pmsn_rt);
+          END LOOP;
+      END IF;
 
       /*
       * Create application procedure
