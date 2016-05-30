@@ -1,10 +1,3 @@
---
--- TAPI_WDX_USERS_ROLES  (Package) 
---
---  Dependencies: 
---   STANDARD (Package)
---   WDX_USERS_ROLES (Table)
---
 CREATE OR REPLACE PACKAGE      tapi_wdx_users_roles
 IS
    /**
@@ -341,6 +334,25 @@ IS
     --|23-NOV-2015 12:02   | DBAX | Created
     */
     PROCEDURE web_del_rowid (p_rowid IN varchar2,p_hash IN varchar2);
+
+    /**
+    * Return the xml of application record in /ROWSET/ROW format
+    *
+    * @param    p_appid     the application id, must be not null
+    * @return   xmltype     the xml objetc with data
+    */
+    FUNCTION get_xml (p_appid IN wdx_users_roles.appid%TYPE)
+       RETURN XMLTYPE;
+
+    /**    
+    * Processes the p_xml paramter, and returns a record table as PIPELINED Function
+    * 
+    * @param    p_xml     the xml data object
+    * @return  wdx_users_roles     Table Record Type 
+    */
+    FUNCTION get_tt (p_xml IN XMLTYPE)
+       RETURN wdx_users_roles_tt
+       PIPELINED;
 
 
 END tapi_wdx_users_roles;

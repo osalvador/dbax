@@ -1,6 +1,3 @@
---
--- TAPI_WDX_USERS_ROLES  (Package Body) 
---
 CREATE OR REPLACE PACKAGE BODY      tapi_wdx_users_roles IS
 
    /**
@@ -564,6 +561,83 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_users_roles IS
      THEN
         raise_application_error (-20000 , 'Delete operation failed because the row is no longer in the database.');
    END web_del_rowid;
+   
+   FUNCTION get_xml (p_appid IN wdx_users_roles.appid%TYPE)
+      RETURN XMLTYPE
+   AS
+      l_refcursor   sys_refcursor;
+      l_dummy       VARCHAR2 (1);      
+      l_xmldata               XMLTYPE;
+      l_current_date_format   VARCHAR2 (100);
+   BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+
+      --If record not exists raise NO_DATA_FOUND
+      SELECT   NULL
+        INTO   l_dummy
+        FROM   wdx_users_roles
+       WHERE   appid = UPPER (p_appid) AND ROWNUM = 1;
+    
+      OPEN l_refcursor FOR
+         SELECT   *
+           FROM   wdx_users_roles
+          WHERE   appid = UPPER (p_appid);
+
+      l_xmldata   := xmltype (l_refcursor);
+
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
+
+      RETURN l_xmldata;
+   END get_xml;
+   
+   FUNCTION get_tt (p_xml IN XMLTYPE)
+      RETURN wdx_users_roles_tt
+      PIPELINED
+   IS
+      l_wdx_users_roles_rec   wdx_users_roles_rt;
+      l_current_date_format   VARCHAR2 (100);
+   BEGIN
+      SELECT   VALUE
+        INTO   l_current_date_format
+        FROM   nls_session_parameters
+       WHERE   parameter = 'NLS_DATE_FORMAT';
+
+      /* ISO 8601 date format*/
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''YYYY-MM-DD"T"HH24:MI:SS''';
+
+      FOR c1 IN (SELECT   xt.*
+                   FROM   XMLTABLE ('/ROWSET/ROW'
+                                    PASSING get_tt.p_xml
+                                    COLUMNS 
+                                          "USERNAME"       VARCHAR2(255)    PATH 'USERNAME',
+                                          "ROLENAME"       VARCHAR2(255)    PATH 'ROLENAME',
+                                          "APPID"          VARCHAR2(50)      PATH 'APPID',
+                                          "CREATED_BY"     VARCHAR2(100)   PATH 'CREATED_BY',
+                                          "CREATED_DATE"   VARCHAR2(20)    PATH 'CREATED_DATE',
+                                          "MODIFIED_BY"    VARCHAR2(100)   PATH 'MODIFIED_BY',
+                                          "MODIFIED_DATE"  VARCHAR2(20)    PATH 'MODIFIED_DATE'
+                                    ) xt)
+      LOOP
+          l_wdx_users_roles_rec.rolename := c1.rolename;
+          l_wdx_users_roles_rec.username := c1.username;
+          l_wdx_users_roles_rec.appid := c1.appid;
+          l_wdx_users_roles_rec.created_by := c1.created_by;
+          l_wdx_users_roles_rec.created_date := c1.created_date;
+          l_wdx_users_roles_rec.modified_by := c1.modified_by;
+          l_wdx_users_roles_rec.modified_date := c1.modified_date;
+          PIPE ROW (l_wdx_users_roles_rec);
+      END LOOP;
+
+      EXECUTE IMMEDIATE 'ALTER SESSION SET nls_date_format = ''' || l_current_date_format || '''';
+
+      RETURN;
+   END get_tt;   
    
 
 END tapi_wdx_users_roles;

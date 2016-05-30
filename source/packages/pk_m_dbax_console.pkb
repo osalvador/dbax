@@ -932,6 +932,16 @@ END;]';
             NULL;
       END;
 
+      /* Users x Roles */
+      BEGIN
+         l_xml_data  := tapi_wdx_users_roles.get_xml (p_appid).getclobval ();
+         as_zip.add1file (l_zipped_blob, 'users_roles.xml', as_zip.clob_to_blob (l_xml_data));
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            NULL;
+      END;
+
       /* Permissions */
       BEGIN
          l_xml_data  := tapi_wdx_permissions.get_xml (p_appid).getclobval ();
@@ -960,6 +970,7 @@ END;]';
    PROCEDURE import_security (p_zipped_blob IN BLOB, p_appid IN tapi_wdx_applications.appid)
    AS
       l_roles_rt         tapi_wdx_roles.wdx_roles_rt;
+      l_users_roles_rt   tapi_wdx_users_roles.wdx_users_roles_rt;
       l_permissions_rt   tapi_wdx_permissions.wdx_permissions_rt;
       l_roles_pmsn_rt    tapi_wdx_roles_pmsn.wdx_roles_pmsn_rt;
       --
@@ -997,6 +1008,38 @@ END;]';
             
          END LOOP;
       END IF;
+
+
+      /**
+      * Users x Roles
+      */
+      l_tmp_blob  := as_zip.get_file (p_zipped_blob, 'users_roles.xml');
+
+      IF l_tmp_blob IS NOT NULL
+      THEN
+         l_xml_data  := xmltype (as_zip.blob_to_clob (l_tmp_blob));
+
+         FOR c1 IN (SELECT   * FROM table (tapi_wdx_users_roles.get_tt (l_xml_data)))
+         LOOP
+            l_users_roles_rt := c1;
+
+            IF l_users_roles_rt.appid <> p_appid
+            THEN
+               RAISE e_different_application;
+            END IF;
+
+            --Upsert role
+            BEGIN
+               tapi_wdx_users_roles.ins (l_users_roles_rt);
+            EXCEPTION
+               WHEN DUP_VAL_ON_INDEX
+               THEN
+                  tapi_wdx_users_roles.upd (l_users_roles_rt);
+            END;
+            
+         END LOOP;
+      END IF;
+
 
       /**
       * Permissions
