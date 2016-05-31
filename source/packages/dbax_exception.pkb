@@ -66,7 +66,7 @@ AS
                </table>';
    END call_stack2html_table;
 
-   FUNCTION get_error_source_code (p_errorbacktrace IN VARCHAR2)
+   FUNCTION get_error_source_code (p_errorbacktrace IN VARCHAR2, p_errorstack IN VARCHAR2)
       RETURN VARCHAR2
    AS
       l_code_line   PLS_INTEGER;
@@ -99,47 +99,94 @@ AS
                       , 'n'
                       , 1);
 
-      FOR c1
-      IN (  SELECT   *
-              FROM   all_source
-             WHERE       name = l_name
-                     AND owner = l_owner
-                     AND line BETWEEN l_code_line - 8 AND l_code_line + 8
-                     AND name <> 'DBAX_CORE'
-          ORDER BY   TYPE, line)
-      LOOP
-         l_new_type  := c1.TYPE;
 
-         IF l_new_type <> l_old_type OR l_old_type IS NULL
-         THEN
-            IF l_code IS NOT NULL
+      --If the name is DBAX_TEPLSQL get view's compiled source
+      IF l_name = 'DBAX_TEPLSQL'
+      THEN
+         l_code_line :=
+            REGEXP_SUBSTR (p_errorstack
+                         , 'line (\d*),'
+                         , 1
+                         , 1
+                         , 'n'
+                         , 1);
+
+         l_code      := '<h3>View ' || dbax_core.g$view_name || '<small> compiled source code</small></h3>';
+         l_code      :=
+               l_code
+            || '<pre class="prettyprint linenums:'
+            || (l_code_line - 9)
+            || '"><code class="language-sql">...'
+            || CHR (10);
+
+         FOR c1
+         IN (SELECT   x.rn, x.compiled_source
+               FROM   wdx_views t
+                    , XMLTABLE ('/x/y' PASSING xmltype(REPLACE (   '<x><y>'
+                                || DBMS_XMLGEN.CONVERT (t.compiled_source, 0)
+                                || '</y></x>'
+                                                              ,CHR (10)
+                                                              ,'</y><y>')) COLUMNS rn FOR ORDINALITY, compiled_source
+                                VARCHAR2 (4000) PATH '/y') x
+              WHERE   t.name = dbax_core.g$view_name AND rn BETWEEN l_code_line - 8 AND l_code_line + 8)
+         LOOP
+            IF c1.rn = l_code_line
             THEN
-               l_code      := l_code || '...</code></pre>';
+               l_code      :=
+                     l_code
+                  || '<span class="operative">'
+                  || DBMS_XMLGEN.CONVERT (c1.compiled_source, 0)
+                  || ' </span>'
+                  || CHR (10);
+            ELSE
+               l_code      := l_code || DBMS_XMLGEN.CONVERT (c1.compiled_source, 0) || CHR (10);
+            END IF;
+         END LOOP;
+
+         l_code      := l_code || '...</code></pre>';
+      ELSE
+         FOR c1
+         IN (  SELECT   *
+                 FROM   all_source
+                WHERE       name = l_name
+                        AND owner = l_owner
+                        AND line BETWEEN l_code_line - 8 AND l_code_line + 8
+                        AND name <> 'DBAX_CORE'
+             ORDER BY   TYPE, line)
+         LOOP
+            l_new_type  := c1.TYPE;
+
+            IF l_new_type <> l_old_type OR l_old_type IS NULL
+            THEN
+               IF l_code IS NOT NULL
+               THEN
+                  l_code      := l_code || '...</code></pre>';
+               END IF;
+
+               l_code      := l_code || '<h3>' || c1.TYPE || ' <small> ' || l_owner || '.' || l_name || '</small></h3>';
+               l_code      :=
+                     l_code
+                  || '<pre class="prettyprint linenums:'
+                  || (l_code_line - 9)
+                  || '"><code class="language-sql">...'
+                  || CHR (10);
             END IF;
 
-            l_code      := l_code || '<h3>' || c1.TYPE || ' <small> ' || l_owner || '.' || l_name || '</small></h3>';
-            l_code      :=
-                  l_code
-               || '<pre class="prettyprint linenums:'
-               || (l_code_line - 9)
-               || '"><code class="language-sql">...'
-               || CHR (10);
-         END IF;
+            IF c1.line = l_code_line
+            THEN
+               l_code      :=
+                  l_code || '<span class="operative">' || REPLACE (c1.text, CHR (10)) || ' </span>' || CHR (10);
+            ELSE
+               l_code      := l_code || c1.text;
+            END IF;
 
-         IF c1.line = l_code_line
+            l_old_type  := l_new_type;
+         END LOOP;
+
+         IF l_code IS NOT NULL
          THEN
-            l_code      :=
-               l_code || '<span class="operative">' || REPLACE (c1.text, CHR (10)) || ' </span>' || CHR (10);
-         ELSE
-            l_code      := l_code || c1.text;
+            l_code      := l_code || '...</code></pre>';
          END IF;
-
-         l_old_type  := l_new_type;
-      END LOOP;
-
-      IF l_code IS NOT NULL
-      THEN
-         l_code      := l_code || '...</code></pre>';
       END IF;
 
       RETURN l_code;
@@ -151,7 +198,7 @@ AS
       l_html_error     VARCHAR2 (32767);
       --
       l_wdx_views_rt   tapi_wdx_views.wdx_views_rt;
-      l_log_id         pls_integer;
+      l_log_id         PLS_INTEGER;
    BEGIN
       --TODO Error level Reporting like PHP
       dbax_log.open_log ('debug');
@@ -171,10 +218,11 @@ AS
       dbax_log.error (dbax_core.g$view ('errorBacktrace'));
       dbax_log.error (dbax_core.g$view ('callStack'));
 
-      l_log_id := dbax_log.close_log;
+      l_log_id    := dbax_log.close_log;
 
       dbax_core.g$view ('logId') := l_log_id;
-      dbax_core.g$view ('code') := get_error_source_code (dbax_core.g$view ('errorBacktrace'));
+      dbax_core.g$view ('code') :=
+         get_error_source_code (dbax_core.g$view ('errorBacktrace'), dbax_core.g$view ('errorStack'));
 
       HTP.init;
       OWA_UTIL.mime_header ('text/html', FALSE, dbax_core.get_property ('ENCODING'));
@@ -252,7 +300,6 @@ AS
 </html>]';
             dbax_teplsql.execute (p_template => l_html_error);
       END;
-
    END raise;
 END dbax_exception;
 /

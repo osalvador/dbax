@@ -16,24 +16,11 @@ AS
    g$error   g_assoc_array;
 
    /**
-   --## Function Name: INTERPRETER
-   --### Description:
-   --       It is the interpreter DBAX. It is responsible for amically processing pl/sql code embedded in the HTML code.
-   --       It is also responsible for the bind variables by assigning value.
-   --       Returns a CLOB with the HTML processed.
-   --
-   --### IN Paramters
-   --    | Name | Type | Description
-   --    | -- | -- | --
-   --   | p_source | CLOB | HTML preprocessed with PL / SQL embedded
-   --### Return
-   --    | Name | Type | Description
-   --    | -- | -- | --
-   --   |   | CLOB | HTML processed
-   --### Amendments
-   --| When         | Who                      | What
-   --|--------------|--------------------------|------------------
-   --|02/02/2015    | Oscar Salvador Magallanes | Creacion del procedimiento
+   * Raise an HTTP 500 error to the user with their description. 
+   * If enabled, shows to the user all the error trace, as well as the line of code that caused the exception.
+   *
+   * @param     p_error_code        the user error code number
+   * @param     p_error_msg         the user error message text 
    */
    PROCEDURE raise (p_error_code IN NUMBER, p_error_msg IN VARCHAR2);
 
