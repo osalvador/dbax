@@ -424,8 +424,8 @@ END pk_c_dbax_${appid};]';
                              FROM   wdx_applications
                            UNION ALL
                            SELECT   'Auth Scheme'
-                                  , scheme_name name
-                                  , appid
+                                  , name
+                                  , '' appid
                                   , modified_by
                                   , modified_date
                              FROM   wdx_auth_schemes a
@@ -438,8 +438,8 @@ END pk_c_dbax_${appid};]';
                              FROM   wdx_documents a
                            UNION ALL
                            SELECT   'LDAP Settings'
-                                  , ldap_name
-                                  , appid
+                                  , name
+                                  , '' appid
                                   , modified_by
                                   , modified_date
                              FROM   wdx_ldap aa

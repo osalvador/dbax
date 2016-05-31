@@ -476,12 +476,17 @@ CREATE OR REPLACE PACKAGE BODY      tapi_wdx_users IS
                   )
     IS
     BEGIN
+    
+       
+        DELETE FROM   WDX_USER_OPTIONS
+        WHERE    username = del.p_username;
+        
+        DELETE FROM   WDX_USERS_ROLES
+        WHERE    username = del.p_username;
 
-       DELETE FROM   wdx_users
-             WHERE
-                  username = del.p_username
-                   ;
-
+        DELETE FROM   wdx_users
+        WHERE     username = del.p_username;
+        
        IF sql%ROWCOUNT != 1
        THEN
           RAISE e_del_failed;

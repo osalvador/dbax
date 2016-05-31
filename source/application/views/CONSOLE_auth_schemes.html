@@ -1,5 +1,5 @@
 <?dbax  
-    dbax_core.g$var('active_menu') := 'Security-user';
+    dbax_core.g$var('active_menu') := 'Security-auth-schemes';
     dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->     
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
@@ -23,11 +23,11 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            <i class="fa fa-user"></i> User Accounts
+            <i class="fa fa-unlock-alt"></i> Authentication Schemes
           </h1>
           <ol class="breadcrumb">
              <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="${base_path}/users"><i class="fa fa-user"></i> Users</a></li>
+            <li><a href="${base_path}/auth-schemes"><i class="fa fa-unlock-alt"></i> Authentication Schemes</a></li>
           </ol> 
         </section>
         
@@ -36,16 +36,16 @@
           
                 <div class="box box-default box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-clone"></i> Manage users</h3>
+                        <h3 class="box-title"><i class="fa fa-clone"></i> Manage Authentication Schemes</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">  
                       <div class="bottom-buffer">  
                           <div class="btn-toolbar">
                             <div class="btn-group">                                
-                                <a href="${base_path}/users/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                                <a href="${base_path}/auth-schemes/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
                             </div>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('users_table','${base_path}/users/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('auth_schemes_table','${base_path}/auth-schemes/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>                                
                         </div>                        
                        </div>   
@@ -55,33 +55,26 @@
                               </div>                        
                   
                             <div class="table-responsive">
-                               <table class="table table-bordered table-striped footable" id="users_table" data-page-size="15" data-filter="#filter" data-filter-text-only="true">
+                               <table class="table table-bordered table-striped footable" id="auth_schemes_table" data-page-size="15" data-filter="#filter" data-filter-text-only="true">
                                    <thead>
                                       <tr>
-                                         <th data-sort-ignore="true"><input type="checkbox" id="selectAllUsers" onclick="checkAll(this.id,'users_table');"  name="all"></th>
-                                         <th data-sort-initial="true">Username</th>
-                                         <th>First Name</th>
-                                         <th>Last Name</th>
-                                         <th>Display Name</th>                                                     
+                                         <th data-sort-ignore="true"><input type="checkbox" id="selectAllSchemes" onclick="checkAll(this.id,'auth_schemes_table');"  name="all"></th>
+                                         <th data-sort-initial="true">Name</th>
+                                         <th>Type</th>
+                                         <th>Decription</th>
+                                         <th>Modified Date</th>                                                     
                                       </tr>
                                    </thead>      
                                    <tbody>
-                                    <?dbax                                        
-                                        DECLARE
-                                          l_link             VARCHAR2(1000);
-                                        BEGIN                  
-                                          for c1 in (select * from table (tapi_wdx_users.tt))                                          
-                                          loop
-                                            l_link := '<a href="${base_path}/users/'|| c1.username ||'">' || c1.username || '</a>';
-                                            p('<tr>');                                                
-                                                p('<td><input type="checkbox" value="'|| c1.username||'"></td>');
-                                                p('<td>'|| l_link ||'</td>');
-                                                p('<td>'|| c1.first_name ||'</td>');
-                                                p('<td>'|| c1.last_name ||'</td>');
-                                                p('<td>'|| c1.display_name ||'</td>');
-                                            p('</tr>');                          
-                                          END LOOP;
-                                        END; ?>
+                                       <% for c1 in (select * from table (tapi_wdx_auth_schemes.tt)) loop %>                                            
+                                            <tr>
+                                               <td><input type="checkbox" value="<%= c1.name %>"></td>
+                                               <td> <a href="${base_path}/auth-schemes/<%= c1.name %>"><%= c1.name %></a></td>
+                                               <td> <%= c1.type %></td>
+                                               <td> <%= c1.description %></td>
+                                               <td> <%= to_char(c1.modified_date, 'yyyy-mm-dd hh24:mi:ss') %></td>
+                                            </tr>
+                                      <% end loop; %>
                                      </tbody>
                                 <tfoot class="hide-if-no-paging">
                                     <tr>
@@ -94,10 +87,10 @@
                           </div>
                           <div class="btn-toolbar">
                             <div class="btn-group">
-                                <a href="${base_path}/users/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                                <a href="${base_path}/auth-schemes/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
                             </div>
                             <div class="btn-group">                                
-                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('users_table','${base_path}/users/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('auth_schemes_table','${base_path}/auth-schemes/delete')"> <i class="fa fa-trash"></i> Delete</button>
                             </div>                                
                         </div>
                     </div><!-- /.box-body -->
@@ -124,7 +117,7 @@
     <script type="text/javascript">      
       //Init footable
       $(function () {
-            $('#users_table').footable();
+            $('#auth_schemes_table').footable();
         });       
           
     </script>

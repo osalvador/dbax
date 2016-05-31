@@ -115,10 +115,10 @@
                                 <select class="form-control" id="app_auth_scheme" name="app_auth_scheme">                                                    
                                   <option></option>
                                   <% for c1 in (select * from wdx_auth_schemes) loop
-                                       if '${app_auth_scheme}' = c1.scheme_name then %>
-                                         <option selected><%= c1.scheme_name %></option>
+                                       if '${app_auth_scheme}' = c1.name then %>
+                                         <option selected><%= c1.name %></option>
                                        <%else%>
-                                         <option><%= c1.scheme_name %></option>
+                                         <option><%= c1.name %></option>
                                        <%end if;
                                       end loop;
                                    %>                                                      

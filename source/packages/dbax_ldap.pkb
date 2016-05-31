@@ -33,7 +33,7 @@ AS
       SELECT   *
         INTO   l_wdx_ldap
         FROM   wdx_ldap
-       WHERE   ldap_name = p_ldap_name;
+       WHERE   name = p_ldap_name;
 
       l_wdx_ldap.dn := REPLACE (l_wdx_ldap.dn, '%LDAP_USER%', p_username);
       l_wdx_ldap.filter := REPLACE (l_wdx_ldap.filter, '%LDAP_USER%', p_username);

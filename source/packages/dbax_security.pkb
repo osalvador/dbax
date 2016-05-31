@@ -354,7 +354,7 @@ AS
          --Check Auth Scheme
          FOR c1 IN (SELECT   was.scheme
                       FROM   wdx_applications wap, wdx_auth_schemes was
-                     WHERE   wap.appid = p_appid AND was.scheme_name = wap.auth_scheme)
+                     WHERE   wap.appid = p_appid AND was.name = wap.auth_scheme)
          LOOP
             BEGIN
                dbax_log.debug('Validating user against ' || c1.scheme);

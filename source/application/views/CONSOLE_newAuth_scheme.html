@@ -1,5 +1,5 @@
 <?dbax  
-    dbax_core.g$var('active_menu') := 'Security-user';
+    dbax_core.g$var('active_menu') := 'Security-auth-schemes';
     dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->
     <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />        
@@ -16,11 +16,11 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            <i class="fa fa-user-plus"></i> New User
+            <i class="fa fa-user-plus"></i> New Authentication Schemes
           </h1>
           <ol class="breadcrumb">
              <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="${base_path}/users"><i class="fa fa-rocket"></i> Users</a></li>
+            <li><a href="${base_path}/auth-schemes"><i class="fa fa-unlock-alt"></i> Authentication Schemes</a></li>
             <li>New</li>
           </ol> 
         </section>
@@ -29,7 +29,7 @@
         <section class="content">
             <div class="box box-solid box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">New user</h3>
+                    <h3 class="box-title">New Authentication Schemes</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">                    
                     
