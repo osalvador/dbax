@@ -99,13 +99,13 @@
                                 <select class="form-control" id="new_auth_scheme" name="new_auth_scheme">
                                   <option></option>
                                   <?dbax
-                                      FOR c1 IN (SELECT scheme_name FROM wdx_auth_schemes)
+                                      FOR c1 IN (SELECT name FROM wdx_auth_schemes)
                                       LOOP
-                                          IF '${app_auth_scheme}' = c1.scheme_name
+                                          IF '${app_auth_scheme}' = c1.name
                                           THEN
-                                              p('<option selected>'|| c1.scheme_name ||'</option>');
+                                              p('<option selected>'|| c1.name ||'</option>');
                                           ELSE                                        
-                                              p('<option>'|| c1.scheme_name ||'</option>');
+                                              p('<option>'|| c1.name ||'</option>');
                                           END IF;
                                       END LOOP;
                                   ?>

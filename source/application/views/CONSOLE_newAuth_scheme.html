@@ -2,7 +2,7 @@
     dbax_core.g$var('active_menu') := 'Security-auth-schemes';
     dbax_core.g$var('page_head') := '
     <!-- SweetAlert 2-->
-    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />        
+    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
     ';
 ?>!\n
 <?dbax dbax_core.include('header'); ?>
@@ -37,16 +37,38 @@
                   <form name="userNewForm" id="userNewForm" action="${base_path}/users/new" class="form-horizontal" method="POST">                        
 
                     <div class="form-group">
-                      <label for="new_username" class="col-sm-2 control-label">*User Name</label>
+                      <label for="new_scheme_name" class="col-sm-2 control-label">*Scheme Name</label>
                       <div class="col-sm-10">
                         <div class="input-group">
-                               <input type="text" class="form-control" name="new_username" id="new_username" required>
-                            <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+                            <input type="text" class="form-control" name="new_scheme_name" id="new_scheme_name" required>
+                            <div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
                          </div>
                       </div>
                     </div>
+                    
+                    <div class="form-group">
+                      <label for="new_scheme_type" class="col-sm-2 control-label">*Scheme Type</label>
+                      <div class="col-sm-10">
+                        <div class="input-group">
+                          <select class="form-control selectOption"  id="new_scheme_type" name="new_scheme_type" required>
+                            <option disabled selected value> -- select an option -- </option>
+                            <option value="localUsers">Local Users</option>
+                            <option value="ldap">LDAP</option>
+                          </select>
+                          <div class="input-group-addon"><i class="fa fa-rocket"></i></div>
+                        </div>
+                      </div>
+                    </div>
+                    
                     <hr>
                     
+                <div class="selectOptionChange hidden" id="ldap">
+                  <p>soy LDAP</p>
+                  <p>Seleccionar un LDAP existente</p>
+                  <p>Crear un nuevo LDAP</p>
+                </div>
+                    
+                  <div class="selectOptionChange hidden" id="localUsers">
                     <h4>Personal Info</h4>
                     <div class="form-group">
                       <label for="new_first_name" class="col-sm-2 control-label">*First Name</label>
@@ -109,6 +131,7 @@
                             </div>
                         </div>
                     </div>
+                  </div>
 
                     
                    </form>
@@ -137,15 +160,22 @@
     <!-- dbaxAdmin -->
     <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
   
-   <script type="text/javascript">          
-        //Submit jQuery Ajax Form 
-        function SubmitForm(formId){        
-            dbaxSubmitForm(formId).done(function(data) {
-                if (data.cod_error === undefined)
-                    window.location.href = "${base_path}/users/"+$('#new_username').val();
-            });
-        }       
-
+   <script type="text/javascript">
+     $(function(){       
+       $('.selectOption').change(function(){
+              var selected = $(this).find(':selected').val();
+              $(".selectOptionChange").addClass( 'hidden');
+              $('#' + selected).removeClass('hidden');
+            }).change()
+      });
+     
+     //Submit jQuery Ajax Form 
+     function SubmitForm(formId){        
+         dbaxSubmitForm(formId).done(function(data) {
+            if (data.cod_error === undefined)
+                 window.location.href = "${base_path}/users/"+$('#new_username').val();
+          });
+     }
     </script>   
  
      

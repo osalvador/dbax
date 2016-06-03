@@ -27,9 +27,9 @@
                             <i class="fa fa-users"></i> <span>Users</span>
                             </a>
                         </li>
-                        <li class="<?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') = 'Security-auth-schemes' then p('active'); end if; ?>">
-                            <a href="${base_path}/auth-schemes">
-                            <i class="fa fa-unlock-alt"></i> <span>Auth Schemes</span>
+                        <li class="<?dbax if dbax_utils.get(dbax_core.g$var,'active_menu') = 'Security-ldap' then p('active'); end if; ?>">
+                            <a href="${base_path}/ldap">
+                            <i class="fa fa-folder-o"></i> <span>LDAP</span>
                             </a>
                         </li>
                     </ul>

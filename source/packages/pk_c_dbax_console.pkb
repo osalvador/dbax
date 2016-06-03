@@ -3828,5 +3828,138 @@ AS
             'Error importing Security: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
          dbax_core.load_view ('importApplicationFile');
    END import_security;
+   
+   
+   
+   PROCEDURE ldap
+   AS
+   BEGIN
+      /**
+      * The user must be an Admin
+      **/
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      dbax_core.load_view ('ldap');
+   END ldap;
+   
+   PROCEDURE test_ldap
+   AS
+      l_url_pattern         VARCHAR2 (1000);
+      l_test_url            VARCHAR2 (1000);
+      l_controller_method   VARCHAR2 (1000);
+
+      l_retval              PLS_INTEGER := 0;
+      l_return              VARCHAR2 (1000);
+      l_json                json := json ();
+
+      l_position            PLS_INTEGER;
+      l_occurrence          PLS_INTEGER;
+      l_match_parameter     VARCHAR2 (100);
+   BEGIN
+      --The response is json
+      dbax_core.g$content_type := 'application/json';
+
+--      l_test_url  := dbax_utils.get (dbax_core.g$post, 'test_url');
+--      l_url_pattern := dbax_utils.get (dbax_core.g$post, 'url_pattern');
+--      l_controller_method := dbax_utils.get (dbax_core.g$post, 'test_controller_method');
+
+--      dbax_core.regex_parameters (l_url_pattern
+--                                , l_url_pattern
+--                                , l_position
+--                                , l_occurrence
+--                                , l_match_parameter);
+
+
+--      l_url_pattern := '^' || l_url_pattern || '(/|$)';
+
+
+--      l_retval    :=
+--         REGEXP_INSTR (l_test_url
+--                     , l_url_pattern
+--                     , l_position
+--                     , NVL (l_occurrence, 1)
+--                     , '0'
+--                     , l_match_parameter);
+
+
+--      IF l_retval > 0
+--      THEN
+--         l_return    :=
+--            REGEXP_REPLACE (l_test_url
+--                          , l_url_pattern
+--                          , l_controller_method || '/'
+--                          , l_position
+--                          , NVL (l_occurrence, 0)
+--                          , l_match_parameter);
+
+--         l_json.put ('return', l_return);
+--      ELSE
+--         l_json.put ('return', 'Pattern not match');
+--      END IF;
+
+      --Return values
+      dbax_core.p (l_json.TO_CHAR);
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         l_json      := json ();
+         l_json.put ('cod_error', SQLCODE);
+         l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+         dbax_core.p (l_json.TO_CHAR);
+   END test_ldap;
+   
+   
+   PROCEDURE edit_ldap (p_ldap_name in tapi_wdx_ldap.name)
+   AS
+      l_ldap_rt    tapi_wdx_ldap.wdx_ldap_rt;
+   BEGIN
+      /**
+     * The user must be an Admin
+     **/
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      --If user parameter is null redirect to users
+      IF p_ldap_name IS NULL
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/users');
+         RETURN;
+      END IF;
+
+      --Get ldap data
+      BEGIN
+         l_ldap_rt  := tapi_wdx_ldap.rt (p_ldap_name);
+      EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            --LDAP not exits, redirect to ldap page
+            dbax_core.g$http_header ('Location') := dbax_core.get_path ('/ldap');
+            RETURN;
+      END;
+
+      --View Data
+      dbax_core.g$view ('ldap_name') := l_ldap_rt.name;
+      dbax_core.g$view ('ldap_description') := l_ldap_rt.description;
+      dbax_core.g$view ('ldap_host') := l_ldap_rt.host;
+      dbax_core.g$view ('ldap_port') := l_ldap_rt.port;
+      dbax_core.g$view ('ldap_dn') := l_ldap_rt.dn;
+      dbax_core.g$view ('ldap_base') := l_ldap_rt.base;
+      dbax_core.g$view ('ldap_filtere') := l_ldap_rt.filter;
+      dbax_core.g$view ('ldap_attr_first_name') := l_ldap_rt.attr_first_name;
+      dbax_core.g$view ('ldap_attr_last_name') := l_ldap_rt.attr_last_name;
+      dbax_core.g$view ('ldap_attr_email') := l_ldap_rt.attr_email;
+
+      dbax_core.load_view ('editLdap');
+   END edit_ldap;   
+  
+   
 END pk_c_dbax_console;
 /

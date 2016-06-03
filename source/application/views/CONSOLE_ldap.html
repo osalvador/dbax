@@ -1,0 +1,126 @@
+<?dbax  
+    dbax_core.g$var('active_menu') := 'Security-ldap';
+    dbax_core.g$var('page_head') := '
+    <!-- SweetAlert 2-->     
+    <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
+    
+    <!--Footable -->
+    <link href="${resources_url}/plugins/footable/css/footable.core.css" rel="stylesheet" type="text/css"/>
+    
+    <style type="text/css">
+        th, td { white-space: nowrap; }        
+        .bottom-buffer { margin-bottom: 3px; }        
+    </style>        
+    ';
+?>!\n
+<?dbax dbax_core.include('header'); ?>
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?> 
+
+   
+ <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            <i class="fa fa-folder-o"></i> LDAP <small>Lightweight Directory Access Protocol</small>
+          </h1>
+          <ol class="breadcrumb">
+             <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${base_path}/ldap"><i class="fa fa-folder-o"></i> LDAP </a></li>
+          </ol> 
+        </section>
+        
+        <!-- Main content -->
+        <section class="content">
+          
+                <div class="box box-default box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-clone"></i> Manage LDAP connections</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">  
+                      <div class="bottom-buffer">  
+                          <div class="btn-toolbar">
+                            <div class="btn-group">                                
+                                <a href="${base_path}/ldap/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ldap_table','${base_path}/ldap/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>                                
+                        </div>                        
+                       </div>   
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                <input id="filter" type="text" class="form-control" placeholder="Search...">
+                              </div>                        
+                  
+                            <div class="table-responsive">
+                               <table class="table table-bordered table-striped footable" id="ldap_table" data-page-size="15" data-filter="#filter" data-filter-text-only="true">
+                                   <thead>
+                                      <tr>
+                                         <th data-sort-ignore="true"><input type="checkbox" id="selectAllSchemes" onclick="checkAll(this.id,'ldap_table');"  name="all"></th>
+                                         <th data-sort-initial="true">Name</th>
+                                         <th>Host:Port</th>
+                                         <th>Decription</th>
+                                         <th>Modified Date</th>                                                     
+                                      </tr>
+                                   </thead>      
+                                   <tbody>
+                                       <% for c1 in (select * from table (tapi_wdx_ldap.tt)) loop %>                                            
+                                            <tr>
+                                               <td><input type="checkbox" value="<%= c1.name %>"></td>
+                                               <td> <a href="${base_path}/ldap/<%= c1.name %>"><%= c1.name %></a></td>
+                                               <td> <%= c1.host %>:<%= c1.port %></td>
+                                               <td> <%= c1.description %></td>
+                                               <td> <%= to_char(c1.modified_date, 'yyyy-mm-dd hh24:mi:ss') %></td>
+                                            </tr>
+                                      <% end loop; %>
+                                     </tbody>
+                                <tfoot class="hide-if-no-paging">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <ul class="pagination"></ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                             </table>
+                          </div>
+                          <div class="btn-toolbar">
+                            <div class="btn-group">
+                                <a href="${base_path}/ldap/new" class="btn btn-primary btn-xs"> <i class="fa fa-edit"></i> New</a>
+                            </div>
+                            <div class="btn-group">                                
+                                <button type="button" class="btn btn-danger btn-xs" onclick="Delete('ldap_table','${base_path}/ldap/delete')"> <i class="fa fa-trash"></i> Delete</button>
+                            </div>                                
+                        </div>
+                    </div><!-- /.box-body -->
+                </div> <!-- /.box -->             
+          
+
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+
+   
+    <?dbax dbax_core.include('footer'); ?>
+
+    <!-- dbaxAdmin -->
+    <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>    
+    <!-- SweetAlert 2 -->
+    <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+
+   <!--Footable -->
+   <script src="${resources_url}/plugins/footable/footable.min.js" type="text/javascript"></script>
+   <script src="${resources_url}/plugins/footable/footable.sort.min.js" type="text/javascript"></script>
+   <script src="${resources_url}/plugins/footable/footable.paginate.min.js" type="text/javascript"></script>
+   <script src="${resources_url}/plugins/footable/footable.filter.min.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">      
+      //Init footable
+      $(function () {
+            $('#ldap_table').footable();
+        });       
+          
+    </script>
+
+    </body>
+</HTML>

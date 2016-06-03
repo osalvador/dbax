@@ -194,6 +194,13 @@ AS
    PROCEDURE import_security (p_appid IN tapi_wdx_applications.appid);
 
    PROCEDURE export_security (p_appid IN tapi_wdx_applications.appid);
+      
+   /*
+   * LDAP
+   */
+   --PROCEDURE ldap;
+   
+   PROCEDURE edit_ldap (p_ldap_name in tapi_wdx_ldap.name);
    
 END pk_c_dbax_console;
 /

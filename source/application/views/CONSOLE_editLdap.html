@@ -1,0 +1,273 @@
+<?dbax  
+   dbax_core.g$var('active_menu') := 'Security-ldap';
+   dbax_core.g$var('page_head') := '        
+   <!-- SweetAlert 2-->     
+   <link href="${resources_url}/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />        
+   ';
+   ?>
+<?dbax dbax_core.include('header'); ?>
+<!-- SideBar -->
+<?dbax dbax_core.include('sidebar');?> 
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+     <!-- Content Header (Page header) -->
+     <section class="content-header">
+        <h1>
+           ${ldap_name}
+           <small>Edit LDAP connection</small>
+        </h1>
+        <ol class="breadcrumb">
+           <li><a href="${base_path}/index"><i class="fa fa-dashboard"></i> Home</a></li>
+           <li><a href="${base_path}/ldap"><i class="fa fa-folder-o"></i> LDAP</a></li>
+           <li>${ldap_name}</li>
+        </ol>
+     </section>
+     <!-- Main content -->
+     <section class="content">
+        <!-- Custom Tabs -->
+        <div class="nav-tabs-custom">
+           <ul class="nav nav-tabs">
+              <li class="active"><a href="#Edit" data-toggle="tab">Edit</a></li>
+              <li><a href="#Test" data-toggle="tab">Test LDAP Connection</a></li>
+           </ul>
+           <div class="tab-content">
+              <div class="tab-pane active" id="Edit">
+                 <div class="box">
+                    <div class="box-header with-border">
+                       <h3 class="box-title"><i class="fa fa-pencil"></i> Edit</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                       <!-- form start -->
+                       <form name="ldapNewForm" id="ldapNewForm" action="${base_path}/ldap/new" class="form-horizontal" method="POST">
+                          <div class="form-group">
+                             <label for="new_scheme_name" class="col-sm-2 control-label">*LDAP Name</label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_ldap_name" id="new_ldap_name" value="${ldap_name}" readonly="readonly">
+                                   <div class="input-group-addon"><i class="fa fa-folder-o"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <label for="new_description" class="col-sm-2 control-label">Description</label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_description" id="new_description" value="${ldap_description}">
+                                   <div class="input-group-addon"><i class="fa fa-file-text"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <hr>
+                          <h4>Connection </h4>
+                          <div class="form-group">
+                             <label for="new_host" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The hostname of your LDAP server">*Host 
+                             </span>
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_host" id="new_host" placeholder="ldap.acme.com" required value="${ldap_host}">
+                                   <div class="input-group-addon"><i class="fa fa-server"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <label for="new_port" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The port number of your LDAP host">*Port
+                             </span>
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="number" class="form-control" name="new_port" id="new_port" placeholder="389" required value="${ldap_port}">
+                                   <div class="input-group-addon"><i class="fa fa-random"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <hr>
+                          <h4>Browser Options </h4>
+                          <div class="form-group">
+                             <label for="new_dn" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The Distinguished Name of the User that we are trying to login as">*DN String
+                             </span>                        
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_dn" id="new_dn" placeholder="Example: cn=%LDAP_USER%,o=acmeusers" required  value="${ldap_dn}">
+                                   <div class="input-group-addon"><i class="fa fa-font"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <label for="new_dn_base" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The dn of the entry at which to start the search">Base DN
+                             </span>                         
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_dn_base" id="new_dn_base" placeholder="o=acmeusers">
+                                   <div class="input-group-addon"><i class="fa fa-font"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <label for="new_filter" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="A character string representing the search filter. If you leave the field empty indicate that the filter '(objectclass=*)' which matches all entries is to be used">Filter
+                             </span>  
+                             </label>                      
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_filter" id="new_filter" placeholder="(&(objectclass=user)(cn=%LDAP_USER%))" value="${ldap_filter}">
+                                   <div class="input-group-addon"><i class="fa fa-font"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <hr>
+                          <h4>User Account Attributes</h4>
+                          <div class="form-group">
+                             <label for="new_attr_first_name" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The attribute that contains the User First Name">Attribute First Name
+                             </span>                        
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_attr_first_name" id="new_attr_first_name" placeholder="givenName" value="${ldap_attr_first_name}">
+                                   <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <label for="new_attr_last_name" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The attribute that contains the User Last Name">Attribute Last Name
+                             </span>  
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_attr_last_name" id="new_attr_last_name" placeholder="sn" value="${ldap_attr_last_name}">
+                                   <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <label for="new_attr_email" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The attribute that contains the User Email">Attribute Email
+                             </span>
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="new_attr_email" id="new_attr_email" placeholder="mail" value="${ldap_attr_email}">
+                                   <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                       </form>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                       <button id="usersNewBtn" onclick="SubmitForm('ldapNewForm')" class="btn btn-info"><i class="fa fa-plus"></i> Create LDAP Connection</button>
+                       <div class="pull-right">
+                          <a href="${base_path}/ldap" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
+                       </div>
+                    </div>
+                    <!-- /.box-footer -->
+                 </div>
+                 <!-- /.box -->           
+              </div>
+              <!-- /.tab-pane -->              
+              <div class="tab-pane" id="Test">
+                 <div class="box">
+                    <div class="box-header with-border">
+                       <h3 class="box-title">Test Connection</h3>
+                    </div>
+                    <!-- /.box-header -->                  
+                    <div class="box-body">
+                       <h4>Credentials </h4>
+                       <form name="ldapTestForm" id="ldapTestForm" action="${base_path}/ldap/test" class="form-horizontal" method="POST">
+                          <div class="form-group">
+                             <label for="test_username" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The username for a valid LDAP user to test">Username
+                             </span>  
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="text" class="form-control" name="test_username" id="test_username">
+                                   <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                          <div class="form-group">
+                             <label for="test_pwd" class="col-sm-2 control-label">
+                             <span data-toggle="tooltip" data-placement="top"
+                                title="The passwrod for the user to test">Password
+                             </span>  
+                             </label>
+                             <div class="col-sm-10">
+                                <div class="input-group">
+                                   <input type="password" class="form-control" name="test_pwd" id="test_pwd">
+                                   <div class="input-group-addon"><i class="fa fa-lock"></i></div>
+                                </div>
+                             </div>
+                          </div>
+                       </form>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                       <button id="testLdapBtn" onclick="SubmitForm('ldapTestForm')" class="btn btn-warning"><i class="fa fa-check"></i> Test</button>
+                    </div>
+                    <!-- /.box-footer -->
+                 </div>
+                 <!-- /.box -->
+              </div>
+              <!-- /.tab-pane -->
+           </div>
+           <!-- /.tab-content -->
+        </div>
+        <!-- nav-tabs-custom -->
+     </section>
+     <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <?dbax dbax_core.include('footer'); ?>
+  <!-- JqueryValidate -->
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.min.js" type="text/javascript"></script>
+  <!-- dbaxAdmin -->
+  <script src="${resources_url}/plugins/dbaxadmin/dbaxadmin.js" type="text/javascript"></script>
+  <!-- SweetAlert 2 -->
+  <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+  <script>
+     //Submit jQuery Ajax Form 
+     function SubmitForm(formId){        
+         dbaxSubmitForm(formId).done(function(data) {
+             if (data.cod_error === undefined){
+                 //Update Values
+                 $('#hash').val(data.hash)
+                 $('#modified_by').val(data.modified_by)
+                 $('#modified_date').val(data.modified_date)
+             }
+         });
+     }   
+
+     //Post jQuery Ajax Form 
+     function SubmitFormTest(formId){        
+         var form =  $('#' + formId);
+          if ($(form).validate().form()){ 
+             $.post( form.attr('action'), $(form).serialize(), function( data ) {
+                 if (data.cod_error === undefined)
+                     $('#result').val(data.return);
+              }, "json"); 
+          }
+     }  
+
+
+  </script> 
+</body>
+</HTML>
