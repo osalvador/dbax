@@ -198,9 +198,12 @@ AS
    /*
    * LDAP
    */
-   --PROCEDURE ldap;
+   PROCEDURE ldap;
+   
+   PROCEDURE test_ldap;
    
    PROCEDURE edit_ldap (p_ldap_name in tapi_wdx_ldap.name);
+   
    
 END pk_c_dbax_console;
 /

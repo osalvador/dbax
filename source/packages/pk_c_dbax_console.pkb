@@ -46,40 +46,40 @@ AS
       -- Testing cache
       --IF dbax_ctx_api.get_parameter ('activityChartTimes') IS NULL
       --THEN
-         l_cursor    := pk_m_dbax_console.get_activity_chart_time (480, 30);
-         dbax_core.g$view ('activityChartTimes') :=
-            json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+      l_cursor    := pk_m_dbax_console.get_activity_chart_time (480, 30);
+      dbax_core.g$view ('activityChartTimes') :=
+         json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
 
-         --Set data to cache
-        -- dbax_ctx_api.set_parameter ('activityChartTimes', dbax_core.g$view ('activityChartTimes'));
+      --Set data to cache
+      -- dbax_ctx_api.set_parameter ('activityChartTimes', dbax_core.g$view ('activityChartTimes'));
       --ELSE
-         --dbax_core.g$view ('activityChartTimes') := dbax_ctx_api.get_parameter ('activityChartTimes');
+      --dbax_core.g$view ('activityChartTimes') := dbax_ctx_api.get_parameter ('activityChartTimes');
       --END IF;
 
       --activityChartData
       --IF dbax_ctx_api.get_parameter ('activityChartData') IS NULL
       --THEN
-         l_cursor    := pk_m_dbax_console.get_activity_chart_data (480, 30);
-         dbax_core.g$view ('activityChartData') :=
-            json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+      l_cursor    := pk_m_dbax_console.get_activity_chart_data (480, 30);
+      dbax_core.g$view ('activityChartData') :=
+         json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
 
-         --Set data to cache
-         --dbax_ctx_api.set_parameter ('activityChartData', dbax_core.g$view ('activityChartData'));
+      --Set data to cache
+      --dbax_ctx_api.set_parameter ('activityChartData', dbax_core.g$view ('activityChartData'));
       --ELSE
-         --dbax_core.g$view ('activityChartData') := dbax_ctx_api.get_parameter ('activityChartData');
+      --dbax_core.g$view ('activityChartData') := dbax_ctx_api.get_parameter ('activityChartData');
       --END IF;
 
       --Browser usage
       --IF dbax_ctx_api.get_parameter ('pieChartValues') IS NULL
-      --THEN         
-         l_cursor    := pk_m_dbax_console.get_browser_usage_chart_data (480);
-         dbax_core.g$view ('pieChartValues') :=
-            json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
+      --THEN
+      l_cursor    := pk_m_dbax_console.get_browser_usage_chart_data (480);
+      dbax_core.g$view ('pieChartValues') :=
+         json_util_pkg.ref_cursor_to_json_2 (p_ref_cursor => l_cursor, p_format_type => 1);
 
-         --Set data to cache
-         --dbax_ctx_api.set_parameter ('pieChartValues', dbax_core.g$view ('pieChartValues'));
+      --Set data to cache
+      --dbax_ctx_api.set_parameter ('pieChartValues', dbax_core.g$view ('pieChartValues'));
       --ELSE
-         --dbax_core.g$view ('pieChartValues') := dbax_ctx_api.get_parameter ('pieChartValues');
+      --dbax_core.g$view ('pieChartValues') := dbax_ctx_api.get_parameter ('pieChartValues');
       --END IF;
 
       dbax_core.load_view ('index');
@@ -207,7 +207,7 @@ AS
       -- IF METHOD is GET load view else create application
       IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
       THEN
-          CASE
+         CASE
             WHEN UPPER (dbax_core.g$parameter (1)) = 'TEMPLATE'
             THEN
                dbax_core.g$view ('app_type') := 'TEMPLATE';
@@ -219,8 +219,8 @@ AS
             ELSE
                dbax_core.g$view ('app_type') := 'APP';
                dbax_core.g$view ('app_type_desc') := 'Application';
-          END CASE;                 
-         
+         END CASE;
+
          dbax_core.load_view ('newApp');
          RETURN;
       ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
@@ -231,7 +231,7 @@ AS
          l_application_rt.description := dbax_utils.get (dbax_core.g$post, 'new_desc');
          l_application_rt.app_type := dbax_utils.get (dbax_core.g$post, 'new_app_type');
          l_appid_template := dbax_utils.get (dbax_core.g$post, 'new_appid_template');
-         
+
          IF dbax_utils.get (dbax_core.g$post, 'new_active') = 'on'
          THEN
             l_application_rt.active := 'Y';
@@ -450,7 +450,7 @@ AS
 
       IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
       THEN
-          CASE
+         CASE
             WHEN UPPER (dbax_core.g$parameter (1)) = 'TEMPLATE'
             THEN
                dbax_core.g$view ('app_type') := 'TEMPLATE';
@@ -462,8 +462,8 @@ AS
             ELSE
                dbax_core.g$view ('app_type') := 'APP';
                dbax_core.g$view ('app_type_desc') := 'Application';
-          END CASE;          
-         
+         END CASE;
+
          dbax_core.load_view ('importApplication');
          RETURN;
       ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
@@ -526,7 +526,7 @@ AS
 
       IF dbax_core.g$server ('REQUEST_METHOD') = 'GET'
       THEN
-          CASE
+         CASE
             WHEN UPPER (dbax_core.g$parameter (1)) = 'TEMPLATE'
             THEN
                dbax_core.g$view ('app_type') := 'TEMPLATE';
@@ -538,8 +538,8 @@ AS
             ELSE
                dbax_core.g$view ('app_type') := 'APP';
                dbax_core.g$view ('app_type_desc') := 'Application';
-          END CASE;    
-         
+         END CASE;
+
          dbax_core.load_view ('exportApplication');
          RETURN;
       ELSIF dbax_core.g$server ('REQUEST_METHOD') = 'POST'
@@ -3828,9 +3828,8 @@ AS
             'Error importing Security: ' || SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ();
          dbax_core.load_view ('importApplicationFile');
    END import_security;
-   
-   
-   
+
+
    PROCEDURE ldap
    AS
    BEGIN
@@ -3845,78 +3844,59 @@ AS
 
       dbax_core.load_view ('ldap');
    END ldap;
-   
+
    PROCEDURE test_ldap
    AS
-      l_url_pattern         VARCHAR2 (1000);
-      l_test_url            VARCHAR2 (1000);
-      l_controller_method   VARCHAR2 (1000);
-
-      l_retval              PLS_INTEGER := 0;
-      l_return              VARCHAR2 (1000);
-      l_json                json := json ();
-
-      l_position            PLS_INTEGER;
-      l_occurrence          PLS_INTEGER;
-      l_match_parameter     VARCHAR2 (100);
-   BEGIN
+      p_host        VARCHAR2 (4000);
+      p_port        PLS_INTEGER;
+      p_dn          VARCHAR2 (4000);
+      p_username    VARCHAR2 (4000);
+      p_password    VARCHAR2 (4000);
+      l_cod_error   PLS_INTEGER;
+      l_msg_error   VARCHAR2 (4000);
+      l_json        json := json ();
+   BEGIN      
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+      
       --The response is json
       dbax_core.g$content_type := 'application/json';
 
---      l_test_url  := dbax_utils.get (dbax_core.g$post, 'test_url');
---      l_url_pattern := dbax_utils.get (dbax_core.g$post, 'url_pattern');
---      l_controller_method := dbax_utils.get (dbax_core.g$post, 'test_controller_method');
+      p_host      := dbax_utils.get (dbax_core.g$post, 'new_host');
+      p_port      := dbax_utils.get (dbax_core.g$post, 'new_port');
+      p_dn        := dbax_utils.get (dbax_core.g$post, 'new_dn');
+      p_username  := dbax_utils.get (dbax_core.g$post, 'test_username');
+      p_password  := dbax_utils.get (dbax_core.g$post, 'test_pwd');
 
---      dbax_core.regex_parameters (l_url_pattern
---                                , l_url_pattern
---                                , l_position
---                                , l_occurrence
---                                , l_match_parameter);
-
-
---      l_url_pattern := '^' || l_url_pattern || '(/|$)';
-
-
---      l_retval    :=
---         REGEXP_INSTR (l_test_url
---                     , l_url_pattern
---                     , l_position
---                     , NVL (l_occurrence, 1)
---                     , '0'
---                     , l_match_parameter);
+      dbax_ldap.test_ldap_connection (p_host
+                                    , p_port
+                                    , p_dn
+                                    , p_username
+                                    , p_password
+                                    , l_cod_error
+                                    , l_msg_error);
 
 
---      IF l_retval > 0
---      THEN
---         l_return    :=
---            REGEXP_REPLACE (l_test_url
---                          , l_url_pattern
---                          , l_controller_method || '/'
---                          , l_position
---                          , NVL (l_occurrence, 0)
---                          , l_match_parameter);
-
---         l_json.put ('return', l_return);
---      ELSE
---         l_json.put ('return', 'Pattern not match');
---      END IF;
+      l_json.put ('cod_error', l_cod_error);
+      l_json.put ('msg_error', l_msg_error);
 
       --Return values
       dbax_core.p (l_json.TO_CHAR);
    EXCEPTION
       WHEN OTHERS
       THEN
-         ROLLBACK;
-         l_json      := json ();
          l_json.put ('cod_error', SQLCODE);
          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
          dbax_core.p (l_json.TO_CHAR);
    END test_ldap;
-   
-   
-   PROCEDURE edit_ldap (p_ldap_name in tapi_wdx_ldap.name)
+
+
+   PROCEDURE edit_ldap (p_ldap_name IN tapi_wdx_ldap.name)
    AS
-      l_ldap_rt    tapi_wdx_ldap.wdx_ldap_rt;
+      l_ldap_rt   tapi_wdx_ldap.wdx_ldap_rt;
    BEGIN
       /**
      * The user must be an Admin
@@ -3927,16 +3907,16 @@ AS
          RETURN;
       END IF;
 
-      --If user parameter is null redirect to users
+      --If ldap parameter is null redirect to users
       IF p_ldap_name IS NULL
       THEN
-         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/users');
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/ldap');
          RETURN;
       END IF;
 
       --Get ldap data
       BEGIN
-         l_ldap_rt  := tapi_wdx_ldap.rt (p_ldap_name);
+         l_ldap_rt   := tapi_wdx_ldap.rt (p_ldap_name);
       EXCEPTION
          WHEN NO_DATA_FOUND
          THEN
@@ -3948,7 +3928,7 @@ AS
       --View Data
       dbax_core.g$view ('ldap_name') := l_ldap_rt.name;
       dbax_core.g$view ('ldap_description') := l_ldap_rt.description;
-      dbax_core.g$view ('ldap_host') := l_ldap_rt.host;
+      dbax_core.g$view ('ldap_host') := l_ldap_rt.HOST;
       dbax_core.g$view ('ldap_port') := l_ldap_rt.port;
       dbax_core.g$view ('ldap_dn') := l_ldap_rt.dn;
       dbax_core.g$view ('ldap_base') := l_ldap_rt.base;
@@ -3958,8 +3938,6 @@ AS
       dbax_core.g$view ('ldap_attr_email') := l_ldap_rt.attr_email;
 
       dbax_core.load_view ('editLdap');
-   END edit_ldap;   
-  
-   
+   END edit_ldap;
 END pk_c_dbax_console;
 /

@@ -219,9 +219,14 @@
                           </div>
                        </form>
                     </div>
+                    
+                    <div class="overlay" id="loadingDiv">
+                        <i class="fa fa-refresh fa-spin"></i>
+                     </div>                   
+                   
                     <!-- /.box-body -->
                     <div class="box-footer">
-                       <button id="testLdapBtn" onclick="SubmitForm('ldapTestForm')" class="btn btn-warning"><i class="fa fa-check"></i> Test</button>
+                       <button id="testLdapBtn" onclick="SubmitFormTest('ldapTestForm')" class="btn btn-warning"><i class="fa fa-check"></i> Test</button>
                     </div>
                     <!-- /.box-footer -->
                  </div>
@@ -244,7 +249,24 @@
   <!-- SweetAlert 2 -->
   <script src="${resources_url}/plugins/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
   <script>
-     //Submit jQuery Ajax Form 
+     //Loading spinner
+     var $loading = $('#loadingDiv').hide();
+     $(document)
+       .ajaxStart(function () {
+         $loading.show();
+       })
+       .ajaxStop(function () {
+         $loading.hide();
+       });    
+    
+    $(document).ready(function() {
+         //init tooltip        
+        $(function () {
+              $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+        })       
+    });
+    
+    //Submit jQuery Ajax Form 
      function SubmitForm(formId){        
          dbaxSubmitForm(formId).done(function(data) {
              if (data.cod_error === undefined){
@@ -256,16 +278,27 @@
          });
      }   
 
-     //Post jQuery Ajax Form 
-     function SubmitFormTest(formId){        
-         var form =  $('#' + formId);
-          if ($(form).validate().form()){ 
-             $.post( form.attr('action'), $(form).serialize(), function( data ) {
-                 if (data.cod_error === undefined)
-                     $('#result').val(data.return);
-              }, "json"); 
-          }
-     }  
+      //Post jQuery Ajax Form 
+      function SubmitFormTest(formId){        
+        var form =  $('#' + formId);
+        if ($(form).validate().form()){                  
+          var formDataSerialize =  $(form).serialize() + '&' + $('#ldapNewForm').serialize();
+          
+          console.log($('#ldapNewForm').serialize());
+          
+          $.post( form.attr('action'), formDataSerialize, function( data ) {
+            if (data.cod_error === 0)                        
+              swal({   title: "Successfully"
+                    , text: data.msg_error
+                    , type: "success"});
+            else
+              swal({   title: "Ooops!"
+                    , html: "<pre><code>" + data.msg_error + "</code></pre>"
+                    , type: "error"});                
+
+          }, "json"); 
+        }
+      }    
 
 
   </script> 
