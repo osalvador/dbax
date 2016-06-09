@@ -39,9 +39,9 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                        <!-- form start -->
-                       <form name="ldapNewForm" id="ldapNewForm" action="${base_path}/ldap/new" class="form-horizontal" method="POST">
+                       <form name="ldapNewForm" id="ldapNewForm" action="${base_path}/ldap/upsert" class="form-horizontal" method="POST">
                           <div class="form-group">
-                             <label for="new_scheme_name" class="col-sm-2 control-label">*LDAP Name</label>
+                             <label for="new_ldap_name" class="col-sm-2 control-label">*LDAP Name</label>
                              <div class="col-sm-10">
                                 <div class="input-group">
                                    <input type="text" class="form-control" name="new_ldap_name" id="new_ldap_name" value="${ldap_name}" readonly="readonly">
@@ -168,11 +168,43 @@
                                 </div>
                              </div>
                           </div>
+                         <hr>
+                         <div class="form-group">
+                            <label for="created_by" class="col-sm-2 control-label">Created By</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="created_by" id="created_by" value="${created_by}" readonly="readonly">
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="created_date" class="col-sm-2 control-label">Created Date</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="created_date" id="created_date" value="${created_date}" readonly="readonly">
+                            </div>
+                          </div>                          
+                          
+                          <div class="form-group">
+                            <label for="modified_by" class="col-sm-2 control-label">Modified Date</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="modified_by" id="modified_by" value="${modified_by}" readonly="readonly">
+                            </div>
+                          </div>                            
+
+                          <div class="form-group">
+                            <label for="modified_date" class="col-sm-2 control-label">Modified Date</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" name="modified_date" id="modified_date" value="${modified_date}" readonly="readonly">
+                            </div>
+                          </div>                          
+                        
+                          <input type="hidden" name="row_id" value="${row_id}">
+                          <input type="hidden" name="hash" id="hash" value="${hash}">
+                         
                        </form>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                       <button id="usersNewBtn" onclick="SubmitForm('ldapNewForm')" class="btn btn-info"><i class="fa fa-plus"></i> Create LDAP Connection</button>
+                       <button id="usersNewBtn" onclick="SubmitForm('ldapNewForm')" class="btn btn-info"><i class="fa fa-save"></i> Save </button>
                        <div class="pull-right">
                           <a href="${base_path}/ldap" class="btn btn-danger"><i class="fa fa-chevron-left"></i> Back</a>
                        </div>

@@ -241,9 +241,16 @@ CREATE OR REPLACE PACKAGE BODY tapi_wdx_ldap IS
     PROCEDURE ins (p_wdx_ldap_rec IN OUT wdx_ldap_rt)
     IS
         l_rowtype     wdx_ldap%ROWTYPE;
+        
+        l_user_name   wdx_ldap.created_by%TYPE := NVL(dbax_security.get_username (dbax_core.g$appid),USER);
+        l_date        wdx_ldap.created_date%TYPE := SYSDATE;
 
     BEGIN
 
+        ins.p_wdx_ldap_rec.created_by := l_user_name;
+        ins.p_wdx_ldap_rec.created_date := l_date;
+        ins.p_wdx_ldap_rec.modified_by := l_user_name;
+        ins.p_wdx_ldap_rec.modified_date := l_date;
 
         l_rowtype.name := ins.p_wdx_ldap_rec.name;
         l_rowtype.host := ins.p_wdx_ldap_rec.host;

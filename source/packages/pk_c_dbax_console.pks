@@ -202,7 +202,13 @@ AS
    
    PROCEDURE test_ldap;
    
+   PROCEDURE new_ldap;
+   
    PROCEDURE edit_ldap (p_ldap_name in tapi_wdx_ldap.name);
+   
+   PROCEDURE upsert_ldap;
+   
+   PROCEDURE delete_ldap;
    
    
 END pk_c_dbax_console;

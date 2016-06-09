@@ -3894,6 +3894,21 @@ AS
    END test_ldap;
 
 
+   PROCEDURE new_ldap
+   AS
+   BEGIN
+      /**
+      * The user must be an Admin
+      **/
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      dbax_core.load_view ('newLdap');
+   END new_ldap;
+
    PROCEDURE edit_ldap (p_ldap_name IN tapi_wdx_ldap.name)
    AS
       l_ldap_rt   tapi_wdx_ldap.wdx_ldap_rt;
@@ -3937,7 +3952,137 @@ AS
       dbax_core.g$view ('ldap_attr_last_name') := l_ldap_rt.attr_last_name;
       dbax_core.g$view ('ldap_attr_email') := l_ldap_rt.attr_email;
 
+      dbax_core.g$view ('created_by') := l_ldap_rt.created_by;
+      dbax_core.g$view ('created_date') := TO_CHAR (l_ldap_rt.created_date, 'YYYY/MM/DD hh24:mi:ss');
+      dbax_core.g$view ('modified_by') := l_ldap_rt.modified_by;
+      dbax_core.g$view ('modified_date') := TO_CHAR (l_ldap_rt.modified_date, 'YYYY/MM/DD hh24:mi:ss');
+      dbax_core.g$view ('row_id') := l_ldap_rt.row_id;
+      dbax_core.g$view ('hash') := l_ldap_rt.hash;
+
       dbax_core.load_view ('editLdap');
    END edit_ldap;
+   
+    PROCEDURE upsert_ldap
+    AS
+       l_ldap_rt         tapi_wdx_ldap.wdx_ldap_rt;
+       l_ldap_rt_dummy   tapi_wdx_ldap.wdx_ldap_rt;
+       l_json            json := json ();
+       e_null_param exception;
+    BEGIN
+       /**
+       * The user must be an Admin
+       **/
+       IF NOT f_admin_user
+       THEN
+          dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+          RETURN;
+       END IF;
+
+       --The response is text/plain
+       dbax_core.g$content_type := 'text/plain';
+
+       --Post parameters
+       l_ldap_rt.name := dbax_utils.get (dbax_core.g$post, 'new_ldap_name');
+       l_ldap_rt.description := dbax_utils.get (dbax_core.g$post, 'new_description');
+       l_ldap_rt.HOST := dbax_utils.get (dbax_core.g$post, 'new_host');
+       l_ldap_rt.port := dbax_utils.get (dbax_core.g$post, 'new_port');
+       l_ldap_rt.dn := dbax_utils.get (dbax_core.g$post, 'new_dn');
+       l_ldap_rt.base := dbax_utils.get (dbax_core.g$post, 'new_dn_base');
+       l_ldap_rt.filter := dbax_utils.get (dbax_core.g$post, 'new_filter');
+       l_ldap_rt.attr_first_name := dbax_utils.get (dbax_core.g$post, 'new_attr_first_name');
+       l_ldap_rt.attr_last_name := dbax_utils.get (dbax_core.g$post, 'new_attr_last_name');
+       l_ldap_rt.attr_email := dbax_utils.get (dbax_core.g$post, 'new_attr_email');
+
+       l_ldap_rt.modified_by := dbax_security.get_username (dbax_core.g$appid);
+       l_ldap_rt.modified_date := SYSDATE;
+       l_ldap_rt.hash := dbax_utils.get (dbax_core.g$post, 'hash');
+
+       BEGIN
+          l_ldap_rt_dummy := tapi_wdx_ldap.rt (l_ldap_rt.name);
+       EXCEPTION
+          WHEN NO_DATA_FOUND
+          THEN
+             NULL;
+       END;
+
+       IF l_ldap_rt_dummy.name IS NULL
+       THEN
+          --Insert
+          tapi_wdx_ldap.ins (l_ldap_rt);
+       ELSE
+          --Update
+          tapi_wdx_ldap.web_upd (l_ldap_rt, TRUE);
+       END IF;
+
+       --Return values
+       l_ldap_rt   := tapi_wdx_ldap.rt (l_ldap_rt.name);
+
+       --Return JSON
+       l_json.put ('hash', l_ldap_rt.hash);
+       l_json.put ('created_by', l_ldap_rt.created_by);
+       l_json.put ('created_date', TO_CHAR (l_ldap_rt.created_date, 'YYYY/MM/DD hh24:mi:ss'));
+       l_json.put ('modified_by', l_ldap_rt.modified_by);
+       l_json.put ('modified_date', TO_CHAR (l_ldap_rt.modified_date, 'YYYY/MM/DD hh24:mi:ss'));
+       l_json.put ('text', '');
+
+       --Return json
+       dbax_core.p (l_json.TO_CHAR);
+    EXCEPTION
+       WHEN OTHERS
+       THEN
+          ROLLBACK;
+          dbax_log.error (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+          l_json.put ('cod_error', SQLCODE);
+          l_json.put ('msg_error', SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+          dbax_core.p (l_json.TO_CHAR);
+    END upsert_ldap; 
+   
+   
+   PROCEDURE delete_ldap
+   AS
+      l_out_json      json;      
+      l_ldap_name     tapi_wdx_ldap.name;
+      l_data_values   DBMS_UTILITY.maxname_array;
+   BEGIN
+      /**
+      * The user must be an Admin
+      **/
+      IF NOT f_admin_user
+      THEN
+         dbax_core.g$http_header ('Location') := dbax_core.get_path ('/401');
+         RETURN;
+      END IF;
+
+      --The response is application/json
+      dbax_core.g$content_type := 'application/json';
+
+
+      --The data are a serialized array
+      l_data_values := dbax_utils.tokenizer (utl_url.unescape (dbax_core.g$post ('data')));
+
+      --Delete selected LDAPs
+      FOR i IN 1 .. l_data_values.COUNT ()
+      LOOP
+         --Key is escaped
+         l_ldap_name       := utl_url.unescape (l_data_values (i));
+
+         tapi_wdx_ldap.del (l_ldap_name);      
+      END LOOP;
+
+
+      l_out_json  := json ();
+      l_out_json.put ('text', l_data_values.COUNT () || ' items deleted.');
+
+      --Return values
+      dbax_core.g$status_line := 200;
+      dbax_core.p (l_out_json.TO_CHAR);
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         ROLLBACK;
+         dbax_core.g$status_line := 500;
+         dbax_core.p (SQLERRM || ' ' || DBMS_UTILITY.format_error_backtrace ());
+   END delete_ldap;   
+   
 END pk_c_dbax_console;
 /
