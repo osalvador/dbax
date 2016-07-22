@@ -1,86 +1,114 @@
-site_name: DBAX
+# Project information
+site_name: dbax
 site_url: http://dbax.io
 site_description: Database Application eXpress
-markdown_extensions: 
-- admonition
-- abbr
-- nl2br
-- smarty
-- toc:
-    permalink: True
-- sane_lists
+site_author: Oscar Salvador Magallanes
+
+# Repository
+repo_name: GitHub
+repo_url: https://github.com/osalvador/dbax
+
+# Copyright
+copyright: Copyright (c) 2016 Oscar Salvador Magallanes
+
+# Documentation and theme
+docs_dir: 'docs'
+theme: 'material'
+theme_dir: material
+
+# Options
+extra:
+  version: '0.1.0'
+  logo: 'images/logo.png'
+  palette:
+    primary: 'indigo'
+    accent: 'light blue'
+  font:
+    text: 'Noto Sans'
+    code: 'Roboto Mono'
+  i18n:
+    prev: 'Anterior'
+    next: 'Siguiente'
+  author:
+    github: osalvador
+    twitter: dbaxio
+  github:
+    download_release: true    
+
+# Extensions
+markdown_extensions:
+  - codehilite(css_class=code)
+  - admonition
+  - toc:
+      permalink: '#'
+
+# Page tree
 pages:
-- Índice: 'index.md'
-- Bienvenido a DBAX: 'welcome.md'
-- ¿Por qué DBAX?: 'why.md'
-- Introdcción:
-  - 'Empezando': 'intro/empezando.md'
-  - 'DBAX a simple vista': 'intro/a-simple-vista.md'
-  - 'Funciones soportadas': 'intro/funciones-soportadas.md'
-  - 'Arquitectura DBAX': 'intro/arquitectura.md'
-  - 'Diagrama de flujo': 'intro/diagrama-flujo.md'
-  - 'Model-Vista-Controlador': 'intro/mvc.md'
-  - 'Buenas prácticas MVC': 'intro/buenas-practivas-mvc.md'
-  - 'Conceptos aplicaciones': 'intro/conceptos-aplicaciones.md'
-  - 'Objetivos de arquitectura': 'intro/objetivos-arquitectura.md'
-- Instalación:
-  - 'Descargar DBAX': 'install/descarga.md'
-  - 'Instrucciones de instalación': 'install/install.md'
-- Tutorial:
-  - '¿Que necesito?' : 'tutorial/que-necesito.md'
-  - 'Su primera página': 'tutorial/primera-pagina.md'
-  - 'Algo util': 'tutorial/util.md'
-  - 'Formularios': 'tutorial/formularios.md'
-  - 'Aplicación básica noticias':
-    - 'Crear aplicación': 'tutorial/app/crear-aplicacion.md'
-    - 'Sección noticias': 'tutorial/app/noticias.md'
-    - 'Crear noticia': 'tutorial/app/crear-noticia.md'
-    - 'Conclusión': 'tutorial/app/conclusion.md'
-- 'Consola Web':
-   - 'Aplicaciones':
-      - 'Aplicaciones': 'console/apps.md'
-      - 'Crear aplicación': 'console/nueva-app.md'
-      - 'Ajustes': 'console/ajustes.md'
-   - 'Seguridad': 'console/seguridad.md'
-   - 'Monitorización': 'console/monit.md'
-- 'Temas Generales':
-   - 'DBAX URLs': 'general/urls.md'
-   - 'Controladores': 'general/controladores.md'
-   - 'Vistas': 'general/vistas.md'
-   - 'Modelos': 'general/modelos.md'
-   - 'Enrutado URI': 'general/enrutado.md'
-   - 'Gestión de Excepciones': 'general/excepciones.md'
-   - 'Seguridad': 'general/seguridad.md'
-- 'Referencias del lenguaje':
-   - 'Sintaxis básica':
-      - 'Etiquetas de DBAX': 'reference/syntax/etiquetas-dbax.md'
-      - 'Salir de HTML': 'reference/syntax/salir-html.md'
-      - 'Separación de instrucciones': 'reference/syntax/separar-instrucciones.md'
-      - 'Comentarios': 'reference/syntax/comentarios.md'
-   - 'Variables':
-      - 'Conceptos básicos': 'reference/variables/basico.md'
-      - 'Variables Predefinidas': 'reference/variables/predefinidas.md'
-      - 'Ámbito de las variables': 'reference/variables/ambito.md'
-      - 'Variables desde fuentes externas': 'reference/variables/externas.md'
-   - 'Variables predefinidas':
-      - 'dbax_core': 'reference/reserved/dbax_core.md'
-      - 'dbax_cookie': 'reference/reserved/dbax_cookie.md'
-      - 'dbax_exception': 'reference/reserved/dbax_exception.md'
-      - 'dbax_session': 'reference/reserved/dbax_session.md'
-- 'Referencia APIs':
-   - 'DBAX_COOKIE': 'api/dbax_cookie.md'
-   - 'DBAX_CORE': 'api/dbax_core.md'
-   - 'DBAX_DATATABLE': 'api/dbax_datatable.md'
-   - 'DBAX_DOCUMENT': 'api/dbax_document.md'
-   - 'DBAX_EXCEPTION': 'api/dbax_exception.md'
-   - 'DBAX_FILE_PARSER': 'api/dbax_file_parser.md'
-   - 'DBAX_LDAP': 'api/dbax_ldap.md'
-   - 'DBAX_LOG': 'api/dbax_log.md'
-   - 'DBAX_SECURITY': 'api/dbax_security.md'
-   - 'DBAX_SESSION': 'api/dbax_session.md'
-   - 'DBAX_UTILS': 'api/dbax_utils.md'
-   - 'JSON_UTIL': 'api/json_util.md'
-   - 'XLSX_BUILDER': 'api/xlsx_builder.md'
+- dbax: index.md
+- Empezando:  getting-started.md
+# Instalación:
+# - 'Descargar dbax': 'install/descarga.md'
+# - 'Instrucciones de instalación': 'install/install.md'
+# Tutorial:
+# - '¿Que necesito?' : 'tutorial/que-necesito.md'
+# - 'Su primera página': 'tutorial/primera-pagina.md'
+# - 'Algo util': 'tutorial/util.md'
+# - 'Formularios': 'tutorial/formularios.md'
+# - 'Aplicación básica noticias':
+#   - 'Crear aplicación': 'tutorial/app/crear-aplicacion.md'
+#   - 'Sección noticias': 'tutorial/app/noticias.md'
+#   - 'Crear noticia': 'tutorial/app/crear-noticia.md'
+#   - 'Conclusión': 'tutorial/app/conclusion.md'
+# 'Consola Web':
+#  - 'Aplicaciones':
+#     - 'Aplicaciones': 'console/apps.md'
+#     - 'Crear aplicación': 'console/nueva-app.md'
+#     - 'Ajustes': 'console/ajustes.md'
+#  - 'Seguridad': 'console/seguridad.md'
+#  - 'Monitorización': 'console/monit.md'
+# 'Temas Generales':
+#  - 'dbax URLs': 'general/urls.md'
+#  - 'Controladores': 'general/controladores.md'
+#  - 'Vistas': 'general/vistas.md'
+#  - 'Modelos': 'general/modelos.md'
+#  - 'Enrutado URI': 'general/enrutado.md'
+#  - 'Gestión de Excepciones': 'general/excepciones.md'
+#  - 'Seguridad': 'general/seguridad.md'
+# 'Referencias del lenguaje':
+#  - 'Sintaxis básica':
+#     - 'Etiquetas de dbax': 'reference/syntax/etiquetas-dbax.md'
+#     - 'Salir de HTML': 'reference/syntax/salir-html.md'
+#     - 'Separación de instrucciones': 'reference/syntax/separar-instrucciones.md'
+#     - 'Comentarios': 'reference/syntax/comentarios.md'
+#  - 'Variables':
+#     - 'Conceptos básicos': 'reference/variables/basico.md'
+#     - 'Variables Predefinidas': 'reference/variables/predefinidas.md'
+#     - 'Ámbito de las variables': 'reference/variables/ambito.md'
+#     - 'Variables desde fuentes externas': 'reference/variables/externas.md'
+#  - 'Variables predefinidas':
+#     - 'dbax_core': 'reference/reserved/dbax_core.md'
+#     - 'dbax_cookie': 'reference/reserved/dbax_cookie.md'
+#     - 'dbax_exception': 'reference/reserved/dbax_exception.md'
+#     - 'dbax_session': 'reference/reserved/dbax_session.md'
+# 'Referencia APIs':
+#  - 'dbax_COOKIE': 'api/dbax_cookie.md'
+#  - 'dbax_CORE': 'api/dbax_core.md'
+#  - 'dbax_DATATABLE': 'api/dbax_datatable.md'
+#  - 'dbax_DOCUMENT': 'api/dbax_document.md'
+#  - 'dbax_EXCEPTION': 'api/dbax_exception.md'
+#  - 'dbax_FILE_PARSER': 'api/dbax_file_parser.md'
+#  - 'dbax_LDAP': 'api/dbax_ldap.md'
+#  - 'dbax_LOG': 'api/dbax_log.md'
+#  - 'dbax_SECURITY': 'api/dbax_security.md'
+#  - 'dbax_SESSION': 'api/dbax_session.md'
+#  - 'dbax_UTILS': 'api/dbax_utils.md'
+#  - 'JSON_UTIL': 'api/json_util.md'
+#  - 'XLSX_BUILDER': 'api/xlsx_builder.md'
+
 dev_addr: '0.0.0.0:8000'
-theme: readthedocs
-extra_css: [extra.css]
+
+# Extra componentes
+extra_css: [extra_css/prettify.css, extra_css/atelier-cave-light.css, extra_css/extra.css]
+extra_javascript: [extra_js/prettify.js, extra_js/lang-plsql.js, extra_js/extra.js]
+
+

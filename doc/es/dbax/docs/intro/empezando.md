@@ -1,4 +1,5 @@
-<p class="page-header1"><b>Empezando con DBAX</b></p>
+
+# Empezando con DBAX
 
 Cualquier aplicación de software requiere un cierto esfuerzo para aprender. Hemos hecho todo lo posible para minimizar la curva de aprendizaje y que este proceso sea lo más agradable posible.
 
