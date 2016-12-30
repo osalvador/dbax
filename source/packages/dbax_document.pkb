@@ -1,9 +1,4 @@
-/* Formatted on 14/04/2016 15:42:19 (QP5 v5.115.810.9015) */
---
--- DBAX_DOCUMENT  (Package Body)
---
-
-CREATE OR REPLACE PACKAGE BODY dbax_document
+CREATE OR REPLACE PACKAGE BODY DBAX.dbax_document
 AS
    FUNCTION clob2blob (p_clob IN CLOB)
       RETURN BLOB
@@ -216,6 +211,7 @@ AS
       END IF;
 
 
+      HTP.init;
       OWA_UTIL.mime_header (l_mime_type, FALSE);
       HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
       -- The filename will be used by the browser if the users does a "Save as"
@@ -267,6 +263,7 @@ AS
          l_filename  := p_filename;
       END IF;
 
+      HTP.init;
       OWA_UTIL.mime_header (l_mime_type, FALSE);
       HTP.p ('Content-Length: ' || DBMS_LOB.getlength (l_blob_content));
       -- The filename will be used by the browser if the users does a "Save as"

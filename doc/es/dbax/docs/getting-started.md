@@ -4,7 +4,7 @@
 
 ### Requisitos de instalación
 
-- Base de datos Oracle XE o superior. **dbax** es un framework PL/SQL y está escrito al completo en PL/SQL, usted necesita una BD Oracle para poder usar **dbax**. Revise los requisitos de instalación de cada base de datos. 
+- Base de datos Oracle XE o superior. **dbax** es un framework PL/SQL y está escrito al completo en PL/SQL, usted necesita una BD Oracle para poder usar **dbax**. Revise los requisitos de instalación de cada base de datos.
 - Instalar o configurar un Web Listener, quien recibe las peticiones de los usuario y las deriba al motor de **dbax** instalado en la base de datos. **dbax** usa la misma tecnologia que Oracle Apex por tanto los Web Listeners o gateways son los mismos. Puedes leer la documentación de Oracle para elegir e instalar el Web Listener mas adecuado a sus necesidades: [Choosing Web Listener](https://docs.oracle.com/cd/E59726_01/install.50/e39144/overview.htm#HTMIG367)
 
 
@@ -12,9 +12,9 @@
 
 __dbax__ se compone de un conjunto de paquetes PL/SQL, librerias y una serie de tablas que deben ser creadas y compiladas en un esquema de la Base de datos.
 
-Puede instalar __dbax__ en cualquier esquema existente o en uno nuevo, esto solo depende de como se quiera organizar la BD. Lo recomendable es crear un esquema específico para alojar el motor de __dbax__ y aislar así al framework de los esquemas de su negocio. 
+Puede instalar __dbax__ en cualquier esquema existente o en uno nuevo, esto solo depende de como se quiera organizar la BD. Lo recomendable es crear un esquema específico para alojar el motor de __dbax__ y aislar así al framework de los esquemas de su negocio.
 
-El siguiente script contiene la creación de un nuevo esquema para __dbax__: 
+El siguiente script contiene la creación de un nuevo esquema para __dbax__:
 
 <pre class="prettyprint lang-plsql">
 CREATE TABLESPACE TS_DBAX DATAFILE 'dbax.dat' size 10M autoextend on;
@@ -56,7 +56,5 @@ Una vez instalado podrá crear su primera aplicacion:
 __dbax Hello world con Bootstrap__ :
 
 <div class="embed-container">
-        <iframe width="640" height="480" src="https://www.youtube.com/embed/SqZoL9mN-a0?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        <iframe width="640" height="480" src="https://www.youtube.com/embed/SqZoL9mN-a0?rel=0&amp;showinfo=0&html5=1" frameborder="0" allowfullscreen></iframe>
 </div>
-
-

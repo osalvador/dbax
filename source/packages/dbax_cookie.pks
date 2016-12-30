@@ -13,7 +13,7 @@ AS
    -- Description: This package provides an interface for sending and retrieving HTTP cookies from the client's browser.
    */
 
-   --##Global Variables
+   --##Global Variables ssss
    TYPE cookie_type
    IS
       RECORD (
